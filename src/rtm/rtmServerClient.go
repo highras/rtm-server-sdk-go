@@ -14,6 +14,10 @@ import (
 	"github.com/highras/fpnn-sdk-go/src/fpnn"
 )
 
+const (
+	SDKVersion = "0.1.0"
+)
+
 type RTMServerMonitor interface {
 	P2PMessage(fromUid int64, toUid int64, mtype int8, mid int64, message string, attrs string, mtime int64)
 	GroupMessage(fromUid int64, groupId int64, mtype int8, mid int64, message string, attrs string, mtime int64)
@@ -100,6 +104,17 @@ func (client *RTMServerClient) Endpoint() string {
 	return client.client.Endpoint()
 }
 
+/*
+	Params:
+		rest: can be include following params:
+			pemPath		string
+			rawPemData	[]byte
+			reinforce	bool
+*/
+func (client *RTMServerClient) EnableEncryptor(rest ... interface{}) (err error) {
+	return client.client.EnableEncryptor(rest...)
+}
+
 func (client *RTMServerClient) makeSignAndSalt() (string, int64) {
 
 	now := time.Now()
@@ -176,14 +191,14 @@ func (client *RTMServerClient) sendQuest(quest *fpnn.Quest, timeout time.Duratio
 		if timeout == 0 {
 			return client.client.SendQuest(quest)
 		} else {
-			return client.client.SendQuestWithTimeout(quest, timeout)
+			return client.client.SendQuest(quest, timeout)
 		}
 
 	} else {
 		if timeout == 0 {
 			return nil, client.client.SendQuestWithLambda(quest, callback)
 		} else {
-			return nil, client.client.SendQuestWithLambdaTimeout(quest, callback, timeout)
+			return nil, client.client.SendQuestWithLambda(quest, callback, timeout)
 		}
 	}
 }
@@ -2296,7 +2311,7 @@ func (client *RTMServerClient) SendFile(fromUid int64, toUid int64, fileContent 
 			quest.Param("attrs", attrs)
 
 			fileClient := fpnn.NewTCPClient(endpoint)
-			err = fileClient.SendQuestWithLambdaTimeout(quest, func(answer *fpnn.Answer, errorCode int) {
+			err = fileClient.SendQuestWithLambda(quest, func(answer *fpnn.Answer, errorCode int) {
 				if errorCode == fpnn.FPNN_EC_OK {
 					callback(answer.WantInt64("mtime"), fpnn.FPNN_EC_OK, "")
 				} else if answer != nil {
@@ -2413,7 +2428,7 @@ func (client *RTMServerClient) SendFiles(fromUid int64, toUids []int64, fileCont
 			quest.Param("attrs", attrs)
 
 			fileClient := fpnn.NewTCPClient(endpoint)
-			err = fileClient.SendQuestWithLambdaTimeout(quest, func(answer *fpnn.Answer, errorCode int) {
+			err = fileClient.SendQuestWithLambda(quest, func(answer *fpnn.Answer, errorCode int) {
 				if errorCode == fpnn.FPNN_EC_OK {
 					callback(answer.WantInt64("mtime"), fpnn.FPNN_EC_OK, "")
 				} else if answer != nil {
@@ -2530,7 +2545,7 @@ func (client *RTMServerClient) SendGroupFile(fromUid int64, groupId int64, fileC
 			quest.Param("attrs", attrs)
 
 			fileClient := fpnn.NewTCPClient(endpoint)
-			err = fileClient.SendQuestWithLambdaTimeout(quest, func(answer *fpnn.Answer, errorCode int) {
+			err = fileClient.SendQuestWithLambda(quest, func(answer *fpnn.Answer, errorCode int) {
 				if errorCode == fpnn.FPNN_EC_OK {
 					callback(answer.WantInt64("mtime"), fpnn.FPNN_EC_OK, "")
 				} else if answer != nil {
@@ -2647,7 +2662,7 @@ func (client *RTMServerClient) SendRoomFile(fromUid int64, roomId int64, fileCon
 			quest.Param("attrs", attrs)
 
 			fileClient := fpnn.NewTCPClient(endpoint)
-			err = fileClient.SendQuestWithLambdaTimeout(quest, func(answer *fpnn.Answer, errorCode int) {
+			err = fileClient.SendQuestWithLambda(quest, func(answer *fpnn.Answer, errorCode int) {
 				if errorCode == fpnn.FPNN_EC_OK {
 					callback(answer.WantInt64("mtime"), fpnn.FPNN_EC_OK, "")
 				} else if answer != nil {
@@ -2759,7 +2774,7 @@ func (client *RTMServerClient) SendBroadcastFile(fromUid int64, fileContent []by
 			quest.Param("attrs", attrs)
 
 			fileClient := fpnn.NewTCPClient(endpoint)
-			err = fileClient.SendQuestWithLambdaTimeout(quest, func(answer *fpnn.Answer, errorCode int) {
+			err = fileClient.SendQuestWithLambda(quest, func(answer *fpnn.Answer, errorCode int) {
 				if errorCode == fpnn.FPNN_EC_OK {
 					callback(answer.WantInt64("mtime"), fpnn.FPNN_EC_OK, "")
 				} else if answer != nil {
