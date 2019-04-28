@@ -105,18 +105,18 @@ RTM Server 客户端。
 
 可接受的参数为：
 
-	+ `pemKeyPath string`
++ `pemKeyPath string`
 
-		服务器公钥文件路径。PEM 格式。与 pemKeyData 参数互斥。
+	服务器公钥文件路径。PEM 格式。与 pemKeyData 参数互斥。
 
-	+ `pemKeyData []byte`
++ `pemKeyData []byte`
 
-		服务器公钥文件内容。PEM 格式。与 pemKeyPath 参数互斥。
+	服务器公钥文件内容。PEM 格式。与 pemKeyPath 参数互斥。
 
-	+ `reinforce bool`
++ `reinforce bool`
 
-		true 采用 256 位密钥加密，false 采用 128 位密钥加密。  
-		默认为 true
+	true 采用 256 位密钥加密，false 采用 128 位密钥加密。  
+	默认为 true
 
 
 ### -----------------------[ 发送消息接口 ]-----------------------------
@@ -129,19 +129,19 @@ RTM Server 客户端。
 
 可接受的参数为：
 
-	+ `attrs string`
++ `attrs string`
 
-		消息的属性信息。默认为空字符串。
+	消息的属性信息。默认为空字符串。
 
-	+ `timeout time.Duration`
++ `timeout time.Duration`
 
-		发送超时。  
-		缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
-		若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+	发送超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
 
-	+ `callback func(mtime int64, errorCode int, errInfo string)`
++ `callback func(mtime int64, errorCode int, errInfo string)`
 
-		异步回调函数。  
+	异步回调函数。  
 
 如果 **callback** 参数**不存在**，则为**同步**发送，返回 mtime 及 error 信息。  
 如果 **callback** 参数**存在**，则为**异步**发送，返回 0 及 error 信息。真实的 mtime，将通过 callback 传递。
@@ -154,19 +154,19 @@ RTM Server 客户端。
 
 可接受的参数为：
 
-	+ `attrs string`
++ `attrs string`
 
-		消息的属性信息。默认为空字符串。
+	消息的属性信息。默认为空字符串。
 
-	+ `timeout time.Duration`
++ `timeout time.Duration`
 
-		发送超时。  
-		缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
-		若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+	发送超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
 
-	+ `callback func(mtime int64, errorCode int, errInfo string)`
++ `callback func(mtime int64, errorCode int, errInfo string)`
 
-		异步回调函数。  
+	异步回调函数。  
 
 如果 **callback** 参数**不存在**，则为**同步**发送，返回 mtime 及 error 信息。  
 如果 **callback** 参数**存在**，则为**异步**发送，返回 0 及 error 信息。真实的 mtime，将通过 callback 传递。
@@ -179,19 +179,19 @@ RTM Server 客户端。
 
 可接受的参数为：
 
-	+ `attrs string`
++ `attrs string`
 
-		消息的属性信息。默认为空字符串。
+	消息的属性信息。默认为空字符串。
 
-	+ `timeout time.Duration`
++ `timeout time.Duration`
 
-		发送超时。  
-		缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
-		若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+	发送超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
 
-	+ `callback func(mtime int64, errorCode int, errInfo string)`
++ `callback func(mtime int64, errorCode int, errInfo string)`
 
-		异步回调函数。  
+	异步回调函数。  
 
 如果 **callback** 参数**不存在**，则为**同步**发送，返回 mtime 及 error 信息。  
 如果 **callback** 参数**存在**，则为**异步**发送，返回 0 及 error 信息。真实的 mtime，将通过 callback 传递。
@@ -204,19 +204,19 @@ RTM Server 客户端。
 
 可接受的参数为：
 
-	+ `attrs string`
++ `attrs string`
 
-		消息的属性信息。默认为空字符串。
+	消息的属性信息。默认为空字符串。
 
-	+ `timeout time.Duration`
++ `timeout time.Duration`
 
-		发送超时。  
-		缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
-		若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+	发送超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
 
-	+ `callback func(mtime int64, errorCode int, errInfo string)`
++ `callback func(mtime int64, errorCode int, errInfo string)`
 
-		异步回调函数。  
+	异步回调函数。  
 
 如果 **callback** 参数**不存在**，则为**同步**发送，返回 mtime 及 error 信息。  
 如果 **callback** 参数**存在**，则为**异步**发送，返回 0 及 error 信息。真实的 mtime，将通过 callback 传递。
@@ -229,19 +229,19 @@ RTM Server 客户端。
 
 可接受的参数为：
 
-	+ `attrs string`
++ `attrs string`
 
-		消息的属性信息。默认为空字符串。
+	消息的属性信息。默认为空字符串。
 
-	+ `timeout time.Duration`
++ `timeout time.Duration`
 
-		发送超时。  
-		缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
-		若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+	发送超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
 
-	+ `callback func(mtime int64, errorCode int, errInfo string)`
++ `callback func(mtime int64, errorCode int, errInfo string)`
 
-		异步回调函数。  
+	异步回调函数。  
 
 如果 **callback** 参数**不存在**，则为**同步**发送，返回 mtime 及 error 信息。  
 如果 **callback** 参数**存在**，则为**异步**发送，返回 0 及 error 信息。真实的 mtime，将通过 callback 传递。
@@ -284,38 +284,38 @@ RTM Server 客户端。
 
 必选参数：
 
-	+ `desc bool`
++ `desc bool`
 
-		false: 从begin的时间戳开始，顺序翻页。  
-		true： 从end的时间戳开始，倒序翻页。
+	false: 从begin的时间戳开始，顺序翻页。  
+	true： 从end的时间戳开始，倒序翻页。
 
-	+ `num int16`
++ `num int16`
 
-		获取条目数量。建议10条，最多一次20条。
+	获取条目数量。建议10条，最多一次20条。
 
-	+ `begin int64`
++ `begin int64`
 
-		开始时间戳，精确到**毫秒**，默认0。使用服务器当前时间。条件：>=
+	开始时间戳，精确到**毫秒**，默认0。使用服务器当前时间。条件：>=
 
-	+ `end int64`
++ `end int64`
 
-		结束时间戳，精确到**毫秒**，默认0。使用服务器当前时间。条件：<=
+	结束时间戳，精确到**毫秒**，默认0。使用服务器当前时间。条件：<=
 
-	+ `lastid int64`
++ `lastid int64`
 
-		最后一条消息的id，第一次填默认0。条件：> 或者 <
+	最后一条消息的id，第一次填默认0。条件：> 或者 <
 
 可接受的参数为：
 
-	+ `timeout time.Duration`
++ `timeout time.Duration`
 
-		请求超时。  
-		缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
-		若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+	请求超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
 
-	+ `callback func(result *HistoryMessageResult, errorCode int, errInfo string)`
++ `callback func(result *HistoryMessageResult, errorCode int, errInfo string)`
 
-		异步回调函数。  
+	异步回调函数。  
 
 如果 **callback** 参数**不存在**，则为**同步**请求，返回 *HistoryMessageResult 及 error 信息。  
 如果 **callback** 参数**存在**，则为**异步**请求，返回 nil 及 error 信息。真实的 *HistoryMessageResult 结果，将通过 callback 传递。
@@ -330,38 +330,38 @@ RTM Server 客户端。
 
 必选参数：
 
-	+ `desc bool`
++ `desc bool`
 
-		false: 从begin的时间戳开始，顺序翻页。  
-		true： 从end的时间戳开始，倒序翻页。
+	false: 从begin的时间戳开始，顺序翻页。  
+	true： 从end的时间戳开始，倒序翻页。
 
-	+ `num int16`
++ `num int16`
 
-		获取条目数量。建议10条，最多一次20条。
+	获取条目数量。建议10条，最多一次20条。
 
-	+ `begin int64`
++ `begin int64`
 
-		开始时间戳，精确到**毫秒**，默认0。使用服务器当前时间。条件：>=
+	开始时间戳，精确到**毫秒**，默认0。使用服务器当前时间。条件：>=
 
-	+ `end int64`
++ `end int64`
 
-		结束时间戳，精确到**毫秒**，默认0。使用服务器当前时间。条件：<=
+	结束时间戳，精确到**毫秒**，默认0。使用服务器当前时间。条件：<=
 
-	+ `lastid int64`
++ `lastid int64`
 
-		最后一条消息的id，第一次填默认0。条件：> 或者 <
+	最后一条消息的id，第一次填默认0。条件：> 或者 <
 
 可接受的参数为：
 
-	+ `timeout time.Duration`
++ `timeout time.Duration`
 
-		请求超时。  
-		缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
-		若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+	请求超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
 
-	+ `callback func(result *HistoryMessageResult, errorCode int, errInfo string)`
++ `callback func(result *HistoryMessageResult, errorCode int, errInfo string)`
 
-		异步回调函数。  
+	异步回调函数。  
 
 如果 **callback** 参数**不存在**，则为**同步**请求，返回 *HistoryMessageResult 及 error 信息。  
 如果 **callback** 参数**存在**，则为**异步**请求，返回 nil 及 error 信息。真实的 *HistoryMessageResult 结果，将通过 callback 传递。
@@ -376,38 +376,38 @@ RTM Server 客户端。
 
 必选参数：
 
-	+ `desc bool`
++ `desc bool`
 
-		false: 从begin的时间戳开始，顺序翻页。  
-		true： 从end的时间戳开始，倒序翻页。
+	false: 从begin的时间戳开始，顺序翻页。  
+	true： 从end的时间戳开始，倒序翻页。
 
-	+ `num int16`
++ `num int16`
 
-		获取条目数量。建议10条，最多一次20条。
+	获取条目数量。建议10条，最多一次20条。
 
-	+ `begin int64`
++ `begin int64`
 
-		开始时间戳，精确到**毫秒**，默认0。使用服务器当前时间。条件：>=
+	开始时间戳，精确到**毫秒**，默认0。使用服务器当前时间。条件：>=
 
-	+ `end int64`
++ `end int64`
 
-		结束时间戳，精确到**毫秒**，默认0。使用服务器当前时间。条件：<=
+	结束时间戳，精确到**毫秒**，默认0。使用服务器当前时间。条件：<=
 
-	+ `lastid int64`
++ `lastid int64`
 
-		最后一条消息的id，第一次填默认0。条件：> 或者 <
+	最后一条消息的id，第一次填默认0。条件：> 或者 <
 
 可接受的参数为：
 
-	+ `timeout time.Duration`
++ `timeout time.Duration`
 
-		请求超时。  
-		缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
-		若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+	请求超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
 
-	+ `callback func(result *HistoryMessageResult, errorCode int, errInfo string)`
++ `callback func(result *HistoryMessageResult, errorCode int, errInfo string)`
 
-		异步回调函数。  
+	异步回调函数。  
 
 如果 **callback** 参数**不存在**，则为**同步**请求，返回 *HistoryMessageResult 及 error 信息。  
 如果 **callback** 参数**存在**，则为**异步**请求，返回 nil 及 error 信息。真实的 *HistoryMessageResult 结果，将通过 callback 传递。
@@ -422,38 +422,38 @@ RTM Server 客户端。
 
 必选参数：
 
-	+ `desc bool`
++ `desc bool`
 
-		false: 从begin的时间戳开始，顺序翻页。  
-		true： 从end的时间戳开始，倒序翻页。
+	false: 从begin的时间戳开始，顺序翻页。  
+	true： 从end的时间戳开始，倒序翻页。
 
-	+ `num int16`
++ `num int16`
 
-		获取条目数量。建议10条，最多一次20条。
+	获取条目数量。建议10条，最多一次20条。
 
-	+ `begin int64`
++ `begin int64`
 
-		开始时间戳，精确到**毫秒**，默认0。使用服务器当前时间。条件：>=
+	开始时间戳，精确到**毫秒**，默认0。使用服务器当前时间。条件：>=
 
-	+ `end int64`
++ `end int64`
 
-		结束时间戳，精确到**毫秒**，默认0。使用服务器当前时间。条件：<=
+	结束时间戳，精确到**毫秒**，默认0。使用服务器当前时间。条件：<=
 
-	+ `lastid int64`
++ `lastid int64`
 
-		最后一条消息的id，第一次填默认0。条件：> 或者 <
+	最后一条消息的id，第一次填默认0。条件：> 或者 <
 
 可接受的参数为：
 
-	+ `timeout time.Duration`
++ `timeout time.Duration`
 
-		请求超时。  
-		缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
-		若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+	请求超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
 
-	+ `callback func(result *HistoryMessageResult, errorCode int, errInfo string)`
++ `callback func(result *HistoryMessageResult, errorCode int, errInfo string)`
 
-		异步回调函数。  
+	异步回调函数。  
 
 如果 **callback** 参数**不存在**，则为**同步**请求，返回 *HistoryMessageResult 及 error 信息。  
 如果 **callback** 参数**存在**，则为**异步**请求，返回 nil 及 error 信息。真实的 *HistoryMessageResult 结果，将通过 callback 传递。
@@ -469,15 +469,15 @@ RTM Server 客户端。
 
 可接受的参数为：
 
-	+ `timeout time.Duration`
++ `timeout time.Duration`
 
-		请求超时。  
-		缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
-		若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+	请求超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
 
-	+ `callback func(errorCode int, errInfo string)`
++ `callback func(errorCode int, errInfo string)`
 
-		异步回调函数。  
+	异步回调函数。  
 
 如果 **callback** 参数**不存在**，则为**同步**请求。  
 如果 **callback** 参数**存在**，则为**异步**请求。
@@ -490,15 +490,15 @@ RTM Server 客户端。
 
 可接受的参数为：
 
-	+ `timeout time.Duration`
++ `timeout time.Duration`
 
-		请求超时。  
-		缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
-		若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+	请求超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
 
-	+ `callback func(errorCode int, errInfo string)`
++ `callback func(errorCode int, errInfo string)`
 
-		异步回调函数。  
+	异步回调函数。  
 
 如果 **callback** 参数**不存在**，则为**同步**请求。  
 如果 **callback** 参数**存在**，则为**异步**请求。
@@ -511,15 +511,15 @@ RTM Server 客户端。
 
 可接受的参数为：
 
-	+ `timeout time.Duration`
++ `timeout time.Duration`
 
-		请求超时。  
-		缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
-		若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+	请求超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
 
-	+ `callback func(uids []int64, errorCode int, errInfo string)`
++ `callback func(uids []int64, errorCode int, errInfo string)`
 
-		异步回调函数。  
+	异步回调函数。  
 
 如果 **callback** 参数**不存在**，则为**同步**请求，返回 好友列表 及 error 信息。  
 如果 **callback** 参数**存在**，则为**异步**请求，返回 nil 及 error 信息。真实的 好友列表，将通过 callback 传递。
@@ -532,15 +532,15 @@ RTM Server 客户端。
 
 可接受的参数为：
 
-	+ `timeout time.Duration`
++ `timeout time.Duration`
 
-		请求超时。  
-		缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
-		若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+	请求超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
 
-	+ `callback func(ok bool, errorCode int, errInfo string)`
++ `callback func(ok bool, errorCode int, errInfo string)`
 
-		异步回调函数。  
+	异步回调函数。  
 
 如果 **callback** 参数**不存在**，则为**同步**请求，返回 bool 及 error 信息。  
 如果 **callback** 参数**存在**，则为**异步**请求，返回 false 及 error 信息。真实的 好友关系，将通过 callback 传递。
@@ -553,15 +553,15 @@ RTM Server 客户端。
 
 可接受的参数为：
 
-	+ `timeout time.Duration`
++ `timeout time.Duration`
 
-		请求超时。  
-		缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
-		若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+	请求超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
 
-	+ `callback func(uids []int64, errorCode int, errInfo string)`
++ `callback func(uids []int64, errorCode int, errInfo string)`
 
-		异步回调函数。  
+	异步回调函数。  
 
 如果 **callback** 参数**不存在**，则为**同步**请求，返回 好友列表 及 error 信息。  
 如果 **callback** 参数**存在**，则为**异步**请求，返回 nil 及 error 信息。真实的 好友列表，将通过 callback 传递。
@@ -578,15 +578,15 @@ RTM Server 客户端。
 
 可接受的参数为：
 
-	+ `timeout time.Duration`
++ `timeout time.Duration`
 
-		请求超时。  
-		缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
-		若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+	请求超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
 
-	+ `callback func(errorCode int, errInfo string)`
++ `callback func(errorCode int, errInfo string)`
 
-		异步回调函数。  
+	异步回调函数。  
 
 如果 **callback** 参数**不存在**，则为**同步**请求。  
 如果 **callback** 参数**存在**，则为**异步**请求。
@@ -599,15 +599,15 @@ RTM Server 客户端。
 
 可接受的参数为：
 
-	+ `timeout time.Duration`
++ `timeout time.Duration`
 
-		请求超时。  
-		缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
-		若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+	请求超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
 
-	+ `callback func(errorCode int, errInfo string)`
++ `callback func(errorCode int, errInfo string)`
 
-		异步回调函数。  
+	异步回调函数。  
 
 如果 **callback** 参数**不存在**，则为**同步**请求。  
 如果 **callback** 参数**存在**，则为**异步**请求。
@@ -620,15 +620,15 @@ RTM Server 客户端。
 
 可接受的参数为：
 
-	+ `timeout time.Duration`
++ `timeout time.Duration`
 
-		请求超时。  
-		缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
-		若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+	请求超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
 
-	+ `callback func(errorCode int, errInfo string)`
++ `callback func(errorCode int, errInfo string)`
 
-		异步回调函数。  
+	异步回调函数。  
 
 如果 **callback** 参数**不存在**，则为**同步**请求。  
 如果 **callback** 参数**存在**，则为**异步**请求。
@@ -641,15 +641,15 @@ RTM Server 客户端。
 
 可接受的参数为：
 
-	+ `timeout time.Duration`
++ `timeout time.Duration`
 
-		请求超时。  
-		缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
-		若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+	请求超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
 
-	+ `callback func(uids []int64, errorCode int, errInfo string)`
++ `callback func(uids []int64, errorCode int, errInfo string)`
 
-		异步回调函数。  
+	异步回调函数。  
 
 如果 **callback** 参数**不存在**，则为**同步**请求，返回 群组成员列表 及 error 信息。  
 如果 **callback** 参数**存在**，则为**异步**请求，返回 nil 及 error 信息。真实的 群组成员列表，将通过 callback 传递。
@@ -662,15 +662,15 @@ RTM Server 客户端。
 
 可接受的参数为：
 
-	+ `timeout time.Duration`
++ `timeout time.Duration`
 
-		请求超时。  
-		缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
-		若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+	请求超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
 
-	+ `callback func(ok bool, errorCode int, errInfo string)`
++ `callback func(ok bool, errorCode int, errInfo string)`
 
-		异步回调函数。  
+	异步回调函数。  
 
 如果 **callback** 参数**不存在**，则为**同步**请求，返回 bool 及 error 信息。  
 如果 **callback** 参数**存在**，则为**异步**请求，返回 false 及 error 信息。真实的 群组关系，将通过 callback 传递。
@@ -683,15 +683,15 @@ RTM Server 客户端。
 
 可接受的参数为：
 
-	+ `timeout time.Duration`
++ `timeout time.Duration`
 
-		请求超时。  
-		缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
-		若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+	请求超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
 
-	+ `callback func(groupIds []int64, errorCode int, errInfo string)`
++ `callback func(groupIds []int64, errorCode int, errInfo string)`
 
-		异步回调函数。  
+	异步回调函数。  
 
 如果 **callback** 参数**不存在**，则为**同步**请求，返回 群组列表 及 error 信息。  
 如果 **callback** 参数**存在**，则为**异步**请求，返回 nil 及 error 信息。真实的 群组列表，将通过 callback 传递。
@@ -707,15 +707,15 @@ RTM Server 客户端。
 
 可接受的参数为：
 
-	+ `timeout time.Duration`
++ `timeout time.Duration`
 
-		请求超时。  
-		缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
-		若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+	请求超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
 
-	+ `callback func(errorCode int, errInfo string)`
++ `callback func(errorCode int, errInfo string)`
 
-		异步回调函数。  
+	异步回调函数。  
 
 如果 **callback** 参数**不存在**，则为**同步**请求。  
 如果 **callback** 参数**存在**，则为**异步**请求。
@@ -728,15 +728,15 @@ RTM Server 客户端。
 
 可接受的参数为：
 
-	+ `timeout time.Duration`
++ `timeout time.Duration`
 
-		请求超时。  
-		缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
-		若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+	请求超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
 
-	+ `callback func(errorCode int, errInfo string)`
++ `callback func(errorCode int, errInfo string)`
 
-		异步回调函数。  
+	异步回调函数。  
 
 如果 **callback** 参数**不存在**，则为**同步**请求。  
 如果 **callback** 参数**存在**，则为**异步**请求。
@@ -751,15 +751,15 @@ RTM Server 客户端。
 
 可接受的参数为：
 
-	+ `timeout time.Duration`
++ `timeout time.Duration`
 
-		请求超时。  
-		缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
-		若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+	请求超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
 
-	+ `callback func(errorCode int, errInfo string)`
++ `callback func(errorCode int, errInfo string)`
 
-		异步回调函数。  
+	异步回调函数。  
 
 如果 **callback** 参数**不存在**，则为**同步**请求。  
 如果 **callback** 参数**存在**，则为**异步**请求。
@@ -773,15 +773,15 @@ RTM Server 客户端。
 
 可接受的参数为：
 
-	+ `timeout time.Duration`
++ `timeout time.Duration`
 
-		请求超时。  
-		缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
-		若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+	请求超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
 
-	+ `callback func(errorCode int, errInfo string)`
++ `callback func(errorCode int, errInfo string)`
 
-		异步回调函数。  
+	异步回调函数。  
 
 如果 **callback** 参数**不存在**，则为**同步**请求。  
 如果 **callback** 参数**存在**，则为**异步**请求。
@@ -795,15 +795,15 @@ RTM Server 客户端。
 
 可接受的参数为：
 
-	+ `timeout time.Duration`
++ `timeout time.Duration`
 
-		请求超时。  
-		缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
-		若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+	请求超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
 
-	+ `callback func(errorCode int, errInfo string)`
++ `callback func(errorCode int, errInfo string)`
 
-		异步回调函数。  
+	异步回调函数。  
 
 如果 **callback** 参数**不存在**，则为**同步**请求。  
 如果 **callback** 参数**存在**，则为**异步**请求。
@@ -816,15 +816,15 @@ RTM Server 客户端。
 
 可接受的参数为：
 
-	+ `timeout time.Duration`
++ `timeout time.Duration`
 
-		请求超时。  
-		缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
-		若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+	请求超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
 
-	+ `callback func(errorCode int, errInfo string)`
++ `callback func(errorCode int, errInfo string)`
 
-		异步回调函数。  
+	异步回调函数。  
 
 如果 **callback** 参数**不存在**，则为**同步**请求。  
 如果 **callback** 参数**存在**，则为**异步**请求。
@@ -837,15 +837,15 @@ RTM Server 客户端。
 
 可接受的参数为：
 
-	+ `timeout time.Duration`
++ `timeout time.Duration`
 
-		请求超时。  
-		缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
-		若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+	请求超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
 
-	+ `callback func(errorCode int, errInfo string)`
++ `callback func(errorCode int, errInfo string)`
 
-		异步回调函数。  
+	异步回调函数。  
 
 如果 **callback** 参数**不存在**，则为**同步**请求。  
 如果 **callback** 参数**存在**，则为**异步**请求。
@@ -859,15 +859,15 @@ RTM Server 客户端。
 
 可接受的参数为：
 
-	+ `timeout time.Duration`
++ `timeout time.Duration`
 
-		请求超时。  
-		缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
-		若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+	请求超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
 
-	+ `callback func(errorCode int, errInfo string)`
++ `callback func(errorCode int, errInfo string)`
 
-		异步回调函数。  
+	异步回调函数。  
 
 如果 **callback** 参数**不存在**，则为**同步**请求。  
 如果 **callback** 参数**存在**，则为**异步**请求。
@@ -880,15 +880,15 @@ RTM Server 客户端。
 
 可接受的参数为：
 
-	+ `timeout time.Duration`
++ `timeout time.Duration`
 
-		请求超时。  
-		缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
-		若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+	请求超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
 
-	+ `callback func(ok bool, errorCode int, errInfo string)`
++ `callback func(ok bool, errorCode int, errInfo string)`
 
-		异步回调函数。  
+	异步回调函数。  
 
 如果 **callback** 参数**不存在**，则为**同步**请求，返回 bool 及 error 信息。  
 如果 **callback** 参数**存在**，则为**异步**请求，返回 false 及 error 信息。真实的 禁言状态，将通过 callback 传递。
@@ -901,15 +901,15 @@ RTM Server 客户端。
 
 可接受的参数为：
 
-	+ `timeout time.Duration`
++ `timeout time.Duration`
 
-		请求超时。  
-		缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
-		若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+	请求超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
 
-	+ `callback func(ok bool, errorCode int, errInfo string)`
++ `callback func(ok bool, errorCode int, errInfo string)`
 
-		异步回调函数。  
+	异步回调函数。  
 
 如果 **callback** 参数**不存在**，则为**同步**请求，返回 bool 及 error 信息。  
 如果 **callback** 参数**存在**，则为**异步**请求，返回 false 及 error 信息。真实的 禁言状态，将通过 callback 传递。
@@ -923,15 +923,15 @@ RTM Server 客户端。
 
 可接受的参数为：
 
-	+ `timeout time.Duration`
++ `timeout time.Duration`
 
-		请求超时。  
-		缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
-		若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+	请求超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
 
-	+ `callback func(ok bool, errorCode int, errInfo string)`
++ `callback func(ok bool, errorCode int, errInfo string)`
 
-		异步回调函数。  
+	异步回调函数。  
 
 如果 **callback** 参数**不存在**，则为**同步**请求，返回 bool 及 error 信息。  
 如果 **callback** 参数**存在**，则为**异步**请求，返回 false 及 error 信息。真实的 黑名单状态，将通过 callback 传递。
@@ -944,15 +944,15 @@ RTM Server 客户端。
 
 可接受的参数为：
 
-	+ `timeout time.Duration`
++ `timeout time.Duration`
 
-		请求超时。  
-		缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
-		若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+	请求超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
 
-	+ `callback func(errorCode int, errInfo string)`
++ `callback func(errorCode int, errInfo string)`
 
-		异步回调函数。  
+	异步回调函数。  
 
 如果 **callback** 参数**不存在**，则为**同步**请求。  
 如果 **callback** 参数**存在**，则为**异步**请求。
@@ -965,15 +965,15 @@ RTM Server 客户端。
 
 可接受的参数为：
 
-	+ `timeout time.Duration`
++ `timeout time.Duration`
 
-		请求超时。  
-		缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
-		若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+	请求超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
 
-	+ `callback func(errorCode int, errInfo string)`
++ `callback func(errorCode int, errInfo string)`
 
-		异步回调函数。  
+	异步回调函数。  
 
 如果 **callback** 参数**不存在**，则为**同步**请求。  
 如果 **callback** 参数**存在**，则为**异步**请求。
@@ -989,15 +989,15 @@ RTM Server 客户端。
 
 可接受的参数为：
 
-	+ `timeout time.Duration`
++ `timeout time.Duration`
 
-		请求超时。  
-		缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
-		若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+	请求超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
 
-	+ `callback func(token string, errorCode int, errInfo string)`
++ `callback func(token string, errorCode int, errInfo string)`
 
-		异步回调函数。  
+	异步回调函数。  
 
 如果 **callback** 参数**不存在**，则为**同步**请求，返回 token 及 error 信息。  
 如果 **callback** 参数**存在**，则为**异步**请求，返回 "" 及 error 信息。真实的 token，将通过 callback 传递。
@@ -1010,15 +1010,15 @@ RTM Server 客户端。
 
 可接受的参数为：
 
-	+ `timeout time.Duration`
++ `timeout time.Duration`
 
-		请求超时。  
-		缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
-		若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+	请求超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
 
-	+ `callback func(uids []int64, errorCode int, errInfo string)`
++ `callback func(uids []int64, errorCode int, errInfo string)`
 
-		异步回调函数。  
+	异步回调函数。  
 
 如果 **callback** 参数**不存在**，则为**同步**请求，返回 在线用户列表 及 error 信息。  
 如果 **callback** 参数**存在**，则为**异步**请求，返回 nil 及 error 信息。真实的 在线用户列表，将通过 callback 传递。
@@ -1031,35 +1031,35 @@ RTM Server 客户端。
 
 必须参数：
 
-	+ `groupIds []int64`
++ `groupIds []int64`
 
-		增加监听的群组。
+	增加监听的群组。
 
-	+ `roomIds []int64`
++ `roomIds []int64`
 
-		增加监听的房间。
+	增加监听的房间。
 
-	+ `p2p bool`
++ `p2p bool`
 
-		当 true 时，监听 P2P 消息。忽略 false 参数。
+	当 true 时，监听 P2P 消息。忽略 false 参数。
 
-	+ `events []string`
++ `events []string`
 
-		需要监听的事件。  
-		可监听的事件列表，请参考 RTM 服务文档。
+	需要监听的事件。  
+	可监听的事件列表，请参考 RTM 服务文档。
 
 
 可接受的参数为：
 
-	+ `timeout time.Duration`
++ `timeout time.Duration`
 
-		请求超时。  
-		缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
-		若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+	请求超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
 
-	+ `callback func(errorCode int, errInfo string)`
++ `callback func(errorCode int, errInfo string)`
 
-		异步回调函数。  
+	异步回调函数。  
 
 如果 **callback** 参数**不存在**，则为**同步**请求。  
 如果 **callback** 参数**存在**，则为**异步**请求。
@@ -1073,35 +1073,35 @@ RTM Server 客户端。
 
 必须参数：
 
-	+ `groupIds []int64`
++ `groupIds []int64`
 
-		取消监听的群组。
+	取消监听的群组。
 
-	+ `roomIds []int64`
++ `roomIds []int64`
 
-		取消监听的房间。
+	取消监听的房间。
 
-	+ `p2p bool`
++ `p2p bool`
 
-		当 true 时，取消监听 P2P 消息。忽略 false 参数。
+	当 true 时，取消监听 P2P 消息。忽略 false 参数。
 
-	+ `events []string`
++ `events []string`
 
-		需要取消监听的事件。  
-		可监听的事件列表，请参考 RTM 服务文档。
+	需要取消监听的事件。  
+	可监听的事件列表，请参考 RTM 服务文档。
 
 
 可接受的参数为：
 
-	+ `timeout time.Duration`
++ `timeout time.Duration`
 
-		请求超时。  
-		缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
-		若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+	请求超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
 
-	+ `callback func(errorCode int, errInfo string)`
++ `callback func(errorCode int, errInfo string)`
 
-		异步回调函数。  
+	异步回调函数。  
 
 如果 **callback** 参数**不存在**，则为**同步**请求。  
 如果 **callback** 参数**存在**，则为**异步**请求。
@@ -1114,40 +1114,40 @@ RTM Server 客户端。
 
 必须参数：
 
-	+ `groupIds []int64`
++ `groupIds []int64`
 
-		取消监听的群组。
+	取消监听的群组。
 
-	+ `roomIds []int64`
++ `roomIds []int64`
 
-		取消监听的房间。
+	取消监听的房间。
 
-	+ `p2p bool`
++ `p2p bool`
 
-		当 true 时，取消监听 P2P 消息。忽略 false 参数。
+	当 true 时，取消监听 P2P 消息。忽略 false 参数。
 
-	+ `events []string`
++ `events []string`
 
-		需要取消监听的事件。  
-		可监听的事件列表，请参考 RTM 服务文档。
+	需要取消监听的事件。  
+	可监听的事件列表，请参考 RTM 服务文档。
 
 
 可接受的参数为：
 
-	+ `all bool`
++ `all bool`
 
-		true: 忽略其他参数，监听所有消息，所有事件。  
-		false: 忽略其他参数，取消监听所有消息，所有事件。
+	true: 忽略其他参数，监听所有消息，所有事件。  
+	false: 忽略其他参数，取消监听所有消息，所有事件。
 
-	+ `timeout time.Duration`
++ `timeout time.Duration`
 
-		请求超时。  
-		缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
-		若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+	请求超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
 
-	+ `callback func(errorCode int, errInfo string)`
++ `callback func(errorCode int, errInfo string)`
 
-		异步回调函数。  
+	异步回调函数。  
 
 如果 **callback** 参数**不存在**，则为**同步**请求。  
 如果 **callback** 参数**存在**，则为**异步**请求。
@@ -1160,15 +1160,15 @@ RTM Server 客户端。
 
 可接受的参数为：
 
-	+ `timeout time.Duration`
++ `timeout time.Duration`
 
-		请求超时。  
-		缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
-		若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+	请求超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
 
-	+ `callback func(errorCode int, errInfo string)`
++ `callback func(errorCode int, errInfo string)`
 
-		异步回调函数。  
+	异步回调函数。  
 
 如果 **callback** 参数**不存在**，则为**同步**请求。  
 如果 **callback** 参数**存在**，则为**异步**请求。
@@ -1181,15 +1181,15 @@ RTM Server 客户端。
 
 可接受的参数为：
 
-	+ `timeout time.Duration`
++ `timeout time.Duration`
 
-		请求超时。  
-		缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
-		若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+	请求超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
 
-	+ `callback func(errorCode int, errInfo string)`
++ `callback func(errorCode int, errInfo string)`
 
-		异步回调函数。  
+	异步回调函数。  
 
 如果 **callback** 参数**不存在**，则为**同步**请求。  
 如果 **callback** 参数**存在**，则为**异步**请求。
@@ -1205,28 +1205,28 @@ RTM Server 客户端。
 
 可接受的参数为：
 
-	+ `mtype int8`
++ `mtype int8`
 
-		消息类型。默认 50。
+	消息类型。默认 50。
 
-	+ `extension string`
++ `extension string`
 
-		文件的扩展名。  
-		如果缺失，会自动从 filename 参数中提取。
+	文件的扩展名。  
+	如果缺失，会自动从 filename 参数中提取。
 
-	+ `attrs string`
++ `attrs string`
 
-		消息的属性信息。默认为空字符串。
+	消息的属性信息。默认为空字符串。
 
-	+ `timeout time.Duration`
++ `timeout time.Duration`
 
-		发送超时。  
-		缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
-		若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+	发送超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
 
-	+ `callback func(mtime int64, errorCode int, errInfo string)`
++ `callback func(mtime int64, errorCode int, errInfo string)`
 
-		异步回调函数。  
+	异步回调函数。  
 
 如果 **callback** 参数**不存在**，则为**同步**发送，返回 mtime 及 error 信息。  
 如果 **callback** 参数**存在**，则为**异步**发送，返回 0 及 error 信息。真实的 mtime，将通过 callback 传递。
@@ -1239,28 +1239,28 @@ RTM Server 客户端。
 
 可接受的参数为：
 
-	+ `mtype int8`
++ `mtype int8`
 
-		消息类型。默认 50。
+	消息类型。默认 50。
 
-	+ `extension string`
++ `extension string`
 
-		文件的扩展名。  
-		如果缺失，会自动从 filename 参数中提取。
+	文件的扩展名。  
+	如果缺失，会自动从 filename 参数中提取。
 
-	+ `attrs string`
++ `attrs string`
 
-		消息的属性信息。默认为空字符串。
+	消息的属性信息。默认为空字符串。
 
-	+ `timeout time.Duration`
++ `timeout time.Duration`
 
-		发送超时。  
-		缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
-		若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+	发送超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
 
-	+ `callback func(mtime int64, errorCode int, errInfo string)`
++ `callback func(mtime int64, errorCode int, errInfo string)`
 
-		异步回调函数。  
+	异步回调函数。  
 
 如果 **callback** 参数**不存在**，则为**同步**发送，返回 mtime 及 error 信息。  
 如果 **callback** 参数**存在**，则为**异步**发送，返回 0 及 error 信息。真实的 mtime，将通过 callback 传递。
@@ -1273,28 +1273,28 @@ RTM Server 客户端。
 
 可接受的参数为：
 
-	+ `mtype int8`
++ `mtype int8`
 
-		消息类型。默认 50。
+	消息类型。默认 50。
 
-	+ `extension string`
++ `extension string`
 
-		文件的扩展名。  
-		如果缺失，会自动从 filename 参数中提取。
+	文件的扩展名。  
+	如果缺失，会自动从 filename 参数中提取。
 
-	+ `attrs string`
++ `attrs string`
 
-		消息的属性信息。默认为空字符串。
+	消息的属性信息。默认为空字符串。
 
-	+ `timeout time.Duration`
++ `timeout time.Duration`
 
-		发送超时。  
-		缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
-		若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+	发送超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
 
-	+ `callback func(mtime int64, errorCode int, errInfo string)`
++ `callback func(mtime int64, errorCode int, errInfo string)`
 
-		异步回调函数。  
+	异步回调函数。  
 
 如果 **callback** 参数**不存在**，则为**同步**发送，返回 mtime 及 error 信息。  
 如果 **callback** 参数**存在**，则为**异步**发送，返回 0 及 error 信息。真实的 mtime，将通过 callback 传递。
@@ -1307,28 +1307,28 @@ RTM Server 客户端。
 
 可接受的参数为：
 
-	+ `mtype int8`
++ `mtype int8`
 
-		消息类型。默认 50。
+	消息类型。默认 50。
 
-	+ `extension string`
++ `extension string`
 
-		文件的扩展名。  
-		如果缺失，会自动从 filename 参数中提取。
+	文件的扩展名。  
+	如果缺失，会自动从 filename 参数中提取。
 
-	+ `attrs string`
++ `attrs string`
 
-		消息的属性信息。默认为空字符串。
+	消息的属性信息。默认为空字符串。
 
-	+ `timeout time.Duration`
++ `timeout time.Duration`
 
-		发送超时。  
-		缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
-		若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+	发送超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
 
-	+ `callback func(mtime int64, errorCode int, errInfo string)`
++ `callback func(mtime int64, errorCode int, errInfo string)`
 
-		异步回调函数。  
+	异步回调函数。  
 
 如果 **callback** 参数**不存在**，则为**同步**发送，返回 mtime 及 error 信息。  
 如果 **callback** 参数**存在**，则为**异步**发送，返回 0 及 error 信息。真实的 mtime，将通过 callback 传递。
@@ -1341,28 +1341,28 @@ RTM Server 客户端。
 
 可接受的参数为：
 
-	+ `mtype int8`
++ `mtype int8`
 
-		消息类型。默认 50。
+	消息类型。默认 50。
 
-	+ `extension string`
++ `extension string`
 
-		文件的扩展名。  
-		如果缺失，会自动从 filename 参数中提取。
+	文件的扩展名。  
+	如果缺失，会自动从 filename 参数中提取。
 
-	+ `attrs string`
++ `attrs string`
 
-		消息的属性信息。默认为空字符串。
+	消息的属性信息。默认为空字符串。
 
-	+ `timeout time.Duration`
++ `timeout time.Duration`
 
-		发送超时。  
-		缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
-		若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+	发送超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
 
-	+ `callback func(mtime int64, errorCode int, errInfo string)`
++ `callback func(mtime int64, errorCode int, errInfo string)`
 
-		异步回调函数。  
+	异步回调函数。  
 
 如果 **callback** 参数**不存在**，则为**同步**发送，返回 mtime 及 error 信息。  
 如果 **callback** 参数**存在**，则为**异步**发送，返回 0 及 error 信息。真实的 mtime，将通过 callback 传递。
