@@ -142,6 +142,10 @@ func newRTMServerQuestProcessor() *rtmServerQuestProcessor {
 
 func (processor *rtmServerQuestProcessor) Process(method string) func(*fpnn.Quest) (*fpnn.Answer, error) {
 
+	if method == "ping" {
+		return processor.processPing
+	}
+
 	if processor.monitor == nil {
 		processor.logger.Printf("[ERROR] RTMServerMonitor is unconfiged.")
 		return nil		
@@ -156,8 +160,6 @@ func (processor *rtmServerQuestProcessor) Process(method string) func(*fpnn.Ques
 		return processor.processPushRoomMessage
 	case "pushevent":
 		return processor.processPushEvent
-	case "ping":
-		return processor.processPing
 	default:
 		return nil
 	}
