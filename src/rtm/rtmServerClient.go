@@ -524,7 +524,7 @@ func (client *RTMServerClient) SendRoomMessage(fromUid int64, roomId int64, mtyp
 		If include func param, this function will enter into async mode, and return (0, error);
 		else this function work in sync mode, and return (mtime int64, err error)
 */
-func (client *RTMServerClient) SendBoradcastMessage(fromUid int64, mtype int8, message string, rest ... interface{}) (int64, error) {
+func (client *RTMServerClient) SendBroadcastMessage(fromUid int64, mtype int8, message string, rest ... interface{}) (int64, error) {
 
 	var attrs string
 	var timeout time.Duration
@@ -539,7 +539,7 @@ func (client *RTMServerClient) SendBoradcastMessage(fromUid int64, mtype int8, m
 			case func (int64, int, string):
 				callback = value
 			default:
-				panic("Invaild params when call RTMServerClient.SendBoradcastMessage() function.")
+				panic("Invaild params when call RTMServerClient.SendBroadcastMessage() function.")
 		}
 	}
 

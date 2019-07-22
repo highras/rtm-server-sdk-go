@@ -221,9 +221,9 @@ RTM Server 客户端。
 如果 **callback** 参数**不存在**，则为**同步**发送，返回 mtime 及 error 信息。  
 如果 **callback** 参数**存在**，则为**异步**发送，返回 0 及 error 信息。真实的 mtime，将通过 callback 传递。
 
-### func (client *RTMServerClient) SendBoradcastMessage(fromUid int64, mtype int8, message string, rest ... interface{}) (int64, error)
+### func (client *RTMServerClient) SendBroadcastMessage(fromUid int64, mtype int8, message string, rest ... interface{}) (int64, error)
 
-	func (client *RTMServerClient) SendBoradcastMessage(fromUid int64, mtype int8, message string, rest ... interface{}) (int64, error)
+	func (client *RTMServerClient) SendBroadcastMessage(fromUid int64, mtype int8, message string, rest ... interface{}) (int64, error)
 
 发送广播消息。
 

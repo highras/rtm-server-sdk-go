@@ -149,7 +149,7 @@ func demoSendMessage(client *rtm.RTMServerClient) {
 	}
 
 	//-- sync send boardcast message
-	mtime, err = client.SendBoradcastMessage(adminUid, mtype, "test sync boardcast message")
+	mtime, err = client.SendBroadcastMessage(adminUid, mtype, "test sync boardcast message")
 	locker.print(func(){
 			if err == nil {
 				fmt.Printf("[Boardcast Message] %d send boardcast message in sync mode, return mtime: %d\n", adminUid, mtime)	
@@ -159,7 +159,7 @@ func demoSendMessage(client *rtm.RTMServerClient) {
 		})
 
 	//-- async send boardcast message
-	_, err = client.SendBoradcastMessage(adminUid, mtype, "test async boardcast message", func(mtime int64, errorCode int, errInfo string){
+	_, err = client.SendBroadcastMessage(adminUid, mtype, "test async boardcast message", func(mtime int64, errorCode int, errInfo string){
 		locker.print(func(){
 				if errorCode == fpnn.FPNN_EC_OK {
 						fmt.Printf("[Boardcast Message] %d send boardcast message in async mode, mtime:%d\n", adminUid, mtime)
