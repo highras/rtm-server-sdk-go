@@ -1023,9 +1023,9 @@ RTM Server 客户端。
 如果 **callback** 参数**不存在**，则为**同步**请求，返回 在线用户列表 及 error 信息。  
 如果 **callback** 参数**存在**，则为**异步**请求，返回 nil 及 error 信息。真实的 在线用户列表，将通过 callback 传递。
 
-### func (client *RTMServerClient) AddListen(groupIds []int64, roomIds []int64, p2p bool, events []string, rest ... interface{}) error
+### func (client *RTMServerClient) AddListen(groupIds []int64, roomIds []int64, uids []int64, events []string, rest ... interface{}) error
 
-	func (client *RTMServerClient) AddListen(groupIds []int64, roomIds []int64, p2p bool, events []string, rest ... interface{}) error
+	func (client *RTMServerClient) AddListen(groupIds []int64, roomIds []int64, uids []int64, events []string, rest ... interface{}) error
 
 **增量**添加监听设置。
 
@@ -1039,9 +1039,9 @@ RTM Server 客户端。
 
 	增加监听的房间。
 
-+ `p2p bool`
++ `uids []int64`
 
-	当 true 时，监听 P2P 消息。忽略 false 参数。
+	增加监听的 P2P 用户。
 
 + `events []string`
 
@@ -1065,9 +1065,9 @@ RTM Server 客户端。
 如果 **callback** 参数**存在**，则为**异步**请求。
 
 
-### func (client *RTMServerClient) RemoveListen(groupIds []int64, roomIds []int64, p2p bool, events []string, rest ... interface{}) error
+### func (client *RTMServerClient) RemoveListen(groupIds []int64, roomIds []int64, uids []int64, events []string, rest ... interface{}) error
 
-	func (client *RTMServerClient) RemoveListen(groupIds []int64, roomIds []int64, p2p bool, events []string, rest ... interface{}) error
+	func (client *RTMServerClient) RemoveListen(groupIds []int64, roomIds []int64, uids []int64, events []string, rest ... interface{}) error
 
 **增量**取消监听设置。
 
@@ -1081,9 +1081,9 @@ RTM Server 客户端。
 
 	取消监听的房间。
 
-+ `p2p bool`
++ `uids []int64`
 
-	当 true 时，取消监听 P2P 消息。忽略 false 参数。
+	取消监听的 P2P 用户。
 
 + `events []string`
 
@@ -1106,9 +1106,9 @@ RTM Server 客户端。
 如果 **callback** 参数**不存在**，则为**同步**请求。  
 如果 **callback** 参数**存在**，则为**异步**请求。
 
-### func (client *RTMServerClient) SetListen(groupIds []int64, roomIds []int64, p2p bool, events []string, rest ... interface{}) error
+### func (client *RTMServerClient) SetListen(groupIds []int64, roomIds []int64, uids []int64, events []string, rest ... interface{}) error
 
-	func (client *RTMServerClient) SetListen(groupIds []int64, roomIds []int64, p2p bool, events []string, rest ... interface{}) error 
+	func (client *RTMServerClient) SetListen(groupIds []int64, roomIds []int64, uids []int64, events []string, rest ... interface{}) error 
 
 设置监听状态。该接口将**覆盖**以前的设置。
 
@@ -1116,28 +1116,23 @@ RTM Server 客户端。
 
 + `groupIds []int64`
 
-	取消监听的群组。
+	设置监听的群组。
 
 + `roomIds []int64`
 
-	取消监听的房间。
+	设置监听的房间。
 
-+ `p2p bool`
++ `uids []int64`
 
-	当 true 时，取消监听 P2P 消息。忽略 false 参数。
+	设置监听的 P2P 用户。
 
 + `events []string`
 
-	需要取消监听的事件。  
+	设置监听的事件。  
 	可监听的事件列表，请参考 RTM 服务文档。
 
 
 可接受的参数为：
-
-+ `all bool`
-
-	true: 忽略其他参数，监听所有消息，所有事件。  
-	false: 忽略其他参数，取消监听所有消息，所有事件。
 
 + `timeout time.Duration`
 
@@ -1151,6 +1146,49 @@ RTM Server 客户端。
 
 如果 **callback** 参数**不存在**，则为**同步**请求。  
 如果 **callback** 参数**存在**，则为**异步**请求。
+
+
+### func (client *RTMServerClient) SetListenStatus(allGroups bool, allRrooms bool, allP2P bool, allEvents bool, rest ... interface{}) error
+
+	func (client *RTMServerClient) SetListenStatus(allGroups bool, allRrooms bool, allP2P bool, allEvents bool, rest ... interface{}) error 
+
+设置监听状态。该接口将**覆盖**以前的设置。
+
+必须参数：
+
++ `allGroups bool`
+
+	设置是否监听所有群组。
+
++ `allRrooms bool`
+
+	设置是否监听所有房间。
+
++ `allP2P bool`
+
+	设置是否监听所有的 P2P 消息。
+
++ `allEvents bool`
+
+	设置是否监听所有的事件。  
+	可监听的事件列表，请参考 RTM 服务文档。
+
+
+可接受的参数为：
+
++ `timeout time.Duration`
+
+	请求超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+
++ `callback func(errorCode int, errInfo string)`
+
+	异步回调函数。  
+
+如果 **callback** 参数**不存在**，则为**同步**请求。  
+如果 **callback** 参数**存在**，则为**异步**请求。
+
 
 ### func (client *RTMServerClient) AddDevice(uid int64, appType string, deviceToken string, rest ... interface{}) error
 

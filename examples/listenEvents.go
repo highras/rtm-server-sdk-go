@@ -61,7 +61,7 @@ var (
 func addListen(client *rtm.RTMServerClient) {
 
 	//-- sync mode
-	err := client.AddListen([]int64{groupId}, []int64{roomId}, true, []string{"login"})
+	err := client.AddListen([]int64{groupId}, []int64{roomId}, []int64{toUid}, []string{"login"})
 	locker.print(func(){
 			if err == nil {
 				fmt.Printf("AddListen in sync mode is fine.\n")
@@ -71,7 +71,7 @@ func addListen(client *rtm.RTMServerClient) {
 		})
 
 	//-- async mode
-	err = client.AddListen([]int64{groupId}, []int64{roomId}, true, []string{"logout"}, func(errorCode int, errInfo string){
+	err = client.AddListen([]int64{groupId}, []int64{roomId}, toUids, []string{"logout"}, func(errorCode int, errInfo string){
 		locker.print(func(){
 				if errorCode == fpnn.FPNN_EC_OK {
 						fmt.Printf("AddListen in async mode is fine.\n")
@@ -91,7 +91,7 @@ func addListen(client *rtm.RTMServerClient) {
 func removeListen(client *rtm.RTMServerClient) {
 
 	//-- sync mode
-	err := client.RemoveListen([]int64{groupId}, []int64{roomId}, true, []string{"login"})
+	err := client.RemoveListen([]int64{groupId}, []int64{roomId}, toUids, []string{"login"})
 	locker.print(func(){
 			if err == nil {
 				fmt.Printf("RemoveListen in sync mode is fine.\n")
@@ -101,7 +101,7 @@ func removeListen(client *rtm.RTMServerClient) {
 		})
 
 	//-- async mode
-	err = client.RemoveListen([]int64{groupId}, []int64{roomId}, true, []string{"logout"}, func(errorCode int, errInfo string){
+	err = client.RemoveListen([]int64{groupId}, []int64{roomId}, []int64{toUid}, []string{"logout"}, func(errorCode int, errInfo string){
 		locker.print(func(){
 				if errorCode == fpnn.FPNN_EC_OK {
 						fmt.Printf("RemoveListen in async mode is fine.\n")
@@ -121,7 +121,7 @@ func removeListen(client *rtm.RTMServerClient) {
 func setListen(client *rtm.RTMServerClient) {
 
 	//-- sync mode
-	err := client.SetListen([]int64{groupId}, []int64{roomId}, true, []string{"login"}, true)
+	err := client.SetListen([]int64{groupId}, []int64{roomId}, []int64{toUid}, []string{"login"})
 	locker.print(func(){
 			if err == nil {
 				fmt.Printf("SetListen in sync mode is fine.\n")
@@ -131,7 +131,7 @@ func setListen(client *rtm.RTMServerClient) {
 		})
 
 	//-- async mode
-	err = client.SetListen([]int64{groupId}, []int64{roomId}, true, []string{"logout"}, func(errorCode int, errInfo string){
+	err = client.SetListen([]int64{groupId}, []int64{roomId}, toUids, []string{"logout"}, func(errorCode int, errInfo string){
 		locker.print(func(){
 				if errorCode == fpnn.FPNN_EC_OK {
 						fmt.Printf("SetListen in async mode is fine.\n")
@@ -144,6 +144,36 @@ func setListen(client *rtm.RTMServerClient) {
 	if err != nil {
 		locker.print(func(){
 				fmt.Printf("SetListen in async mode error, err: %v\n", err)
+			})
+	}
+}
+
+func setListenStatus(client *rtm.RTMServerClient) {
+
+	//-- sync mode
+	err := client.SetListenStatus(true, true, true, false)
+	locker.print(func(){
+			if err == nil {
+				fmt.Printf("SetListenStatus in sync mode is fine.\n")
+			} else {
+				fmt.Printf("SetListenStatus in sync mode error, err: %v\n", err)
+			}
+		})
+
+	//-- async mode
+	err = client.SetListenStatus(true, true, true, false, func(errorCode int, errInfo string){
+		locker.print(func(){
+				if errorCode == fpnn.FPNN_EC_OK {
+						fmt.Printf("SetListenStatus in async mode is fine.\n")
+					} else {
+						fmt.Printf("SetListenStatus in async mode error, error code: %d, error info:%s\n", errorCode, errInfo)
+					}
+			})
+		})
+	
+	if err != nil {
+		locker.print(func(){
+				fmt.Printf("SetListenStatus in async mode error, err: %v\n", err)
 			})
 	}
 }
@@ -169,21 +199,27 @@ func main() {
 
 	addListen(client)
 	locker.print(func(){
-			fmt.Println("Add listen, waiting 10 second for client send messages")
+			fmt.Println("Add listen, waiting 20 second for client send messages")
 		})
-	time.Sleep(10 * time.Second)
+	time.Sleep(20 * time.Second)
 
 	removeListen(client)
 	locker.print(func(){
-			fmt.Println("Remove listen, waiting 10 second for client send messages")
+			fmt.Println("Remove listen, waiting 20 second for client send messages")
 		})
-	time.Sleep(10 * time.Second)
+	time.Sleep(20 * time.Second)
 
 	setListen(client)
 	locker.print(func(){
-			fmt.Println("Set listen, waiting 10 second for client send messages")
+			fmt.Println("Set listen, waiting 20 second for client send messages")
 		})
-	time.Sleep(10 * time.Second)
+	time.Sleep(20 * time.Second)
+
+	setListenStatus(client)
+	locker.print(func(){
+			fmt.Println("Set listen status, waiting 20 second for client send messages")
+		})
+	time.Sleep(20 * time.Second)
 
 	time.Sleep(time.Second)		//-- Waiting for the async callback printed.
 }
