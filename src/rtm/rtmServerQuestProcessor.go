@@ -177,7 +177,11 @@ func (processor *rtmServerQuestProcessor) processPushMessage(quest *fpnn.Quest) 
 	mtime := quest.WantInt64("mtime")
 
 	if processor.dupFilter.checkP2PMessage(fromUid, toUid, mid) {
-		go processor.monitor.P2PMessage(fromUid, toUid, mtype, mid, message, attrs, mtime)
+		if mtype == defaultMtype_Chat {
+			go processor.monitor.P2PChat(fromUid, toUid, mid, message, attrs, mtime)
+		} else {
+			go processor.monitor.P2PMessage(fromUid, toUid, mtype, mid, message, attrs, mtime)
+		}
 	}
 
 	return fpnn.NewAnswer(quest), nil
@@ -195,7 +199,11 @@ func (processor *rtmServerQuestProcessor) processPushGroupMessage(quest *fpnn.Qu
 	mtime := quest.WantInt64("mtime")
 
 	if processor.dupFilter.checkGroupPMessage(fromUid, groupId, mid) {
-		go processor.monitor.GroupMessage(fromUid, groupId, mtype, mid, message, attrs, mtime)
+		if mtype == defaultMtype_Chat {
+			go processor.monitor.GroupChat(fromUid, groupId, mid, message, attrs, mtime)
+		} else {
+			go processor.monitor.GroupMessage(fromUid, groupId, mtype, mid, message, attrs, mtime)	
+		}
 	}
 
 	return fpnn.NewAnswer(quest), nil
@@ -213,7 +221,11 @@ func (processor *rtmServerQuestProcessor) processPushRoomMessage(quest *fpnn.Que
 	mtime := quest.WantInt64("mtime")
 
 	if processor.dupFilter.checkRoomMessage(fromUid, roomId, mid) {
-		go processor.monitor.RoomMessage(fromUid, roomId, mtype, mid, message, attrs, mtime)
+		if mtype == defaultMtype_Chat {
+			go processor.monitor.RoomChat(fromUid, roomId, mid, message, attrs, mtime)
+		} else {
+			go processor.monitor.RoomMessage(fromUid, roomId, mtype, mid, message, attrs, mtime)	
+		}
 	}
 
 	return fpnn.NewAnswer(quest), nil

@@ -56,41 +56,45 @@ Please get your project params from RTM Console.
 
 ### Send messages
 
-	//-- Send P2P Message
-	mtime, err := client.SendMessage(fromUid int64, toUid int64, mtype int8, message string)
-	mtime, err := client.SendMessage(fromUid int64, toUid int64, mtype int8, message string, timeout time.Duration)
+* Send P2P Message
 
-	_, err := client.SendMessage(fromUid int64, toUid int64, mtype int8, message string, callback func (mtime int64, errorCode int, errInfo string))
-	_, err := client.SendMessage(fromUid int64, toUid int64, mtype int8, message string, callback func (mtime int64, errorCode int, errInfo string), timeout time.Duration)
+		mtime, err := client.SendMessage(fromUid int64, toUid int64, mtype int8, message string)
+		mtime, err := client.SendMessage(fromUid int64, toUid int64, mtype int8, message string, timeout time.Duration)
 
-	//-- Send Multi-Receivers P2P Message
+		_, err := client.SendMessage(fromUid int64, toUid int64, mtype int8, message string, callback func (mtime int64, errorCode int, errInfo string))
+		_, err := client.SendMessage(fromUid int64, toUid int64, mtype int8, message string, callback func (mtime int64, errorCode int, errInfo string), timeout time.Duration)
 
-	mtime, err := client.SendMessages(fromUid int64, toUids []int64, mtype int8, message string)
-	mtime, err := client.SendMessages(fromUid int64, toUids []int64, mtype int8, message string, timeout time.Duration)
+* Send Multi-Receivers P2P Message
 
-	_, err := client.SendMessages(fromUid int64, toUids []int64, mtype int8, message string, callback func (mtime int64, errorCode int, errInfo string))
-	_, err := client.SendMessages(fromUid int64, toUids []int64, mtype int8, message string, callback func (mtime int64, errorCode int, errInfo string), timeout time.Duration)
+		mtime, err := client.SendMessages(fromUid int64, toUids []int64, mtype int8, message string)
+		mtime, err := client.SendMessages(fromUid int64, toUids []int64, mtype int8, message string, timeout time.Duration)
 
-	//-- Send Group Message
-	mtime, err := client.SendGroupMessage(fromUid int64, groupId int64, mtype int8, message string)
-	mtime, err := client.SendGroupMessage(fromUid int64, groupId int64, mtype int8, message string, timeout time.Duration)
+		_, err := client.SendMessages(fromUid int64, toUids []int64, mtype int8, message string, callback func (mtime int64, errorCode int, errInfo string))
+		_, err := client.SendMessages(fromUid int64, toUids []int64, mtype int8, message string, callback func (mtime int64, errorCode int, errInfo string), timeout time.Duration)
 
-	_, err := client.SendGroupMessage(fromUid int64, groupId int64, mtype int8, message string, callback func (mtime int64, errorCode int, errInfo string))
-	_, err := client.SendGroupMessage(fromUid int64, groupId int64, mtype int8, message string, callback func (mtime int64, errorCode int, errInfo string), timeout time.Duration)
+* Send Group Message
+	
+		mtime, err := client.SendGroupMessage(fromUid int64, groupId int64, mtype int8, message string)
+		mtime, err := client.SendGroupMessage(fromUid int64, groupId int64, mtype int8, message string, timeout time.Duration)
 
-	//-- Send Room Message
-	mtime, err := client.SendRoomMessage(fromUid int64, roomId int64, mtype int8, message string)
-	mtime, err := client.SendRoomMessage(fromUid int64, roomId int64, mtype int8, message string, timeout time.Duration)
+		_, err := client.SendGroupMessage(fromUid int64, groupId int64, mtype int8, message string, callback func (mtime int64, errorCode int, errInfo string))
+		_, err := client.SendGroupMessage(fromUid int64, groupId int64, mtype int8, message string, callback func (mtime int64, errorCode int, errInfo string), timeout time.Duration)
 
-	_, err := client.SendRoomMessage(fromUid int64, roomId int64, mtype int8, message string, callback func (mtime int64, errorCode int, errInfo string))
-	_, err := client.SendRoomMessage(fromUid int64, roomId int64, mtype int8, message string, callback func (mtime int64, errorCode int, errInfo string), timeout time.Duration)
+* Send Room Message
 
-	//-- Send Boradcast Message
-	mtime, err := client.SendBoradcastMessage(fromUid int64, mtype int8, message string)
-	mtime, err := client.SendBoradcastMessage(fromUid int64, mtype int8, message string, timeout time.Duration)
+		mtime, err := client.SendRoomMessage(fromUid int64, roomId int64, mtype int8, message string)
+		mtime, err := client.SendRoomMessage(fromUid int64, roomId int64, mtype int8, message string, timeout time.Duration)
 
-	_, err := client.SendBoradcastMessage(fromUid int64, mtype int8, message string, callback func (mtime int64, errorCode int, errInfo string))
-	_, err := client.SendBoradcastMessage(fromUid int64, mtype int8, message string, callback func (mtime int64, errorCode int, errInfo string), timeout time.Duration)
+		_, err := client.SendRoomMessage(fromUid int64, roomId int64, mtype int8, message string, callback func (mtime int64, errorCode int, errInfo string))
+		_, err := client.SendRoomMessage(fromUid int64, roomId int64, mtype int8, message string, callback func (mtime int64, errorCode int, errInfo string), timeout time.Duration)
+
+* Send Boradcast Message
+
+		mtime, err := client.SendBoradcastMessage(fromUid int64, mtype int8, message string)
+		mtime, err := client.SendBoradcastMessage(fromUid int64, mtype int8, message string, timeout time.Duration)
+
+		_, err := client.SendBoradcastMessage(fromUid int64, mtype int8, message string, callback func (mtime int64, errorCode int, errInfo string))
+		_, err := client.SendBoradcastMessage(fromUid int64, mtype int8, message string, callback func (mtime int64, errorCode int, errInfo string), timeout time.Duration)
 
 
 ### SDK Version
@@ -99,7 +103,7 @@ Please get your project params from RTM Console.
 
 ## API docs
 
-Please refer: [API docs](API.md)
+Please refer: [API docs](doc/API.md)
 
 
 ## Directory structure
@@ -111,3 +115,7 @@ Please refer: [API docs](API.md)
 * **<rtm-server-sdk-go>/example**
 
 	Examples codes for using this SDK.
+
+* **<rtm-server-sdk-go>/doc**
+
+	API documents in markdown format.

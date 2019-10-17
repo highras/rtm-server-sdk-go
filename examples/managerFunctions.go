@@ -307,38 +307,6 @@ func isProjectBlack(client *rtm.RTMServerClient) {
 	}
 }
 
-func deleteMessage(client *rtm.RTMServerClient) {
-
-	var mid int64 = 123456
-
-	//-- sync mode
-	err := client.DelMessage(mid, fromUid, toUid, rtm.MessageType_P2P)
-	locker.print(func(){
-			if err == nil {
-				fmt.Printf("DelMessage in sync mode is fine.\n")
-			} else {
-				fmt.Printf("DelMessage in sync mode error, err: %v\n", err)
-			}
-		})
-
-	//-- async mode
-	err = client.DelMessage(mid, fromUid, groupId, rtm.MessageType_Group, func(errorCode int, errInfo string){
-		locker.print(func(){
-				if errorCode == fpnn.FPNN_EC_OK {
-						fmt.Printf("DelMessage in async mode is fine.\n")
-					} else {
-						fmt.Printf("DelMessage in async mode error, error code: %d, error info:%s\n", errorCode, errInfo)
-					}
-			})
-		})
-	
-	if err != nil {
-		locker.print(func(){
-				fmt.Printf("DelMessage in async mode error, err: %v\n", err)
-			})
-	}
-}
-
 func kickout(client *rtm.RTMServerClient) {
 
 	//-- sync mode
@@ -385,7 +353,6 @@ func main() {
 	}
 	client := rtm.NewRTMServerClient(int32(pid), os.Args[3], os.Args[1])
 
-
 	addGroupBan(client)
 	time.Sleep(500 * time.Millisecond)
 	isBanOfGroup(client)
@@ -407,9 +374,7 @@ func main() {
 	removeProjectBlack(client)
 	time.Sleep(500 * time.Millisecond)
 	
-	deleteMessage(client)
 	kickout(client)
-
 
 	locker.print(func(){
 			fmt.Println("Wait 1 second for async callbacks are printed.")

@@ -39,6 +39,24 @@ func (locker *PrintLocker) Event(pid int32, event string, uid int64, eventTime i
 
 	fmt.Println("[Server Push] Receive event: %s: user:%d, time:%d, endpoint:%s, data:%s\n", event, uid, eventTime, endpoint, data)
 }
+func (locker *PrintLocker) P2PChat(fromUid int64, toUid int64, mid int64, message string, attrs string, mtime int64) {
+	locker.mutex.Lock()
+	defer locker.mutex.Unlock()
+
+	fmt.Printf("[Server Push] Receive P2P msg: from:%d -> to:%d mid:%d mtime: %d\nmessage: %s\nattrs: %s\n", fromUid, toUid, mid, mtime, message, attrs)
+}
+func (locker *PrintLocker) GroupChat(fromUid int64, groupId int64, mid int64, message string, attrs string, mtime int64) {
+	locker.mutex.Lock()
+	defer locker.mutex.Unlock()
+
+	fmt.Printf("[Server Push] Receive group msg: from:%d -> group:%d mid:%d mtime: %d\nmessage: %s\nattrs: %s\n", fromUid, groupId, mid, mtime, message, attrs)
+}
+func (locker *PrintLocker) RoomChat(fromUid int64, roomId int64, mid int64, message string, attrs string, mtime int64) {
+	locker.mutex.Lock()
+	defer locker.mutex.Unlock()
+
+	fmt.Printf("[Server Push] Receive room msg: from:%d -> room:%d mid:%d mtime: %d\nmessage: %s\nattrs: %s\n", fromUid, roomId, mid, mtime, message, attrs)
+}
 func (locker *PrintLocker) print(proc func()) {
 	locker.mutex.Lock()
 	defer locker.mutex.Unlock()
