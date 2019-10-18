@@ -290,12 +290,7 @@ func (client *RTMServerClient) Translate(text string, sourceLanguage string, tar
 		}
 	}
 
-	sign, salt := client.makeSignAndSalt()
-
-	quest := fpnn.NewQuest("translate")
-	quest.Param("pid", client.pid)
-	quest.Param("sign", sign)
-	quest.Param("salt", salt)
+	quest := client.genServerQuest("translate")
 	quest.Param("text", text)
 
 	quest.Param("dst", targetLanguage)
@@ -348,12 +343,7 @@ func (client *RTMServerClient) Profanity(text string, action string, rest ... in
 		}
 	}
 
-	sign, salt := client.makeSignAndSalt()
-
-	quest := fpnn.NewQuest("profanity")
-	quest.Param("pid", client.pid)
-	quest.Param("sign", sign)
-	quest.Param("salt", salt)
+	quest := client.genServerQuest("profanity")
 	quest.Param("text", text)
 	quest.Param("action", action)
 

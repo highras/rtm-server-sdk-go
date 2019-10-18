@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	SDKVersion = "0.2.0"
+	SDKVersion = "0.2.1"
 )
 
 type RTMServerMonitor interface {
@@ -115,7 +115,7 @@ func (client *RTMServerClient) Endpoint() string {
 func (client *RTMServerClient) EnableEncryptor(rest ... interface{}) (err error) {
 	return client.client.EnableEncryptor(rest...)
 }
-
+/*
 func (client *RTMServerClient) makeSignAndSalt() (string, int64) {
 
 	now := time.Now()
@@ -135,6 +135,39 @@ func (client *RTMServerClient) makeSignAndSalt() (string, int64) {
 	sign := fmt.Sprintf("%X", ctx.Sum(nil))
 
 	return sign, salt
+}*/
+
+func (client *RTMServerClient) genServerQuest(cmd string) *fpnn.Quest {
+
+	now := time.Now()
+	salt := now.UnixNano()
+	ts := int32(now.Unix())
+
+	pidStr := strconv.FormatInt(int64(client.pid), 10)
+	saltStr := strconv.FormatInt(salt, 10)
+	tsStr := strconv.FormatInt(int64(ts), 10)
+
+
+	ctx := md5.New()
+	io.WriteString(ctx, pidStr)
+	io.WriteString(ctx, ":")
+	io.WriteString(ctx, client.secretKey)
+	io.WriteString(ctx, ":")
+	io.WriteString(ctx, saltStr)
+	io.WriteString(ctx, ":")
+	io.WriteString(ctx, cmd)
+	io.WriteString(ctx, ":")
+	io.WriteString(ctx, tsStr)
+
+	sign := fmt.Sprintf("%X", ctx.Sum(nil))
+
+	quest := fpnn.NewQuest(cmd)
+	quest.Param("pid", client.pid)
+	quest.Param("sign", sign)
+	quest.Param("salt", salt)
+	quest.Param("ts", ts)
+
+	return quest
 }
 
 //------------------------------[ Utilities Functions ]---------------------------------------//
@@ -389,13 +422,7 @@ func (client *RTMServerClient) Kickout(uid int64, rest ... interface{}) error {
 		}
 	}
 
-	sign, salt := client.makeSignAndSalt()
-
-	quest := fpnn.NewQuest("kickout")
-	quest.Param("pid", client.pid)
-	quest.Param("sign", sign)
-	quest.Param("salt", salt)
-
+	quest := client.genServerQuest("kickout")
 	quest.Param("uid", uid)
 	quest.Param("ce", clientEndpoint)
 
@@ -457,12 +484,7 @@ func (client *RTMServerClient) GetToken(uid int64, rest ... interface{}) (string
 		}
 	}
 
-	sign, salt := client.makeSignAndSalt()
-
-	quest := fpnn.NewQuest("gettoken")
-	quest.Param("pid", client.pid)
-	quest.Param("sign", sign)
-	quest.Param("salt", salt)
+	quest := client.genServerQuest("gettoken")
 	quest.Param("uid", uid)
 
 	return client.sendTokenQuest(quest, timeout, callback)
@@ -493,13 +515,7 @@ func (client *RTMServerClient) RemoveToken(uid int64, rest ... interface{}) erro
 		}
 	}
 
-	sign, salt := client.makeSignAndSalt()
-
-	quest := fpnn.NewQuest("removetoken")
-	quest.Param("pid", client.pid)
-	quest.Param("sign", sign)
-	quest.Param("salt", salt)
-
+	quest := client.genServerQuest("removetoken")
 	quest.Param("uid", uid)
 
 	return client.sendSilentQuest(quest, timeout, callback)
@@ -530,13 +546,7 @@ func (client *RTMServerClient) AddDevice(uid int64, appType string, deviceToken 
 		}
 	}
 
-	sign, salt := client.makeSignAndSalt()
-
-	quest := fpnn.NewQuest("adddevice")
-	quest.Param("pid", client.pid)
-	quest.Param("sign", sign)
-	quest.Param("salt", salt)
-
+	quest := client.genServerQuest("adddevice")
 	quest.Param("uid", uid)
 	quest.Param("apptype", appType)	
 	quest.Param("devicetoken", deviceToken)
@@ -569,13 +579,7 @@ func (client *RTMServerClient) RemoveDevice(uid int64, deviceToken string, rest 
 		}
 	}
 
-	sign, salt := client.makeSignAndSalt()
-
-	quest := fpnn.NewQuest("removedevice")
-	quest.Param("pid", client.pid)
-	quest.Param("sign", sign)
-	quest.Param("salt", salt)
-
+	quest := client.genServerQuest("removedevice")
 	quest.Param("uid", uid)
 	quest.Param("devicetoken", deviceToken)
 

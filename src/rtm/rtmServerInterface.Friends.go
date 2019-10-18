@@ -2,7 +2,6 @@ package rtm
 
 import (
 	"time"
-	"github.com/highras/fpnn-sdk-go/src/fpnn"
 )
 
 //-----------[ Friends functions ]-------------------//
@@ -31,12 +30,7 @@ func (client *RTMServerClient) AddFriends(uid int64, firendUids []int64, rest ..
 		}
 	}
 
-	sign, salt := client.makeSignAndSalt()
-
-	quest := fpnn.NewQuest("addfriends")
-	quest.Param("pid", client.pid)
-	quest.Param("sign", sign)
-	quest.Param("salt", salt)
+	quest := client.genServerQuest("addfriends")
 	quest.Param("uid", uid)
 	quest.Param("friends", firendUids)
 
@@ -68,12 +62,7 @@ func (client *RTMServerClient) DelFriends(uid int64, firendUids []int64, rest ..
 		}
 	}
 
-	sign, salt := client.makeSignAndSalt()
-
-	quest := fpnn.NewQuest("delfriends")
-	quest.Param("pid", client.pid)
-	quest.Param("sign", sign)
-	quest.Param("salt", salt)
+	quest := client.genServerQuest("delfriends")
 	quest.Param("uid", uid)
 	quest.Param("friends", firendUids)
 
@@ -105,12 +94,7 @@ func (client *RTMServerClient) GetFriends(uid int64, rest ... interface{}) ([]in
 		}
 	}
 
-	sign, salt := client.makeSignAndSalt()
-
-	quest := fpnn.NewQuest("getfriends")
-	quest.Param("pid", client.pid)
-	quest.Param("sign", sign)
-	quest.Param("salt", salt)
+	quest := client.genServerQuest("getfriends")
 	quest.Param("uid", uid)
 
 	return client.sendSliceQuest(quest, timeout, "uids", callback)
@@ -141,12 +125,7 @@ func (client *RTMServerClient) IsFriend(uid int64, peerUid int64, rest ... inter
 		}
 	}
 
-	sign, salt := client.makeSignAndSalt()
-
-	quest := fpnn.NewQuest("isfriend")
-	quest.Param("pid", client.pid)
-	quest.Param("sign", sign)
-	quest.Param("salt", salt)
+	quest := client.genServerQuest("isfriend")
 	quest.Param("uid", uid)
 	quest.Param("fuid", peerUid)
 
@@ -178,12 +157,7 @@ func (client *RTMServerClient) IsFriends(uid int64, uids []int64, rest ... inter
 		}
 	}
 
-	sign, salt := client.makeSignAndSalt()
-
-	quest := fpnn.NewQuest("isfriends")
-	quest.Param("pid", client.pid)
-	quest.Param("sign", sign)
-	quest.Param("salt", salt)
+	quest := client.genServerQuest("isfriends")
 	quest.Param("uid", uid)
 	quest.Param("fuids", uids)
 

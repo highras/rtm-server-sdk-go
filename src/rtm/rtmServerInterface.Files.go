@@ -72,13 +72,7 @@ func (client *RTMServerClient) fileToken(fromUid int64, cmd string, info *fileTo
 		}
 	}
 
-	sign, salt := client.makeSignAndSalt()
-
-	quest := fpnn.NewQuest("filetoken")
-	quest.Param("pid", client.pid)
-	quest.Param("sign", sign)
-	quest.Param("salt", salt)
-
+	quest := client.genServerQuest("filetoken")
 	quest.Param("from", fromUid)
 	quest.Param("cmd", cmd)
 

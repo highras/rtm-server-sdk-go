@@ -2,7 +2,6 @@ package rtm
 
 import (
 	"time"
-	"github.com/highras/fpnn-sdk-go/src/fpnn"
 )
 
 //-----------[ Group functions ]-------------------//
@@ -32,12 +31,7 @@ func (client *RTMServerClient) AddGroupMembers(groupId int64, uids []int64, rest
 		}
 	}
 
-	sign, salt := client.makeSignAndSalt()
-
-	quest := fpnn.NewQuest("addgroupmembers")
-	quest.Param("pid", client.pid)
-	quest.Param("sign", sign)
-	quest.Param("salt", salt)
+	quest := client.genServerQuest("addgroupmembers")
 	quest.Param("gid", groupId)
 	quest.Param("uids", uids)
 
@@ -69,12 +63,7 @@ func (client *RTMServerClient) DelGroupMembers(groupId int64, uids []int64, rest
 		}
 	}
 
-	sign, salt := client.makeSignAndSalt()
-
-	quest := fpnn.NewQuest("delgroupmembers")
-	quest.Param("pid", client.pid)
-	quest.Param("sign", sign)
-	quest.Param("salt", salt)
+	quest := client.genServerQuest("delgroupmembers")
 	quest.Param("gid", groupId)
 	quest.Param("uids", uids)
 
@@ -106,12 +95,7 @@ func (client *RTMServerClient) DelGroup(groupId int64, rest ... interface{}) err
 		}
 	}
 
-	sign, salt := client.makeSignAndSalt()
-
-	quest := fpnn.NewQuest("delgroup")
-	quest.Param("pid", client.pid)
-	quest.Param("sign", sign)
-	quest.Param("salt", salt)
+	quest := client.genServerQuest("delgroup")
 	quest.Param("gid", groupId)
 
 	return client.sendSilentQuest(quest, timeout, callback)
@@ -142,12 +126,7 @@ func (client *RTMServerClient) GetGroupMembers(groupId int64, rest ... interface
 		}
 	}
 
-	sign, salt := client.makeSignAndSalt()
-
-	quest := fpnn.NewQuest("getgroupmembers")
-	quest.Param("pid", client.pid)
-	quest.Param("sign", sign)
-	quest.Param("salt", salt)
+	quest := client.genServerQuest("getgroupmembers")
 	quest.Param("gid", groupId)
 
 	return client.sendSliceQuest(quest, timeout, "uids", callback)
@@ -178,12 +157,7 @@ func (client *RTMServerClient) IsGroupMember(groupId int64, uid int64, rest ... 
 		}
 	}
 
-	sign, salt := client.makeSignAndSalt()
-
-	quest := fpnn.NewQuest("isgroupmember")
-	quest.Param("pid", client.pid)
-	quest.Param("sign", sign)
-	quest.Param("salt", salt)
+	quest := client.genServerQuest("isgroupmember")
 	quest.Param("gid", groupId)
 	quest.Param("uid", uid)
 
@@ -215,12 +189,7 @@ func (client *RTMServerClient) GetUserGroups(uid int64, rest ... interface{}) ([
 		}
 	}
 
-	sign, salt := client.makeSignAndSalt()
-
-	quest := fpnn.NewQuest("getusergroups")
-	quest.Param("pid", client.pid)
-	quest.Param("sign", sign)
-	quest.Param("salt", salt)
+	quest := client.genServerQuest("getusergroups")
 	quest.Param("uid", uid)
 
 	return client.sendSliceQuest(quest, timeout, "gids", callback)
@@ -251,12 +220,7 @@ func (client *RTMServerClient) AddGroupBan(groupId int64, uid int64, bannedSecon
 		}
 	}
 
-	sign, salt := client.makeSignAndSalt()
-
-	quest := fpnn.NewQuest("addgroupban")
-	quest.Param("pid", client.pid)
-	quest.Param("sign", sign)
-	quest.Param("salt", salt)
+	quest := client.genServerQuest("addgroupban")
 	quest.Param("gid", groupId)
 	quest.Param("uid", uid)
 	quest.Param("btime", bannedSeconds)
@@ -289,12 +253,7 @@ func (client *RTMServerClient) RemoveGroupBan(groupId int64, uid int64, rest ...
 		}
 	}
 
-	sign, salt := client.makeSignAndSalt()
-
-	quest := fpnn.NewQuest("removegroupban")
-	quest.Param("pid", client.pid)
-	quest.Param("sign", sign)
-	quest.Param("salt", salt)
+	quest := client.genServerQuest("removegroupban")
 	quest.Param("gid", groupId)
 	quest.Param("uid", uid)
 
@@ -326,12 +285,7 @@ func (client *RTMServerClient) IsBanOfGroup(groupId int64, uid int64, rest ... i
 		}
 	}
 
-	sign, salt := client.makeSignAndSalt()
-
-	quest := fpnn.NewQuest("isbanofgroup")
-	quest.Param("pid", client.pid)
-	quest.Param("sign", sign)
-	quest.Param("salt", salt)
+	quest := client.genServerQuest("isbanofgroup")
 	quest.Param("gid", groupId)
 	quest.Param("uid", uid)
 
@@ -371,13 +325,7 @@ func (client *RTMServerClient) SetGroupInfo(groupId int64, publicInfo *string, p
 		}
 	}
 
-	sign, salt := client.makeSignAndSalt()
-
-	quest := fpnn.NewQuest("setgroupinfo")
-	quest.Param("pid", client.pid)
-	quest.Param("sign", sign)
-	quest.Param("salt", salt)
-
+	quest := client.genServerQuest("setgroupinfo")
 	quest.Param("gid", groupId)
 
 	if publicInfo != nil {
@@ -416,12 +364,7 @@ func (client *RTMServerClient) GetGroupInfo(groupId int64, rest ... interface{})
 		}
 	}
 
-	sign, salt := client.makeSignAndSalt()
-
-	quest := fpnn.NewQuest("getgroupinfo")
-	quest.Param("pid", client.pid)
-	quest.Param("sign", sign)
-	quest.Param("salt", salt)
+	quest := client.genServerQuest("getgroupinfo")
 	quest.Param("gid", groupId)
 
 	return client.sendGetObjectInfoQuest(quest, timeout, callback)

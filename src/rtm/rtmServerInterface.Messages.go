@@ -64,12 +64,7 @@ func (client *RTMServerClient) SendMessage(fromUid int64, toUid int64, mtype int
 		}
 	}
 
-	sign, salt := client.makeSignAndSalt()
-
-	quest := fpnn.NewQuest("sendmsg")
-	quest.Param("pid", client.pid)
-	quest.Param("sign", sign)
-	quest.Param("salt", salt)
+	quest := client.genServerQuest("sendmsg")
 	quest.Param("mtype", mtype)
 
 	quest.Param("from", fromUid)
@@ -110,12 +105,7 @@ func (client *RTMServerClient) SendMessages(fromUid int64, toUids []int64, mtype
 		}
 	}
 
-	sign, salt := client.makeSignAndSalt()
-
-	quest := fpnn.NewQuest("sendmsgs")
-	quest.Param("pid", client.pid)
-	quest.Param("sign", sign)
-	quest.Param("salt", salt)
+	quest := client.genServerQuest("sendmsgs")
 	quest.Param("mtype", mtype)
 
 	quest.Param("from", fromUid)
@@ -156,12 +146,7 @@ func (client *RTMServerClient) SendGroupMessage(fromUid int64, groupId int64, mt
 		}
 	}
 
-	sign, salt := client.makeSignAndSalt()
-
-	quest := fpnn.NewQuest("sendgroupmsg")
-	quest.Param("pid", client.pid)
-	quest.Param("sign", sign)
-	quest.Param("salt", salt)
+	quest := client.genServerQuest("sendgroupmsg")
 	quest.Param("mtype", mtype)
 
 	quest.Param("from", fromUid)
@@ -202,12 +187,7 @@ func (client *RTMServerClient) SendRoomMessage(fromUid int64, roomId int64, mtyp
 		}
 	}
 
-	sign, salt := client.makeSignAndSalt()
-
-	quest := fpnn.NewQuest("sendroommsg")
-	quest.Param("pid", client.pid)
-	quest.Param("sign", sign)
-	quest.Param("salt", salt)
+	quest := client.genServerQuest("sendroommsg")
 	quest.Param("mtype", mtype)
 
 	quest.Param("from", fromUid)
@@ -248,12 +228,7 @@ func (client *RTMServerClient) SendBroadcastMessage(fromUid int64, mtype int8, m
 		}
 	}
 
-	sign, salt := client.makeSignAndSalt()
-
-	quest := fpnn.NewQuest("broadcastmsg")
-	quest.Param("pid", client.pid)
-	quest.Param("sign", sign)
-	quest.Param("salt", salt)
+	quest := client.genServerQuest("broadcastmsg")
 	quest.Param("mtype", mtype)
 
 	quest.Param("from", fromUid)
@@ -400,12 +375,7 @@ func (client *RTMServerClient) GetGroupMessage(groupId int64, desc bool, num int
 		}
 	}
 
-	sign, salt := client.makeSignAndSalt()
-
-	quest := fpnn.NewQuest("getgroupmsg")
-	quest.Param("pid", client.pid)
-	quest.Param("sign", sign)
-	quest.Param("salt", salt)
+	quest := client.genServerQuest("getgroupmsg")
 	quest.Param("gid", groupId)
 
 	quest.Param("desc", desc)
@@ -451,12 +421,7 @@ func (client *RTMServerClient) GetRoomMessage(roomId int64, desc bool, num int16
 		}
 	}
 
-	sign, salt := client.makeSignAndSalt()
-
-	quest := fpnn.NewQuest("getroommsg")
-	quest.Param("pid", client.pid)
-	quest.Param("sign", sign)
-	quest.Param("salt", salt)
+	quest := client.genServerQuest("getroommsg")
 	quest.Param("rid", roomId)
 
 	quest.Param("desc", desc)
@@ -502,12 +467,7 @@ func (client *RTMServerClient) GetBroadcastMessage(desc bool, num int16,
 		}
 	}
 
-	sign, salt := client.makeSignAndSalt()
-
-	quest := fpnn.NewQuest("getbroadcastmsg")
-	quest.Param("pid", client.pid)
-	quest.Param("sign", sign)
-	quest.Param("salt", salt)
+	quest := client.genServerQuest("getbroadcastmsg")
 
 	quest.Param("desc", desc)
 	quest.Param("num", num)
@@ -552,12 +512,7 @@ func (client *RTMServerClient) GetP2PMessage(uid int64, peerUid int64, desc bool
 		}
 	}
 
-	sign, salt := client.makeSignAndSalt()
-
-	quest := fpnn.NewQuest("getp2pmsg")
-	quest.Param("pid", client.pid)
-	quest.Param("sign", sign)
-	quest.Param("salt", salt)
+	quest := client.genServerQuest("getp2pmsg")
 	quest.Param("uid", uid)
 	quest.Param("ouid", peerUid)
 
@@ -624,12 +579,7 @@ func (client *RTMServerClient) DelMessage(mid int64, fromUid int64, xid int64, m
 		panic("Invaild messageType when call RTMServerClient.DelMessage() function.")
 	}
 
-	sign, salt := client.makeSignAndSalt()
-
-	quest := fpnn.NewQuest("delmsg")
-	quest.Param("pid", client.pid)
-	quest.Param("sign", sign)
-	quest.Param("salt", salt)
+	quest := client.genServerQuest("delmsg")
 
 	quest.Param("mid", mid)
 	quest.Param("from", fromUid)

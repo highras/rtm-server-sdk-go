@@ -2,7 +2,6 @@ package rtm
 
 import (
 	"time"
-	"github.com/highras/fpnn-sdk-go/src/fpnn"
 )
 
 /*
@@ -30,12 +29,7 @@ func (client *RTMServerClient) AddListen(groupIds []int64, roomIds []int64, uids
 		}
 	}
 
-	sign, salt := client.makeSignAndSalt()
-
-	quest := fpnn.NewQuest("addlisten")
-	quest.Param("pid", client.pid)
-	quest.Param("sign", sign)
-	quest.Param("salt", salt)
+	quest := client.genServerQuest("addlisten")
 
 	if groupIds != nil && len(groupIds) > 0 {
 		quest.Param("gids", groupIds)	
@@ -78,12 +72,7 @@ func (client *RTMServerClient) RemoveListen(groupIds []int64, roomIds []int64, u
 		}
 	}
 
-	sign, salt := client.makeSignAndSalt()
-
-	quest := fpnn.NewQuest("removelisten")
-	quest.Param("pid", client.pid)
-	quest.Param("sign", sign)
-	quest.Param("salt", salt)
+	quest := client.genServerQuest("removelisten")
 
 	if groupIds != nil && len(groupIds) > 0 {
 		quest.Param("gids", groupIds)	
@@ -126,13 +115,7 @@ func (client *RTMServerClient) SetListen(groupIds []int64, roomIds []int64, uids
 		}
 	}
 
-	sign, salt := client.makeSignAndSalt()
-
-	quest := fpnn.NewQuest("setlisten")
-	quest.Param("pid", client.pid)
-	quest.Param("sign", sign)
-	quest.Param("salt", salt)
-
+	quest := client.genServerQuest("setlisten")
 	quest.Param("gids", groupIds)
 	quest.Param("rids", roomIds)	
 	quest.Param("uids", uids)	
@@ -166,13 +149,7 @@ func (client *RTMServerClient) SetListenStatus(allGroups bool, allRrooms bool, a
 		}
 	}
 
-	sign, salt := client.makeSignAndSalt()
-
-	quest := fpnn.NewQuest("setlisten")
-	quest.Param("pid", client.pid)
-	quest.Param("sign", sign)
-	quest.Param("salt", salt)
-
+	quest := client.genServerQuest("setlisten")
 	quest.Param("group", allGroups)
 	quest.Param("room", allRrooms)	
 	quest.Param("p2p", allP2P)	

@@ -2,7 +2,6 @@ package rtm
 
 import (
 	"time"
-	"github.com/highras/fpnn-sdk-go/src/fpnn"
 )
 
 
@@ -33,12 +32,7 @@ func (client *RTMServerClient) AddRoomMember(roomId int64, uid int64, rest ... i
 		}
 	}
 
-	sign, salt := client.makeSignAndSalt()
-
-	quest := fpnn.NewQuest("addroommember")
-	quest.Param("pid", client.pid)
-	quest.Param("sign", sign)
-	quest.Param("salt", salt)
+	quest := client.genServerQuest("addroommember")
 	quest.Param("rid", roomId)
 	quest.Param("uid", uid)
 
@@ -70,12 +64,7 @@ func (client *RTMServerClient) DelRoomMember(roomId int64, uid int64, rest ... i
 		}
 	}
 
-	sign, salt := client.makeSignAndSalt()
-
-	quest := fpnn.NewQuest("delroommember")
-	quest.Param("pid", client.pid)
-	quest.Param("sign", sign)
-	quest.Param("salt", salt)
+	quest := client.genServerQuest("delroommember")
 	quest.Param("rid", roomId)
 	quest.Param("uid", uid)
 
@@ -107,12 +96,7 @@ func (client *RTMServerClient) AddRoomBan(roomId int64, uid int64, bannedSeconds
 		}
 	}
 
-	sign, salt := client.makeSignAndSalt()
-
-	quest := fpnn.NewQuest("addroomban")
-	quest.Param("pid", client.pid)
-	quest.Param("sign", sign)
-	quest.Param("salt", salt)
+	quest := client.genServerQuest("addroomban")
 	quest.Param("rid", roomId)
 	quest.Param("uid", uid)
 	quest.Param("btime", bannedSeconds)
@@ -145,12 +129,7 @@ func (client *RTMServerClient) RemoveRoomBan(roomId int64, uid int64, rest ... i
 		}
 	}
 
-	sign, salt := client.makeSignAndSalt()
-
-	quest := fpnn.NewQuest("removeroomban")
-	quest.Param("pid", client.pid)
-	quest.Param("sign", sign)
-	quest.Param("salt", salt)
+	quest := client.genServerQuest("removeroomban")
 	quest.Param("rid", roomId)
 	quest.Param("uid", uid)
 
@@ -182,12 +161,7 @@ func (client *RTMServerClient) IsBanOfRoom(roomId int64, uid int64, rest ... int
 		}
 	}
 
-	sign, salt := client.makeSignAndSalt()
-
-	quest := fpnn.NewQuest("isbanofroom")
-	quest.Param("pid", client.pid)
-	quest.Param("sign", sign)
-	quest.Param("salt", salt)
+	quest := client.genServerQuest("isbanofroom")
 	quest.Param("rid", roomId)
 	quest.Param("uid", uid)
 
@@ -227,13 +201,7 @@ func (client *RTMServerClient) SetRoomInfo(roomId int64, publicInfo *string, pri
 		}
 	}
 
-	sign, salt := client.makeSignAndSalt()
-
-	quest := fpnn.NewQuest("setroominfo")
-	quest.Param("pid", client.pid)
-	quest.Param("sign", sign)
-	quest.Param("salt", salt)
-
+	quest := client.genServerQuest("setroominfo")
 	quest.Param("rid", roomId)
 
 	if publicInfo != nil {
@@ -272,12 +240,7 @@ func (client *RTMServerClient) GetRoomInfo(roomId int64, rest ... interface{}) (
 		}
 	}
 
-	sign, salt := client.makeSignAndSalt()
-
-	quest := fpnn.NewQuest("getroominfo")
-	quest.Param("pid", client.pid)
-	quest.Param("sign", sign)
-	quest.Param("salt", salt)
+	quest := client.genServerQuest("getroominfo")
 	quest.Param("rid", roomId)
 
 	return client.sendGetObjectInfoQuest(quest, timeout, callback)

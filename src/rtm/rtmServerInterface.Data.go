@@ -63,12 +63,7 @@ func (client *RTMServerClient) GetData(uid int64, key string, rest ... interface
 		}
 	}
 
-	sign, salt := client.makeSignAndSalt()
-
-	quest := fpnn.NewQuest("dataget")
-	quest.Param("pid", client.pid)
-	quest.Param("sign", sign)
-	quest.Param("salt", salt)
+	quest := client.genServerQuest("dataget")
 	quest.Param("uid", uid)
 	quest.Param("key", key)
 
@@ -100,13 +95,7 @@ func (client *RTMServerClient) SetData(uid int64, key string, value string, rest
 		}
 	}
 
-	sign, salt := client.makeSignAndSalt()
-
-	quest := fpnn.NewQuest("dataset")
-	quest.Param("pid", client.pid)
-	quest.Param("sign", sign)
-	quest.Param("salt", salt)
-
+	quest := client.genServerQuest("dataset")
 	quest.Param("uid", uid)
 	quest.Param("key", key)
 	quest.Param("val", value)
@@ -139,12 +128,7 @@ func (client *RTMServerClient) DelData(uid int64, key string, rest ... interface
 		}
 	}
 
-	sign, salt := client.makeSignAndSalt()
-
-	quest := fpnn.NewQuest("datadel")
-	quest.Param("pid", client.pid)
-	quest.Param("sign", sign)
-	quest.Param("salt", salt)
+	quest := client.genServerQuest("datadel")
 	quest.Param("uid", uid)
 	quest.Param("key", key)
 

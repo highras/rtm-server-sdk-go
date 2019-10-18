@@ -31,12 +31,7 @@ func (client *RTMServerClient) GetOnlineUsers(uids []int64, rest ... interface{}
 		}
 	}
 
-	sign, salt := client.makeSignAndSalt()
-
-	quest := fpnn.NewQuest("getonlineusers")
-	quest.Param("pid", client.pid)
-	quest.Param("sign", sign)
-	quest.Param("salt", salt)
+	quest := client.genServerQuest("getonlineusers")
 	quest.Param("uids", uids)
 
 	return client.sendSliceQuest(quest, timeout, "uids", callback)
@@ -67,12 +62,7 @@ func (client *RTMServerClient) AddProjectBlack(uid int64, bannedSeconds int32, r
 		}
 	}
 
-	sign, salt := client.makeSignAndSalt()
-
-	quest := fpnn.NewQuest("addprojectblack")
-	quest.Param("pid", client.pid)
-	quest.Param("sign", sign)
-	quest.Param("salt", salt)
+	quest := client.genServerQuest("addprojectblack")
 	quest.Param("uid", uid)
 	quest.Param("btime", bannedSeconds)
 
@@ -104,12 +94,7 @@ func (client *RTMServerClient) RemoveProjectBlack(uid int64, rest ... interface{
 		}
 	}
 
-	sign, salt := client.makeSignAndSalt()
-
-	quest := fpnn.NewQuest("removeprojectblack")
-	quest.Param("pid", client.pid)
-	quest.Param("sign", sign)
-	quest.Param("salt", salt)
+	quest := client.genServerQuest("removeprojectblack")
 	quest.Param("uid", uid)
 
 	return client.sendSilentQuest(quest, timeout, callback)
@@ -140,12 +125,7 @@ func (client *RTMServerClient) IsProjectBlack(uid int64, rest ... interface{}) (
 		}
 	}
 
-	sign, salt := client.makeSignAndSalt()
-
-	quest := fpnn.NewQuest("isprojectblack")
-	quest.Param("pid", client.pid)
-	quest.Param("sign", sign)
-	quest.Param("salt", salt)
+	quest := client.genServerQuest("isprojectblack")
 	quest.Param("uid", uid)
 
 	return client.sendOkQuest(quest, timeout, callback)
@@ -184,13 +164,7 @@ func (client *RTMServerClient) SetUserInfo(uid int64, publicInfo *string, privat
 		}
 	}
 
-	sign, salt := client.makeSignAndSalt()
-
-	quest := fpnn.NewQuest("setuserinfo")
-	quest.Param("pid", client.pid)
-	quest.Param("sign", sign)
-	quest.Param("salt", salt)
-
+	quest := client.genServerQuest("setuserinfo")
 	quest.Param("uid", uid)
 
 	if publicInfo != nil {
@@ -229,12 +203,7 @@ func (client *RTMServerClient) GetUserInfo(uid int64, rest ... interface{}) (str
 		}
 	}
 
-	sign, salt := client.makeSignAndSalt()
-
-	quest := fpnn.NewQuest("getuserinfo")
-	quest.Param("pid", client.pid)
-	quest.Param("sign", sign)
-	quest.Param("salt", salt)
+	quest := client.genServerQuest("getuserinfo")
 	quest.Param("uid", uid)
 
 	return client.sendGetObjectInfoQuest(quest, timeout, callback)
@@ -306,12 +275,7 @@ func (client *RTMServerClient) GetUserPublicInfo(uids []int64, rest ... interfac
 		}
 	}
 
-	sign, salt := client.makeSignAndSalt()
-
-	quest := fpnn.NewQuest("getuseropeninfo")
-	quest.Param("pid", client.pid)
-	quest.Param("sign", sign)
-	quest.Param("salt", salt)
+	quest := client.genServerQuest("getuseropeninfo")
 	quest.Param("uids", uids)
 
 	return client.sendGetUserPublicInfoQuest(quest, timeout, callback)
