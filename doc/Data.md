@@ -12,6 +12,16 @@
 
 存储用户数据。
 
+必须参数：
+
++ `key string`
+
+	最大 128 字节。
+
++ `value string`
+
+	最大 65535 字节。
+
 可接受的参数为：
 
 + `timeout time.Duration`
@@ -33,6 +43,12 @@
 
 获取用户存储的数据。
 
+必须参数：
+
++ `key string`
+
+	最大 128 字节。
+
 可接受的参数为：
 
 + `timeout time.Duration`
@@ -53,6 +69,12 @@
 	func (client *RTMServerClient) DelData(uid int64, key string, rest ... interface{}) error
 
 删除用户数据。
+
+必须参数：
+
++ `key string`
+
+	最大 128 字节。
 
 可接受的参数为：
 
