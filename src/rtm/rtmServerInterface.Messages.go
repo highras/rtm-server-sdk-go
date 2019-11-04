@@ -3,6 +3,7 @@ package rtm
 import (
 	"fmt"
 	"time"
+
 	"github.com/highras/fpnn-sdk-go/src/fpnn"
 )
 
@@ -45,22 +46,22 @@ func (client *RTMServerClient) sendMessageQuest(quest *fpnn.Quest, timeout time.
 		If include func param, this function will enter into async mode, and return (0, error);
 		else this function work in sync mode, and return (mtime int64, err error)
 */
-func (client *RTMServerClient) SendMessage(fromUid int64, toUid int64, mtype int8, message string, rest ... interface{}) (int64, error) {
+func (client *RTMServerClient) SendMessage(fromUid int64, toUid int64, mtype int8, message string, rest ...interface{}) (int64, error) {
 
 	var attrs string
 	var timeout time.Duration
-	var callback func (int64, int, string)
+	var callback func(int64, int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case string:
-				attrs = value
-			case time.Duration:
-				timeout = value
-			case func (int64, int, string):
-				callback = value
-			default:
-				panic("Invaild params when call RTMServerClient.SendMessage() function.")
+		case string:
+			attrs = value
+		case time.Duration:
+			timeout = value
+		case func(int64, int, string):
+			callback = value
+		default:
+			panic("Invaild params when call RTMServerClient.SendMessage() function.")
 		}
 	}
 
@@ -86,22 +87,22 @@ func (client *RTMServerClient) SendMessage(fromUid int64, toUid int64, mtype int
 		If include func param, this function will enter into async mode, and return (0, error);
 		else this function work in sync mode, and return (mtime int64, err error)
 */
-func (client *RTMServerClient) SendMessages(fromUid int64, toUids []int64, mtype int8, message string, rest ... interface{}) (int64, error) {
+func (client *RTMServerClient) SendMessages(fromUid int64, toUids []int64, mtype int8, message string, rest ...interface{}) (int64, error) {
 
 	var attrs string
 	var timeout time.Duration
-	var callback func (int64, int, string)
+	var callback func(int64, int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case string:
-				attrs = value
-			case time.Duration:
-				timeout = value
-			case func (int64, int, string):
-				callback = value
-			default:
-				panic("Invaild params when call RTMServerClient.SendMessages() function.")
+		case string:
+			attrs = value
+		case time.Duration:
+			timeout = value
+		case func(int64, int, string):
+			callback = value
+		default:
+			panic("Invaild params when call RTMServerClient.SendMessages() function.")
 		}
 	}
 
@@ -127,22 +128,22 @@ func (client *RTMServerClient) SendMessages(fromUid int64, toUids []int64, mtype
 		If include func param, this function will enter into async mode, and return (0, error);
 		else this function work in sync mode, and return (mtime int64, err error)
 */
-func (client *RTMServerClient) SendGroupMessage(fromUid int64, groupId int64, mtype int8, message string, rest ... interface{}) (int64, error) {
+func (client *RTMServerClient) SendGroupMessage(fromUid int64, groupId int64, mtype int8, message string, rest ...interface{}) (int64, error) {
 
 	var attrs string
 	var timeout time.Duration
-	var callback func (int64, int, string)
+	var callback func(int64, int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case string:
-				attrs = value
-			case time.Duration:
-				timeout = value
-			case func (int64, int, string):
-				callback = value
-			default:
-				panic("Invaild params when call RTMServerClient.SendGroupMessage() function.")
+		case string:
+			attrs = value
+		case time.Duration:
+			timeout = value
+		case func(int64, int, string):
+			callback = value
+		default:
+			panic("Invaild params when call RTMServerClient.SendGroupMessage() function.")
 		}
 	}
 
@@ -168,22 +169,22 @@ func (client *RTMServerClient) SendGroupMessage(fromUid int64, groupId int64, mt
 		If include func param, this function will enter into async mode, and return (0, error);
 		else this function work in sync mode, and return (mtime int64, err error)
 */
-func (client *RTMServerClient) SendRoomMessage(fromUid int64, roomId int64, mtype int8, message string, rest ... interface{}) (int64, error) {
+func (client *RTMServerClient) SendRoomMessage(fromUid int64, roomId int64, mtype int8, message string, rest ...interface{}) (int64, error) {
 
 	var attrs string
 	var timeout time.Duration
-	var callback func (int64, int, string)
+	var callback func(int64, int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case string:
-				attrs = value
-			case time.Duration:
-				timeout = value
-			case func (int64, int, string):
-				callback = value
-			default:
-				panic("Invaild params when call RTMServerClient.SendRoomMessage() function.")
+		case string:
+			attrs = value
+		case time.Duration:
+			timeout = value
+		case func(int64, int, string):
+			callback = value
+		default:
+			panic("Invaild params when call RTMServerClient.SendRoomMessage() function.")
 		}
 	}
 
@@ -209,22 +210,22 @@ func (client *RTMServerClient) SendRoomMessage(fromUid int64, roomId int64, mtyp
 		If include func param, this function will enter into async mode, and return (0, error);
 		else this function work in sync mode, and return (mtime int64, err error)
 */
-func (client *RTMServerClient) SendBroadcastMessage(fromUid int64, mtype int8, message string, rest ... interface{}) (int64, error) {
+func (client *RTMServerClient) SendBroadcastMessage(fromUid int64, mtype int8, message string, rest ...interface{}) (int64, error) {
 
 	var attrs string
 	var timeout time.Duration
-	var callback func (int64, int, string)
+	var callback func(int64, int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case string:
-				attrs = value
-			case time.Duration:
-				timeout = value
-			case func (int64, int, string):
-				callback = value
-			default:
-				panic("Invaild params when call RTMServerClient.SendBroadcastMessage() function.")
+		case string:
+			attrs = value
+		case time.Duration:
+			timeout = value
+		case func(int64, int, string):
+			callback = value
+		default:
+			panic("Invaild params when call RTMServerClient.SendBroadcastMessage() function.")
 		}
 	}
 
@@ -242,26 +243,26 @@ func (client *RTMServerClient) SendBroadcastMessage(fromUid int64, mtype int8, m
 //-----------[ History Messages functions ]-------------------//
 
 type HistoryMessageUnit struct {
-	Id			int64
-	FromUid		int64
-	MType		int8
-	Mid			int64
-	Deleted		bool
-	Message		string
-	Attrs		string
-	MTime		int64
+	Id      int64
+	FromUid int64
+	MType   int8
+	Mid     int64
+	Deleted bool
+	Message string
+	Attrs   string
+	MTime   int64
 }
 
 type HistoryMessageResult struct {
-	Num			int16
-	LastId		int64
-	Begin		int64
-	End			int64
-	Messages	[]*HistoryMessageUnit
+	Num      int16
+	LastId   int64
+	Begin    int64
+	End      int64
+	Messages []*HistoryMessageUnit
 }
 
 func (client *RTMServerClient) processHistoryAnswer(answer *fpnn.Answer, p2pInfo []int64) (res *HistoryMessageResult, err error) {
-	
+
 	defer func() {
 		if r := recover(); r != nil {
 			err = fmt.Errorf("[ERROR] Process history messages exception. Panic: %v.", r)
@@ -319,10 +320,10 @@ func (client *RTMServerClient) sendHistoryMessageQuest(quest *fpnn.Quest, timeou
 		callbackFunc := func(answer *fpnn.Answer, errorCode int) {
 			if errorCode == fpnn.FPNN_EC_OK {
 				if result, err := client.processHistoryAnswer(answer, p2pInfo); err == nil {
-						callback(result, fpnn.FPNN_EC_OK, "")
-					} else {
-						callback(result, fpnn.FPNN_EC_CORE_UNKNOWN_ERROR, fmt.Sprintf("%v", err))
-					}
+					callback(result, fpnn.FPNN_EC_OK, "")
+				} else {
+					callback(result, fpnn.FPNN_EC_CORE_UNKNOWN_ERROR, fmt.Sprintf("%v", err))
+				}
 
 			} else if answer == nil {
 				callback(nil, errorCode, "")
@@ -356,22 +357,22 @@ func (client *RTMServerClient) sendHistoryMessageQuest(quest *fpnn.Quest, timeou
 		else this function work in sync mode, and return (result *HistoryMessageResult, err error)
 */
 func (client *RTMServerClient) GetGroupMessage(groupId int64, desc bool, num int16,
-	begin int64, end int64, lastid int64, rest ... interface{}) (*HistoryMessageResult, error) {
+	begin int64, end int64, lastid int64, rest ...interface{}) (*HistoryMessageResult, error) {
 
 	var mtypes []int8
 	var timeout time.Duration
-	var callback func (*HistoryMessageResult, int, string)
+	var callback func(*HistoryMessageResult, int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case []int8:
-				mtypes = value
-			case time.Duration:
-				timeout = value
-			case func (*HistoryMessageResult, int, string):
-				callback = value
-			default:
-				panic("Invaild params when call RTMServerClient.GetGroupMessage() function.")
+		case []int8:
+			mtypes = value
+		case time.Duration:
+			timeout = value
+		case func(*HistoryMessageResult, int, string):
+			callback = value
+		default:
+			panic("Invaild params when call RTMServerClient.GetGroupMessage() function.")
 		}
 	}
 
@@ -384,7 +385,7 @@ func (client *RTMServerClient) GetGroupMessage(groupId int64, desc bool, num int
 	quest.Param("end", end)
 	quest.Param("lastid", lastid)
 
-	if (mtypes != nil) {
+	if mtypes != nil {
 		quest.Param("mtypes", mtypes)
 	}
 
@@ -402,22 +403,22 @@ func (client *RTMServerClient) GetGroupMessage(groupId int64, desc bool, num int
 		else this function work in sync mode, and return (result *HistoryMessageResult, err error)
 */
 func (client *RTMServerClient) GetRoomMessage(roomId int64, desc bool, num int16,
-	begin int64, end int64, lastid int64, rest ... interface{}) (*HistoryMessageResult, error) {
+	begin int64, end int64, lastid int64, rest ...interface{}) (*HistoryMessageResult, error) {
 
 	var mtypes []int8
 	var timeout time.Duration
-	var callback func (*HistoryMessageResult, int, string)
+	var callback func(*HistoryMessageResult, int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case []int8:
-				mtypes = value
-			case time.Duration:
-				timeout = value
-			case func (*HistoryMessageResult, int, string):
-				callback = value
-			default:
-				panic("Invaild params when call RTMServerClient.GetRoomMessage() function.")
+		case []int8:
+			mtypes = value
+		case time.Duration:
+			timeout = value
+		case func(*HistoryMessageResult, int, string):
+			callback = value
+		default:
+			panic("Invaild params when call RTMServerClient.GetRoomMessage() function.")
 		}
 	}
 
@@ -430,7 +431,7 @@ func (client *RTMServerClient) GetRoomMessage(roomId int64, desc bool, num int16
 	quest.Param("end", end)
 	quest.Param("lastid", lastid)
 
-	if (mtypes != nil) {
+	if mtypes != nil {
 		quest.Param("mtypes", mtypes)
 	}
 
@@ -448,22 +449,22 @@ func (client *RTMServerClient) GetRoomMessage(roomId int64, desc bool, num int16
 		else this function work in sync mode, and return (result *HistoryMessageResult, err error)
 */
 func (client *RTMServerClient) GetBroadcastMessage(desc bool, num int16,
-	begin int64, end int64, lastid int64, rest ... interface{}) (*HistoryMessageResult, error) {
+	begin int64, end int64, lastid int64, rest ...interface{}) (*HistoryMessageResult, error) {
 
 	var mtypes []int8
 	var timeout time.Duration
-	var callback func (*HistoryMessageResult, int, string)
+	var callback func(*HistoryMessageResult, int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case []int8:
-				mtypes = value
-			case time.Duration:
-				timeout = value
-			case func (*HistoryMessageResult, int, string):
-				callback = value
-			default:
-				panic("Invaild params when call RTMServerClient.GetBroadcastMessage() function.")
+		case []int8:
+			mtypes = value
+		case time.Duration:
+			timeout = value
+		case func(*HistoryMessageResult, int, string):
+			callback = value
+		default:
+			panic("Invaild params when call RTMServerClient.GetBroadcastMessage() function.")
 		}
 	}
 
@@ -475,7 +476,7 @@ func (client *RTMServerClient) GetBroadcastMessage(desc bool, num int16,
 	quest.Param("end", end)
 	quest.Param("lastid", lastid)
 
-	if (mtypes != nil) {
+	if mtypes != nil {
 		quest.Param("mtypes", mtypes)
 	}
 
@@ -493,22 +494,22 @@ func (client *RTMServerClient) GetBroadcastMessage(desc bool, num int16,
 		else this function work in sync mode, and return (result *HistoryMessageResult, err error)
 */
 func (client *RTMServerClient) GetP2PMessage(uid int64, peerUid int64, desc bool, num int16,
-	begin int64, end int64, lastid int64, rest ... interface{}) (*HistoryMessageResult, error) {
+	begin int64, end int64, lastid int64, rest ...interface{}) (*HistoryMessageResult, error) {
 
 	var mtypes []int8
 	var timeout time.Duration
-	var callback func (*HistoryMessageResult, int, string)
+	var callback func(*HistoryMessageResult, int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case []int8:
-				mtypes = value
-			case time.Duration:
-				timeout = value
-			case func (*HistoryMessageResult, int, string):
-				callback = value
-			default:
-				panic("Invaild params when call RTMServerClient.GetP2PMessage() function.")
+		case []int8:
+			mtypes = value
+		case time.Duration:
+			timeout = value
+		case func(*HistoryMessageResult, int, string):
+			callback = value
+		default:
+			panic("Invaild params when call RTMServerClient.GetP2PMessage() function.")
 		}
 	}
 
@@ -522,7 +523,7 @@ func (client *RTMServerClient) GetP2PMessage(uid int64, peerUid int64, desc bool
 	quest.Param("end", end)
 	quest.Param("lastid", lastid)
 
-	if (mtypes != nil) {
+	if mtypes != nil {
 		quest.Param("mtypes", mtypes)
 	}
 
@@ -549,19 +550,19 @@ const (
 		If include func param, this function will enter into async mode, and return (error);
 		else this function work in sync mode, and return (err error)
 */
-func (client *RTMServerClient) DelMessage(mid int64, fromUid int64, xid int64, messageType MessageType, rest ... interface{}) error {
+func (client *RTMServerClient) DelMessage(mid int64, fromUid int64, xid int64, messageType MessageType, rest ...interface{}) error {
 
 	var timeout time.Duration
-	var callback func (int, string)
+	var callback func(int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case time.Duration:
-				timeout = value
-			case func (int, string):
-				callback = value
-			default:
-				panic("Invaild params when call RTMServerClient.DelMessage() function.")
+		case time.Duration:
+			timeout = value
+		case func(int, string):
+			callback = value
+		default:
+			panic("Invaild params when call RTMServerClient.DelMessage() function.")
 		}
 	}
 

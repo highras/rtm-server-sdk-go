@@ -1,14 +1,15 @@
 package rtm
 
 import (
-	"io"
-	"os"
+	"crypto/md5"
 	"fmt"
+	"io"
 	"log"
+	"os"
+	"strconv"
 	"sync"
 	"time"
-	"strconv"
-	"crypto/md5"
+
 	"github.com/highras/fpnn-sdk-go/src/fpnn"
 )
 
@@ -24,13 +25,19 @@ type RTMServerMonitor interface {
 	P2PChat(fromUid int64, toUid int64, mid int64, message string, attrs string, mtime int64)
 	GroupChat(fromUid int64, groupId int64, mid int64, message string, attrs string, mtime int64)
 	RoomChat(fromUid int64, roomIid int64, mid int64, message string, attrs string, mtime int64)
+	P2PAudio(fromUid int64, toUid int64, mid int64, message string, attrs string, mtime int64)
+	GroupAudio(fromUid int64, groupId int64, mid int64, message string, attrs string, mtime int64)
+	RoomAudio(fromUid int64, roomIid int64, mid int64, message string, attrs string, mtime int64)
+	P2PCmd(fromUid int64, toUid int64, mid int64, message string, attrs string, mtime int64)
+	GroupCmd(fromUid int64, groupId int64, mid int64, message string, attrs string, mtime int64)
+	RoomCmd(fromUid int64, roomIid int64, mid int64, message string, attrs string, mtime int64)
 }
 
 //------------------------------[ RTM Server Client ]---------------------------------------//
 
 type midGenerator struct {
-	mutex			sync.Mutex
-	idBase			int16
+	mutex  sync.Mutex
+	idBase int16
 }
 
 func (gen *midGenerator) genMid() int64 {
@@ -44,23 +51,23 @@ func (gen *midGenerator) genMid() int64 {
 	if gen.idBase > 999 {
 		gen.idBase = 0
 	}
-		
-	return mid * 1000 + int64(gen.idBase)
+
+	return mid*1000 + int64(gen.idBase)
 }
 
 type RTMServerClient struct {
-	client				*fpnn.TCPClient
-	processor			*rtmServerQuestProcessor
-	logger				*log.Logger
-	idGen				*midGenerator
-	pid					int32
-	secretKey			string
+	client    *fpnn.TCPClient
+	processor *rtmServerQuestProcessor
+	logger    *log.Logger
+	idGen     *midGenerator
+	pid       int32
+	secretKey string
 }
 
 func NewRTMServerClient(pid int32, secretKey string, endpoint string) *RTMServerClient {
 
 	client := &RTMServerClient{}
-	
+
 	client.client = fpnn.NewTCPClient(endpoint)
 	client.processor = newRTMServerQuestProcessor()
 	client.idGen = &midGenerator{}
@@ -112,9 +119,10 @@ func (client *RTMServerClient) Endpoint() string {
 			rawPemData	[]byte
 			reinforce	bool
 */
-func (client *RTMServerClient) EnableEncryptor(rest ... interface{}) (err error) {
+func (client *RTMServerClient) EnableEncryptor(rest ...interface{}) (err error) {
 	return client.client.EnableEncryptor(rest...)
 }
+
 /*
 func (client *RTMServerClient) makeSignAndSalt() (string, int64) {
 
@@ -146,7 +154,6 @@ func (client *RTMServerClient) genServerQuest(cmd string) *fpnn.Quest {
 	pidStr := strconv.FormatInt(int64(client.pid), 10)
 	saltStr := strconv.FormatInt(salt, 10)
 	tsStr := strconv.FormatInt(int64(ts), 10)
-
 
 	ctx := md5.New()
 	io.WriteString(ctx, pidStr)
@@ -220,7 +227,7 @@ func convertToString(value interface{}) string {
 
 //------------------------------[ RTM Server Client Interfaces ]---------------------------------------//
 func (client *RTMServerClient) sendQuest(quest *fpnn.Quest, timeout time.Duration, callback func(answer *fpnn.Answer, errorCode int)) (*fpnn.Answer, error) {
-	
+
 	if callback == nil {
 		if timeout == 0 {
 			return client.client.SendQuest(quest)
@@ -403,22 +410,22 @@ func (client *RTMServerClient) sendGetObjectInfoQuest(quest *fpnn.Quest, timeout
 		If include func param, this function will enter into async mode, and return (error);
 		else this function work in sync mode, and return (err error)
 */
-func (client *RTMServerClient) Kickout(uid int64, rest ... interface{}) error {
+func (client *RTMServerClient) Kickout(uid int64, rest ...interface{}) error {
 
 	var clientEndpoint string
 	var timeout time.Duration
-	var callback func (int, string)
+	var callback func(int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case string:
-				clientEndpoint = value
-			case time.Duration:
-				timeout = value
-			case func (int, string):
-				callback = value
-			default:
-				panic("Invaild params when call RTMServerClient.Kickout() function.")
+		case string:
+			clientEndpoint = value
+		case time.Duration:
+			timeout = value
+		case func(int, string):
+			callback = value
+		default:
+			panic("Invaild params when call RTMServerClient.Kickout() function.")
 		}
 	}
 
@@ -468,19 +475,19 @@ func (client *RTMServerClient) sendTokenQuest(quest *fpnn.Quest, timeout time.Du
 		If include func param, this function will enter into async mode, and return ("", error);
 		else this function work in sync mode, and return (token string, err error)
 */
-func (client *RTMServerClient) GetToken(uid int64, rest ... interface{}) (string, error) {
+func (client *RTMServerClient) GetToken(uid int64, rest ...interface{}) (string, error) {
 
 	var timeout time.Duration
-	var callback func (string, int, string)
+	var callback func(string, int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case time.Duration:
-				timeout = value
-			case func (string, int, string):
-				callback = value
-			default:
-				panic("Invaild params when call RTMServerClient.GetToken() function.")
+		case time.Duration:
+			timeout = value
+		case func(string, int, string):
+			callback = value
+		default:
+			panic("Invaild params when call RTMServerClient.GetToken() function.")
 		}
 	}
 
@@ -499,19 +506,19 @@ func (client *RTMServerClient) GetToken(uid int64, rest ... interface{}) (string
 		If include func param, this function will enter into async mode, and return (error);
 		else this function work in sync mode, and return (err error)
 */
-func (client *RTMServerClient) RemoveToken(uid int64, rest ... interface{}) error {
+func (client *RTMServerClient) RemoveToken(uid int64, rest ...interface{}) error {
 
 	var timeout time.Duration
-	var callback func (int, string)
+	var callback func(int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case time.Duration:
-				timeout = value
-			case func (int, string):
-				callback = value
-			default:
-				panic("Invaild params when call RTMServerClient.RemoveToken() function.")
+		case time.Duration:
+			timeout = value
+		case func(int, string):
+			callback = value
+		default:
+			panic("Invaild params when call RTMServerClient.RemoveToken() function.")
 		}
 	}
 
@@ -530,25 +537,25 @@ func (client *RTMServerClient) RemoveToken(uid int64, rest ... interface{}) erro
 		If include func param, this function will enter into async mode, and return (error);
 		else this function work in sync mode, and return (err error)
 */
-func (client *RTMServerClient) AddDevice(uid int64, appType string, deviceToken string, rest ... interface{}) error {
+func (client *RTMServerClient) AddDevice(uid int64, appType string, deviceToken string, rest ...interface{}) error {
 
 	var timeout time.Duration
-	var callback func (int, string)
+	var callback func(int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case time.Duration:
-				timeout = value
-			case func (int, string):
-				callback = value
-			default:
-				panic("Invaild params when call RTMServerClient.AddDevice() function.")
+		case time.Duration:
+			timeout = value
+		case func(int, string):
+			callback = value
+		default:
+			panic("Invaild params when call RTMServerClient.AddDevice() function.")
 		}
 	}
 
 	quest := client.genServerQuest("adddevice")
 	quest.Param("uid", uid)
-	quest.Param("apptype", appType)	
+	quest.Param("apptype", appType)
 	quest.Param("devicetoken", deviceToken)
 
 	return client.sendSilentQuest(quest, timeout, callback)
@@ -563,19 +570,19 @@ func (client *RTMServerClient) AddDevice(uid int64, appType string, deviceToken 
 		If include func param, this function will enter into async mode, and return (error);
 		else this function work in sync mode, and return (err error)
 */
-func (client *RTMServerClient) RemoveDevice(uid int64, deviceToken string, rest ... interface{}) error {
+func (client *RTMServerClient) RemoveDevice(uid int64, deviceToken string, rest ...interface{}) error {
 
 	var timeout time.Duration
-	var callback func (int, string)
+	var callback func(int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case time.Duration:
-				timeout = value
-			case func (int, string):
-				callback = value
-			default:
-				panic("Invaild params when call RTMServerClient.RemoveDevice() function.")
+		case time.Duration:
+			timeout = value
+		case func(int, string):
+			callback = value
+		default:
+			panic("Invaild params when call RTMServerClient.RemoveDevice() function.")
 		}
 	}
 

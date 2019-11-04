@@ -3,38 +3,39 @@ package rtm
 import (
 	"log"
 	"time"
+
 	"github.com/highras/fpnn-sdk-go/src/fpnn"
 )
 
 const (
 	dupFliterCleanIntervalSeconds = 5 * 60
-	dupFilterTriggerCleanCount = 1000
+	dupFilterTriggerCleanCount    = 1000
 )
 
 //=======================[ dupMessageFilter ]========================//
 
 type dupP2PMessageKey struct {
-	sender		int64
-	receiver	int64
-	mid			int64
+	sender   int64
+	receiver int64
+	mid      int64
 }
 
 type dupGroupMessageKey struct {
-	sender		int64
-	groupId		int64
-	mid			int64
+	sender  int64
+	groupId int64
+	mid     int64
 }
 
 type dupRoomMessageKey struct {
-	sender		int64
-	roomId		int64
-	mid			int64
+	sender int64
+	roomId int64
+	mid    int64
 }
 
 type dupMessageFilter struct {
-	p2pCache		map[dupP2PMessageKey]int64
-	groupCache		map[dupGroupMessageKey]int64
-	roomCache		map[dupRoomMessageKey]int64
+	p2pCache   map[dupP2PMessageKey]int64
+	groupCache map[dupGroupMessageKey]int64
+	roomCache  map[dupRoomMessageKey]int64
 }
 
 func newDupMessageFilter() *dupMessageFilter {
@@ -100,7 +101,7 @@ func (filter *dupMessageFilter) checkGroupPMessage(sender int64, groupId int64, 
 }
 
 func (filter *dupMessageFilter) checkRoomMessage(sender int64, roomId int64, mid int64) bool {
-	
+
 	key := dupRoomMessageKey{sender, roomId, mid}
 	_, ok := filter.roomCache[key]
 	curr := time.Now().Unix()
@@ -129,9 +130,9 @@ func (filter *dupMessageFilter) checkRoomMessage(sender int64, roomId int64, mid
 //=======================[ rtmServerQuestProcessor ]========================//
 
 type rtmServerQuestProcessor struct {
-	monitor			RTMServerMonitor
-	dupFilter		*dupMessageFilter
-	logger			*log.Logger
+	monitor   RTMServerMonitor
+	dupFilter *dupMessageFilter
+	logger    *log.Logger
 }
 
 func newRTMServerQuestProcessor() *rtmServerQuestProcessor {
@@ -148,7 +149,7 @@ func (processor *rtmServerQuestProcessor) Process(method string) func(*fpnn.Ques
 
 	if processor.monitor == nil {
 		processor.logger.Printf("[ERROR] RTMServerMonitor is unconfiged.")
-		return nil		
+		return nil
 	}
 
 	switch method {
@@ -179,6 +180,10 @@ func (processor *rtmServerQuestProcessor) processPushMessage(quest *fpnn.Quest) 
 	if processor.dupFilter.checkP2PMessage(fromUid, toUid, mid) {
 		if mtype == defaultMtype_Chat {
 			go processor.monitor.P2PChat(fromUid, toUid, mid, message, attrs, mtime)
+		} else if mtype == defaultMtype_Audio {
+			go processor.monitor.P2PAudio(fromUid, toUid, mid, message, attrs, mtime)
+		} else if mtype == defaultMtype_Cmd {
+			go processor.monitor.P2PCmd(fromUid, toUid, mid, message, attrs, mtime)
 		} else {
 			go processor.monitor.P2PMessage(fromUid, toUid, mtype, mid, message, attrs, mtime)
 		}
@@ -201,8 +206,12 @@ func (processor *rtmServerQuestProcessor) processPushGroupMessage(quest *fpnn.Qu
 	if processor.dupFilter.checkGroupPMessage(fromUid, groupId, mid) {
 		if mtype == defaultMtype_Chat {
 			go processor.monitor.GroupChat(fromUid, groupId, mid, message, attrs, mtime)
+		} else if mtype == defaultMtype_Audio {
+			go processor.monitor.GroupAudio(fromUid, groupId, mid, message, attrs, mtime)
+		} else if mtype == defaultMtype_Cmd {
+			go processor.monitor.GroupCmd(fromUid, groupId, mid, message, attrs, mtime)
 		} else {
-			go processor.monitor.GroupMessage(fromUid, groupId, mtype, mid, message, attrs, mtime)	
+			go processor.monitor.GroupMessage(fromUid, groupId, mtype, mid, message, attrs, mtime)
 		}
 	}
 
@@ -223,8 +232,12 @@ func (processor *rtmServerQuestProcessor) processPushRoomMessage(quest *fpnn.Que
 	if processor.dupFilter.checkRoomMessage(fromUid, roomId, mid) {
 		if mtype == defaultMtype_Chat {
 			go processor.monitor.RoomChat(fromUid, roomId, mid, message, attrs, mtime)
+		} else if mtype == defaultMtype_Audio {
+			go processor.monitor.RoomAudio(fromUid, roomId, mid, message, attrs, mtime)
+		} else if mtype == defaultMtype_Cmd {
+			go processor.monitor.RoomCmd(fromUid, roomId, mid, message, attrs, mtime)
 		} else {
-			go processor.monitor.RoomMessage(fromUid, roomId, mtype, mid, message, attrs, mtime)	
+			go processor.monitor.RoomMessage(fromUid, roomId, mtype, mid, message, attrs, mtime)
 		}
 	}
 
