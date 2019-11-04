@@ -31,11 +31,111 @@
 如果 **callback** 参数**不存在**，则为**同步**发送，返回 mtime 及 error 信息。  
 如果 **callback** 参数**存在**，则为**异步**发送，返回 0 及 error 信息。真实的 mtime，将通过 callback 传递。
 
+### func (client *RTMServerClient) SendAudio(fromUid int64, toUid int64, message string, rest ... interface{}) (int64, error)
+
+	func (client *RTMServerClient) SendChat(fromUid int64, toUid int64, message string, rest ... interface{}) (int64, error)
+
+发送 P2P 语音消息。
+
+可接受的参数为：
+
++ `attrs string`
+
+	消息的属性信息。默认为空字符串。
+
++ `timeout time.Duration`
+
+	发送超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+
++ `callback func(mtime int64, errorCode int, errInfo string)`
+
+	异步回调函数。  
+
+如果 **callback** 参数**不存在**，则为**同步**发送，返回 mtime 及 error 信息。  
+如果 **callback** 参数**存在**，则为**异步**发送，返回 0 及 error 信息。真实的 mtime，将通过 callback 传递。
+
+### func (client *RTMServerClient) SendCmd(fromUid int64, toUid int64, message string, rest ... interface{}) (int64, error)
+
+	func (client *RTMServerClient) SendChat(fromUid int64, toUid int64, message string, rest ... interface{}) (int64, error)
+
+发送 P2P 控制命令。
+
+可接受的参数为：
+
++ `attrs string`
+
+	消息的属性信息。默认为空字符串。
+
++ `timeout time.Duration`
+
+	发送超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+
++ `callback func(mtime int64, errorCode int, errInfo string)`
+
+	异步回调函数。  
+
+如果 **callback** 参数**不存在**，则为**同步**发送，返回 mtime 及 error 信息。  
+如果 **callback** 参数**存在**，则为**异步**发送，返回 0 及 error 信息。真实的 mtime，将通过 callback 传递。
+
 ### func (client *RTMServerClient) SendChats(fromUid int64, toUids []int64, message string, rest ... interface{}) (int64, error)
 
 	func (client *RTMServerClient) SendChats(fromUid int64, toUids []int64, message string, rest ... interface{}) (int64, error)
 
 发送多人 P2P 聊天消息。
+
+可接受的参数为：
+
++ `attrs string`
+
+	消息的属性信息。默认为空字符串。
+
++ `timeout time.Duration`
+
+	发送超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+
++ `callback func(mtime int64, errorCode int, errInfo string)`
+
+	异步回调函数。  
+
+如果 **callback** 参数**不存在**，则为**同步**发送，返回 mtime 及 error 信息。  
+如果 **callback** 参数**存在**，则为**异步**发送，返回 0 及 error 信息。真实的 mtime，将通过 callback 传递。
+
+### func (client *RTMServerClient) SendAudios(fromUid int64, toUids []int64, message string, rest ... interface{}) (int64, error)
+
+	func (client *RTMServerClient) SendChats(fromUid int64, toUids []int64, message string, rest ... interface{}) (int64, error)
+
+发送多人 P2P 语音消息。
+
+可接受的参数为：
+
++ `attrs string`
+
+	消息的属性信息。默认为空字符串。
+
++ `timeout time.Duration`
+
+	发送超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+
++ `callback func(mtime int64, errorCode int, errInfo string)`
+
+	异步回调函数。  
+
+如果 **callback** 参数**不存在**，则为**同步**发送，返回 mtime 及 error 信息。  
+如果 **callback** 参数**存在**，则为**异步**发送，返回 0 及 error 信息。真实的 mtime，将通过 callback 传递。
+
+### func (client *RTMServerClient) SendCmds(fromUid int64, toUids []int64, message string, rest ... interface{}) (int64, error)
+
+	func (client *RTMServerClient) SendChats(fromUid int64, toUids []int64, message string, rest ... interface{}) (int64, error)
+
+发送多人 P2P 控制命令。
 
 可接受的参数为：
 
@@ -81,6 +181,56 @@
 如果 **callback** 参数**不存在**，则为**同步**发送，返回 mtime 及 error 信息。  
 如果 **callback** 参数**存在**，则为**异步**发送，返回 0 及 error 信息。真实的 mtime，将通过 callback 传递。
 
+### func (client *RTMServerClient) SendGroupAudio(fromUid int64, groupId int64, message string, rest ... interface{}) (int64, error)
+
+	func (client *RTMServerClient) SendGroupChat(fromUid int64, groupId int64, message string, rest ... interface{}) (int64, error)
+
+发送群组语音消息。
+
+可接受的参数为：
+
++ `attrs string`
+
+	消息的属性信息。默认为空字符串。
+
++ `timeout time.Duration`
+
+	发送超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+
++ `callback func(mtime int64, errorCode int, errInfo string)`
+
+	异步回调函数。  
+
+如果 **callback** 参数**不存在**，则为**同步**发送，返回 mtime 及 error 信息。  
+如果 **callback** 参数**存在**，则为**异步**发送，返回 0 及 error 信息。真实的 mtime，将通过 callback 传递。
+
+### func (client *RTMServerClient) SendGroupCmd(fromUid int64, groupId int64, message string, rest ... interface{}) (int64, error)
+
+	func (client *RTMServerClient) SendGroupChat(fromUid int64, groupId int64, message string, rest ... interface{}) (int64, error)
+
+发送群组控制命令。
+
+可接受的参数为：
+
++ `attrs string`
+
+	消息的属性信息。默认为空字符串。
+
++ `timeout time.Duration`
+
+	发送超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+
++ `callback func(mtime int64, errorCode int, errInfo string)`
+
+	异步回调函数。  
+
+如果 **callback** 参数**不存在**，则为**同步**发送，返回 mtime 及 error 信息。  
+如果 **callback** 参数**存在**，则为**异步**发送，返回 0 及 error 信息。真实的 mtime，将通过 callback 传递。
+
 ### func (client *RTMServerClient) SendRoomChat(fromUid int64, roomId int64, message string, rest ... interface{}) (int64, error)
 
 	func (client *RTMServerClient) SendRoomChat(fromUid int64, roomId int64, message string, rest ... interface{}) (int64, error)
@@ -106,11 +256,111 @@
 如果 **callback** 参数**不存在**，则为**同步**发送，返回 mtime 及 error 信息。  
 如果 **callback** 参数**存在**，则为**异步**发送，返回 0 及 error 信息。真实的 mtime，将通过 callback 传递。
 
+### func (client *RTMServerClient) SendRoomAudio(fromUid int64, roomId int64, message string, rest ... interface{}) (int64, error)
+
+	func (client *RTMServerClient) SendRoomChat(fromUid int64, roomId int64, message string, rest ... interface{}) (int64, error)
+
+发送房间语音消息。
+
+可接受的参数为：
+
++ `attrs string`
+
+	消息的属性信息。默认为空字符串。
+
++ `timeout time.Duration`
+
+	发送超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+
++ `callback func(mtime int64, errorCode int, errInfo string)`
+
+	异步回调函数。  
+
+如果 **callback** 参数**不存在**，则为**同步**发送，返回 mtime 及 error 信息。  
+如果 **callback** 参数**存在**，则为**异步**发送，返回 0 及 error 信息。真实的 mtime，将通过 callback 传递。
+
+### func (client *RTMServerClient) SendRoomCmd(fromUid int64, roomId int64, message string, rest ... interface{}) (int64, error)
+
+	func (client *RTMServerClient) SendRoomChat(fromUid int64, roomId int64, message string, rest ... interface{}) (int64, error)
+
+发送房间控制命令。
+
+可接受的参数为：
+
++ `attrs string`
+
+	消息的属性信息。默认为空字符串。
+
++ `timeout time.Duration`
+
+	发送超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+
++ `callback func(mtime int64, errorCode int, errInfo string)`
+
+	异步回调函数。  
+
+如果 **callback** 参数**不存在**，则为**同步**发送，返回 mtime 及 error 信息。  
+如果 **callback** 参数**存在**，则为**异步**发送，返回 0 及 error 信息。真实的 mtime，将通过 callback 传递。
+
 ### func (client *RTMServerClient) SendBroadcastChat(fromUid int64, message string, rest ... interface{}) (int64, error)
 
 	func (client *RTMServerClient) SendBroadcastChat(fromUid int64, message string, rest ... interface{}) (int64, error)
 
 发送广播聊天消息。
+
+可接受的参数为：
+
++ `attrs string`
+
+	消息的属性信息。默认为空字符串。
+
++ `timeout time.Duration`
+
+	发送超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+
++ `callback func(mtime int64, errorCode int, errInfo string)`
+
+	异步回调函数。  
+
+如果 **callback** 参数**不存在**，则为**同步**发送，返回 mtime 及 error 信息。  
+如果 **callback** 参数**存在**，则为**异步**发送，返回 0 及 error 信息。真实的 mtime，将通过 callback 传递。
+
+### func (client *RTMServerClient) SendBroadcastAudio(fromUid int64, message string, rest ... interface{}) (int64, error)
+
+	func (client *RTMServerClient) SendBroadcastChat(fromUid int64, message string, rest ... interface{}) (int64, error)
+
+发送广播语音消息。
+
+可接受的参数为：
+
++ `attrs string`
+
+	消息的属性信息。默认为空字符串。
+
++ `timeout time.Duration`
+
+	发送超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+
++ `callback func(mtime int64, errorCode int, errInfo string)`
+
+	异步回调函数。  
+
+如果 **callback** 参数**不存在**，则为**同步**发送，返回 mtime 及 error 信息。  
+如果 **callback** 参数**存在**，则为**异步**发送，返回 0 及 error 信息。真实的 mtime，将通过 callback 传递。
+
+### func (client *RTMServerClient) SendBroadcastCmd(fromUid int64, message string, rest ... interface{}) (int64, error)
+
+	func (client *RTMServerClient) SendBroadcastChat(fromUid int64, message string, rest ... interface{}) (int64, error)
+
+发送广播控制命令。
 
 可接受的参数为：
 
@@ -453,6 +703,42 @@
 ### -----------------------[ 敏感词主动过滤 ]-----------------------------
 
 ### func (client *RTMServerClient) Profanity(text string, action string, rest ... interface{}) (string, error)
+
+	func (client *RTMServerClient) Profanity(text string, action string, rest ... interface{}) (string, error)
+
+敏感词过滤。
+
+必选参数：
+
++ `action string`
+
+	是否触发敏感词过滤。
+
+	可选值：
+
+		* stop：当发现敏感词时，接口返回错误；
+		* censor：当发现敏感词时，敏感词将被 `*` 替代。
+
+	如果为空字符串，则默认为 `censor`。
+
+可接受的参数为：
+
++ `timeout time.Duration`
+
+	请求超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+
++ `callback func (text string, errorCode int, errInfo string)`
+
+	异步回调函数。  
+
+如果 **callback** 参数**不存在**，则为**同步**请求，返回 过滤后的文本 及 error 信息。  
+如果 **callback** 参数**存在**，则为**异步**请求，返回 "" 及 error 信息。真实的 过滤后文本，将通过 callback 传递。
+
+### -----------------------[ 语音识别 ]-----------------------------
+
+### func (client *RTMServerClient) Transcribe(audio string, action string, rest ... interface{}) (string, error)
 
 	func (client *RTMServerClient) Profanity(text string, action string, rest ... interface{}) (string, error)
 
