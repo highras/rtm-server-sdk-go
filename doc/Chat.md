@@ -608,9 +608,9 @@
 
 聊天类型定义。
 
-### func (client *RTMServerClient) DelP2PChat(mid int64, fromUid int64, xid int64, rest ... interface{}) error
+### func (client *RTMServerClient) DelP2PChat(mid int64, fromUid int64, to int64, rest ... interface{}) error
 
-	func (client *RTMServerClient) DelP2PChat(mid int64, fromUid int64, xid int64, rest ... interface{}) error
+	func (client *RTMServerClient) DelP2PChat(mid int64, fromUid int64, to int64, rest ... interface{}) error
 
 删除/撤回聊天消息。
 
@@ -629,9 +629,9 @@
 如果 **callback** 参数**不存在**，则为**同步**请求。  
 如果 **callback** 参数**存在**，则为**异步**请求。
 
-### func (client *RTMServerClient) DelGroupChat(mid int64, fromUid int64, xid int64, rest ... interface{}) error
+### func (client *RTMServerClient) DelGroupChat(mid int64, fromUid int64, gid int64, rest ... interface{}) error
 
-	func (client *RTMServerClient) DelGroupChat(mid int64, fromUid int64, xid int64, rest ... interface{}) error
+	func (client *RTMServerClient) DelGroupChat(mid int64, fromUid int64, gid int64, rest ... interface{}) error
 
 删除/撤回组消息。
 
@@ -650,11 +650,32 @@
 如果 **callback** 参数**不存在**，则为**同步**请求。  
 如果 **callback** 参数**存在**，则为**异步**请求。
 
-### func (client *RTMServerClient) DelRoomChat(mid int64, fromUid int64, xid int64, rest ... interface{}) error
+### func (client *RTMServerClient) DelRoomChat(mid int64, fromUid int64, rid int64, rest ... interface{}) error
 
-	func (client *RTMServerClient) DelRoomChat(mid int64, fromUid int64, xid int64, rest ... interface{}) error
+	func (client *RTMServerClient) DelRoomChat(mid int64, fromUid int64, rid int64, rest ... interface{}) error
 
 删除/撤回房间消息。
+
+可接受的参数为：
+
++ `timeout time.Duration`
+
+	请求超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+
++ `callback func(errorCode int, errInfo string)`
+
+	异步回调函数。  
+
+如果 **callback** 参数**不存在**，则为**同步**请求。  
+如果 **callback** 参数**存在**，则为**异步**请求。
+
+### func (client *RTMServerClient) DelBroadcastChat(mid int64, fromUid int64, rest ... interface{}) error
+
+	func (client *RTMServerClient) DelBroadcastChat(mid int64, fromUid int64, rest ... interface{}) error
+
+删除/撤回广播消息。
 
 可接受的参数为：
 
