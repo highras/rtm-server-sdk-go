@@ -370,6 +370,34 @@ func (client *RTMServerClient) sendStringQuest(quest *fpnn.Quest, timeout time.D
 	}
 }
 
+func (client *RTMServerClient) sendTranscribeQuest(quest *fpnn.Quest, timeout time.Duration,
+	callback func(text string, lang string, errorCode int, errInfo string)) (string, string, error) {
+
+	if callback != nil {
+		callbackFunc := func(answer *fpnn.Answer, errorCode int) {
+			if errorCode == fpnn.FPNN_EC_OK {
+				callback(answer.WantString("text"), answer.WantString("lang"), fpnn.FPNN_EC_OK, "")
+			} else if answer == nil {
+				callback("", "", errorCode, "")
+			} else {
+				callback("", "", answer.WantInt("code"), answer.WantString("ex"))
+			}
+		}
+
+		_, err := client.sendQuest(quest, timeout, callbackFunc)
+		return "", "", err
+	}
+
+	answer, err := client.sendQuest(quest, timeout, nil)
+	if err != nil {
+		return "", "", err
+	} else if !answer.IsException() {
+		return answer.WantString("text"), answer.WantString("lang"), nil
+	} else {
+		return "", "", fmt.Errorf("[Exception] code: %d, ex: %s", answer.WantInt("code"), answer.WantString("ex"))
+	}
+}
+
 func (client *RTMServerClient) sendGetObjectInfoQuest(quest *fpnn.Quest, timeout time.Duration,
 	callback func(publicInfo string, privateInfo string, errorCode int, errInfo string)) (string, string, error) {
 

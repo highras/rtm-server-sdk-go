@@ -520,6 +520,39 @@ func demoTranslate(client *rtm.RTMServerClient) {
 	}
 }
 
+func demoTranscribe(client *rtm.RTMServerClient) {
+
+	audio := "test aaaaa"
+
+	//-- sync transcribe
+	text, lang, err := client.Transcribe(audio, "stop", "zh-CN")
+	locker.print(func() {
+		if err == nil {
+			fmt.Printf("[Transcribe] Transcribe text: %s, lang: %s\n", text, lang)
+		} else {
+			fmt.Printf("[Transcribe] Transcribe err: %v\n", err)
+		}
+	})
+
+	//-- async transcribe
+	_, _, err = client.Transcribe(audio, "stop", "zh-CN", func(text string, lang string, errorCode int, errInfo string) {
+		locker.print(func() {
+			if errorCode == fpnn.FPNN_EC_OK {
+				fmt.Printf("[Transcribe] Transcribe text: %s, lang: %s\n", text, lang)
+			} else {
+				fmt.Printf("[Transcribe] Transcribe error code: %d, error info:%s\n",
+					errorCode, errInfo)
+			}
+		})
+	})
+
+	if err != nil {
+		locker.print(func() {
+			fmt.Printf("[Transcribe] Transcribe err: %v\n", err)
+		})
+	}
+}
+
 func main() {
 
 	if len(os.Args) != 4 {
@@ -545,6 +578,8 @@ func main() {
 	deleteChat(client)
 
 	demoTranslate(client)
+
+	demoTranscribe(client)
 
 	locker.print(func() {
 		fmt.Println("Wait 1 second for async callbacks are printed.")

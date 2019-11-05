@@ -542,21 +542,21 @@ func (client *RTMServerClient) Profanity(text string, action string, rest ...int
 
 		rest: can be include following params:
 			timeout time.Duration
-			func (text string, errorCode int, errInfo string)
+			func (text string, lang string, errorCode int, errInfo string)
 
 		If include func param, this function will enter into async mode, and return ("", error);
 		else this function work in sync mode, and return (text string, err error)
 */
-func (client *RTMServerClient) Transcribe(audio string, action string, rest ...interface{}) (string, error) {
+func (client *RTMServerClient) Transcribe(audio string, action string, lang string, rest ...interface{}) (string, string, error) {
 
 	var timeout time.Duration
-	var callback func(string, int, string)
+	var callback func(string, string, int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
 		case time.Duration:
 			timeout = value
-		case func(string, int, string):
+		case func(string, string, int, string):
 			callback = value
 		default:
 			panic("Invaild params when call RTMServerClient.Transcribe() function.")
@@ -566,6 +566,7 @@ func (client *RTMServerClient) Transcribe(audio string, action string, rest ...i
 	quest := client.genServerQuest("transcribe")
 	quest.Param("audio", audio)
 	quest.Param("action", action)
+	quest.Param("lang", lang)
 
-	return client.sendStringQuest(quest, timeout, "text", callback)
+	return client.sendTranscribeQuest(quest, timeout, callback)
 }
