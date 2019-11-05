@@ -33,7 +33,7 @@
 
 ### func (client *RTMServerClient) SendAudio(fromUid int64, toUid int64, message string, rest ... interface{}) (int64, error)
 
-	func (client *RTMServerClient) SendChat(fromUid int64, toUid int64, message string, rest ... interface{}) (int64, error)
+	func (client *RTMServerClient) SendAudio(fromUid int64, toUid int64, message string, rest ... interface{}) (int64, error)
 
 发送 P2P 语音消息。
 
@@ -58,7 +58,7 @@
 
 ### func (client *RTMServerClient) SendCmd(fromUid int64, toUid int64, message string, rest ... interface{}) (int64, error)
 
-	func (client *RTMServerClient) SendChat(fromUid int64, toUid int64, message string, rest ... interface{}) (int64, error)
+	func (client *RTMServerClient) SendCmd(fromUid int64, toUid int64, message string, rest ... interface{}) (int64, error)
 
 发送 P2P 控制命令。
 
@@ -108,7 +108,7 @@
 
 ### func (client *RTMServerClient) SendAudios(fromUid int64, toUids []int64, message string, rest ... interface{}) (int64, error)
 
-	func (client *RTMServerClient) SendChats(fromUid int64, toUids []int64, message string, rest ... interface{}) (int64, error)
+	func (client *RTMServerClient) SendAudios(fromUid int64, toUids []int64, message string, rest ... interface{}) (int64, error)
 
 发送多人 P2P 语音消息。
 
@@ -133,7 +133,7 @@
 
 ### func (client *RTMServerClient) SendCmds(fromUid int64, toUids []int64, message string, rest ... interface{}) (int64, error)
 
-	func (client *RTMServerClient) SendChats(fromUid int64, toUids []int64, message string, rest ... interface{}) (int64, error)
+	func (client *RTMServerClient) SendCmds(fromUid int64, toUids []int64, message string, rest ... interface{}) (int64, error)
 
 发送多人 P2P 控制命令。
 
@@ -183,7 +183,7 @@
 
 ### func (client *RTMServerClient) SendGroupAudio(fromUid int64, groupId int64, message string, rest ... interface{}) (int64, error)
 
-	func (client *RTMServerClient) SendGroupChat(fromUid int64, groupId int64, message string, rest ... interface{}) (int64, error)
+	func (client *RTMServerClient) SendGroupAudio(fromUid int64, groupId int64, message string, rest ... interface{}) (int64, error)
 
 发送群组语音消息。
 
@@ -208,7 +208,7 @@
 
 ### func (client *RTMServerClient) SendGroupCmd(fromUid int64, groupId int64, message string, rest ... interface{}) (int64, error)
 
-	func (client *RTMServerClient) SendGroupChat(fromUid int64, groupId int64, message string, rest ... interface{}) (int64, error)
+	func (client *RTMServerClient) SendGroupCmd(fromUid int64, groupId int64, message string, rest ... interface{}) (int64, error)
 
 发送群组控制命令。
 
@@ -258,7 +258,7 @@
 
 ### func (client *RTMServerClient) SendRoomAudio(fromUid int64, roomId int64, message string, rest ... interface{}) (int64, error)
 
-	func (client *RTMServerClient) SendRoomChat(fromUid int64, roomId int64, message string, rest ... interface{}) (int64, error)
+	func (client *RTMServerClient) SendRoomAudio(fromUid int64, roomId int64, message string, rest ... interface{}) (int64, error)
 
 发送房间语音消息。
 
@@ -283,7 +283,7 @@
 
 ### func (client *RTMServerClient) SendRoomCmd(fromUid int64, roomId int64, message string, rest ... interface{}) (int64, error)
 
-	func (client *RTMServerClient) SendRoomChat(fromUid int64, roomId int64, message string, rest ... interface{}) (int64, error)
+	func (client *RTMServerClient) SendRoomCmd(fromUid int64, roomId int64, message string, rest ... interface{}) (int64, error)
 
 发送房间控制命令。
 
@@ -333,7 +333,7 @@
 
 ### func (client *RTMServerClient) SendBroadcastAudio(fromUid int64, message string, rest ... interface{}) (int64, error)
 
-	func (client *RTMServerClient) SendBroadcastChat(fromUid int64, message string, rest ... interface{}) (int64, error)
+	func (client *RTMServerClient) SendBroadcastAudio(fromUid int64, message string, rest ... interface{}) (int64, error)
 
 发送广播语音消息。
 
@@ -358,7 +358,7 @@
 
 ### func (client *RTMServerClient) SendBroadcastCmd(fromUid int64, message string, rest ... interface{}) (int64, error)
 
-	func (client *RTMServerClient) SendBroadcastChat(fromUid int64, message string, rest ... interface{}) (int64, error)
+	func (client *RTMServerClient) SendBroadcastCmd(fromUid int64, message string, rest ... interface{}) (int64, error)
 
 发送广播控制命令。
 
@@ -608,11 +608,53 @@
 
 聊天类型定义。
 
-### func (client *RTMServerClient) DelChat(mid int64, fromUid int64, xid int64, messageType MessageType, rest ... interface{}) error
+### func (client *RTMServerClient) DelP2PChat(mid int64, fromUid int64, xid int64, rest ... interface{}) error
 
-	func (client *RTMServerClient) DelChat(mid int64, fromUid int64, xid int64, messageType MessageType, rest ... interface{}) error
+	func (client *RTMServerClient) DelP2PChat(mid int64, fromUid int64, xid int64, rest ... interface{}) error
 
 删除/撤回聊天消息。
+
+可接受的参数为：
+
++ `timeout time.Duration`
+
+	请求超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+
++ `callback func(errorCode int, errInfo string)`
+
+	异步回调函数。  
+
+如果 **callback** 参数**不存在**，则为**同步**请求。  
+如果 **callback** 参数**存在**，则为**异步**请求。
+
+### func (client *RTMServerClient) DelGroupChat(mid int64, fromUid int64, xid int64, rest ... interface{}) error
+
+	func (client *RTMServerClient) DelGroupChat(mid int64, fromUid int64, xid int64, rest ... interface{}) error
+
+删除/撤回组消息。
+
+可接受的参数为：
+
++ `timeout time.Duration`
+
+	请求超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+
++ `callback func(errorCode int, errInfo string)`
+
+	异步回调函数。  
+
+如果 **callback** 参数**不存在**，则为**同步**请求。  
+如果 **callback** 参数**存在**，则为**异步**请求。
+
+### func (client *RTMServerClient) DelRoomChat(mid int64, fromUid int64, xid int64, rest ... interface{}) error
+
+	func (client *RTMServerClient) DelRoomChat(mid int64, fromUid int64, xid int64, rest ... interface{}) error
+
+删除/撤回房间消息。
 
 可接受的参数为：
 
