@@ -325,8 +325,8 @@ func (client *RTMServerClient) GetP2PChat(uid int64, peerUid int64, desc bool, n
 		If include func param, this function will enter into async mode, and return (error);
 		else this function work in sync mode, and return (err error)
 */
-func (client *RTMServerClient) DelP2PChat(mid int64, fromUid int64, xid int64, rest ...interface{}) error {
-	return client.DelMessage(mid, fromUid, xid, MessageType_P2P, rest...)
+func (client *RTMServerClient) DelP2PChat(mid int64, fromUid int64, to int64, rest ...interface{}) error {
+	return client.DelMessage(mid, fromUid, to, MessageType_P2P, rest...)
 }
 
 /*
@@ -338,8 +338,8 @@ func (client *RTMServerClient) DelP2PChat(mid int64, fromUid int64, xid int64, r
 		If include func param, this function will enter into async mode, and return (error);
 		else this function work in sync mode, and return (err error)
 */
-func (client *RTMServerClient) DelGroupChat(mid int64, fromUid int64, xid int64, rest ...interface{}) error {
-	return client.DelMessage(mid, fromUid, xid, MessageType_Group, rest...)
+func (client *RTMServerClient) DelGroupChat(mid int64, fromUid int64, gid int64, rest ...interface{}) error {
+	return client.DelMessage(mid, fromUid, gid, MessageType_Group, rest...)
 }
 
 /*
@@ -351,8 +351,8 @@ func (client *RTMServerClient) DelGroupChat(mid int64, fromUid int64, xid int64,
 		If include func param, this function will enter into async mode, and return (error);
 		else this function work in sync mode, and return (err error)
 */
-func (client *RTMServerClient) DelRoomChat(mid int64, fromUid int64, xid int64, rest ...interface{}) error {
-	return client.DelMessage(mid, fromUid, xid, MessageType_Room, rest...)
+func (client *RTMServerClient) DelRoomChat(mid int64, fromUid int64, rid int64, rest ...interface{}) error {
+	return client.DelMessage(mid, fromUid, rid, MessageType_Room, rest...)
 }
 
 /*
@@ -364,8 +364,8 @@ func (client *RTMServerClient) DelRoomChat(mid int64, fromUid int64, xid int64, 
 		If include func param, this function will enter into async mode, and return (error);
 		else this function work in sync mode, and return (err error)
 */
-func (client *RTMServerClient) DelBroadcastChat(mid int64, fromUid int64, xid int64, rest ...interface{}) error {
-	return client.DelMessage(mid, fromUid, xid, MessageType_Broadcast, rest...)
+func (client *RTMServerClient) DelBroadcastChat(mid int64, fromUid int64, rest ...interface{}) error {
+	return client.DelMessage(mid, fromUid, 0, MessageType_Broadcast, rest...)
 }
 
 //-----------[ Translate functions ]-------------------//
