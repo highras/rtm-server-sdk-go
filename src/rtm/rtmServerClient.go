@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	SDKVersion = "0.2.1"
+	SDKVersion = "0.2.2"
 )
 
 type RTMServerMonitor interface {
