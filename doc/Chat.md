@@ -738,7 +738,7 @@
 
 ### -----------------------[ 语音识别 ]-----------------------------
 
-### func (client *RTMServerClient) Transcribe(audio string, action string, rest ... interface{}) (string, error)
+### func (client *RTMServerClient) Transcribe(audio string, lang string, action string, rest ... interface{}) (string, error)
 
 	func (client *RTMServerClient) Profanity(text string, action string, rest ... interface{}) (string, error)
 
