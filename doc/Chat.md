@@ -738,9 +738,9 @@
 
 ### -----------------------[ 语音识别 ]-----------------------------
 
-### func (client *RTMServerClient) Transcribe(audio string, lang string, action string, rest ... interface{}) (string, error)
+### func (client *RTMServerClient) Transcribe(audio string, lang string, action string, rest ... interface{}) (string, string, error)
 
-	func (client *RTMServerClient) Profanity(text string, action string, rest ... interface{}) (string, error)
+	func (client *RTMServerClient) Transcribe(audio string, lang string, action string, rest ... interface{}) (string, string, error)
 
 敏感词过滤。
 
@@ -765,7 +765,7 @@
 	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
 	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
 
-+ `callback func (text string, errorCode int, errInfo string)`
++ `callback func (text string, lang string, errorCode int, errInfo string)`
 
 	异步回调函数。  
 
