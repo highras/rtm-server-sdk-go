@@ -247,7 +247,7 @@ type HistoryMessageUnit struct {
 	FromUid int64
 	MType   int8
 	Mid     int64
-	Deleted bool
+	//Deleted bool
 	Message string
 	Attrs   string
 	MTime   int64
@@ -292,7 +292,7 @@ func (client *RTMServerClient) processHistoryAnswer(answer *fpnn.Answer, p2pInfo
 		msgUnit.MType = int8(convertToInt64(elems[2]))
 		msgUnit.Mid = convertToInt64(elems[3])
 
-		msgUnit.Deleted = elems[4].(bool)
+		//msgUnit.Deleted = elems[4].(bool)
 		msgUnit.Message = convertToString(elems[5])
 		msgUnit.Attrs = convertToString(elems[6])
 		msgUnit.MTime = convertToInt64(elems[7])
@@ -588,4 +588,56 @@ func (client *RTMServerClient) DelMessage(mid int64, fromUid int64, xid int64, m
 	quest.Param("type", realType)
 
 	return client.sendSilentQuest(quest, timeout, callback)
+}
+
+/*
+	Params:
+		rest: can be include following params:
+			timeout time.Duration
+			func (errorCode int, errInfo string)
+
+		If include func param, this function will enter into async mode, and return (error);
+		else this function work in sync mode, and return (err error)
+*/
+func (client *RTMServerClient) DelP2PMessage(mid int64, fromUid int64, xid int64, rest ...interface{}) error {
+	return client.DelMessage(mid, fromUid, xid, MessageType_P2P, rest)
+}
+
+/*
+	Params:
+		rest: can be include following params:
+			timeout time.Duration
+			func (errorCode int, errInfo string)
+
+		If include func param, this function will enter into async mode, and return (error);
+		else this function work in sync mode, and return (err error)
+*/
+func (client *RTMServerClient) DelGroupMessage(mid int64, fromUid int64, xid int64, rest ...interface{}) error {
+	return client.DelMessage(mid, fromUid, xid, MessageType_Group, rest)
+}
+
+/*
+	Params:
+		rest: can be include following params:
+			timeout time.Duration
+			func (errorCode int, errInfo string)
+
+		If include func param, this function will enter into async mode, and return (error);
+		else this function work in sync mode, and return (err error)
+*/
+func (client *RTMServerClient) DelRoomMessage(mid int64, fromUid int64, xid int64, rest ...interface{}) error {
+	return client.DelMessage(mid, fromUid, xid, MessageType_Room, rest)
+}
+
+/*
+	Params:
+		rest: can be include following params:
+			timeout time.Duration
+			func (errorCode int, errInfo string)
+
+		If include func param, this function will enter into async mode, and return (error);
+		else this function work in sync mode, and return (err error)
+*/
+func (client *RTMServerClient) DelBroadcastMessage(mid int64, fromUid int64, xid int64, rest ...interface{}) error {
+	return client.DelMessage(mid, fromUid, xid, MessageType_Broadcast, rest)
 }
