@@ -74,7 +74,7 @@ FPNN 的 Config 对象，将会影响 rtm 客户端的行为。
 
 	func (client *RTMServerClient) SetAutoReconnect(autoReconnect bool)
 
-配置连接方式。true 为自动连接，false 需要显式调用 Connect() 或者 Dail() 方法建立连接。 
+配置连接方式。true 为自动连接，false 需要显式调用 Connect() 或者 Dial() 方法建立连接。 
 未配置时，默认自动建立连接。
 
 ### func (client *RTMServerClient) Connect() bool
@@ -82,11 +82,11 @@ FPNN 的 Config 对象，将会影响 rtm 客户端的行为。
 	func (client *RTMServerClient) Connect() bool
 
 显式建立连接。如果 SetAutoReconnect() 设置为 false，必须调用该方法才能与服务器建立连接。  
-与 `func (client *RTMServerClient) Dail() bool` 相同。
+与 `func (client *RTMServerClient) Dial() bool` 相同。
 
-### func (client *RTMServerClient) Dail() bool
+### func (client *RTMServerClient) Dial() bool
 
-	func (client *RTMServerClient) Dail() bool
+	func (client *RTMServerClient) Dial() bool
 
 显式建立连接。如果 SetAutoReconnect() 设置为 false，必须调用该方法才能与服务器建立连接。  
 与 `func (client *RTMServerClient) Connect() bool` 相同。

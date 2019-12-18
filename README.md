@@ -58,10 +58,10 @@ Please get your project params from RTM Console.
 	RTM Server-End Go SDK using **ECC**/**ECDH** to exchange the secret key, and using **AES-128** or **AES-256** in **CFB** mode to encrypt the whole session in **stream** way.
 
 
-### Connect/Dail (Optional)
+### Connect/Dial (Optional)
 
 	client.Connect()
-	client.Dail()
+	client.Dial()
 
 Call one of these methods to do an explicit connecting action.  
 If client.SetAutoReconnect(false) is called, one of these explicit connecting methods MUST be called; otherwise, these methods are optional.

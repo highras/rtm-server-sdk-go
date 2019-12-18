@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	SDKVersion = "0.2.3"
+	SDKVersion = "0.2.4"
 )
 
 type RTMServerMonitor interface {
@@ -120,8 +120,8 @@ func (client *RTMServerClient) Connect() bool {
 	return client.client.Connect()
 }
 
-func (client *RTMServerClient) Dail() bool {
-	return client.client.Dail()
+func (client *RTMServerClient) Dial() bool {
+	return client.client.Dial()
 }
 
 func (client *RTMServerClient) IsConnected() bool {
