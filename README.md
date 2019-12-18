@@ -60,11 +60,11 @@ Please get your project params from RTM Console.
 
 ### Connect/Dail (Optional)
 
-		client.Connect()
-		client.Dail()
+	client.Connect()
+	client.Dail()
 
-	Call one of these methods to do an explicit connecting action.  
-	If client.SetAutoReconnect(false) is called, one of these explicit connecting methods MUST be called; otherwise, these methods are optional.
+Call one of these methods to do an explicit connecting action.  
+If client.SetAutoReconnect(false) is called, one of these explicit connecting methods MUST be called; otherwise, these methods are optional.
 
 ### Send messages
 
