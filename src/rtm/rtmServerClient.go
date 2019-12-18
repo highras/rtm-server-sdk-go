@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	SDKVersion = "0.2.2"
+	SDKVersion = "0.2.3"
 )
 
 type RTMServerMonitor interface {
@@ -86,6 +86,10 @@ func (client *RTMServerClient) SetMonitor(monitor RTMServerMonitor) {
 	client.processor.monitor = monitor
 }
 
+func (client *RTMServerClient) SetAutoReconnect(autoReconnect bool) {
+	client.client.SetAutoReconnect(autoReconnect)
+}
+
 func (client *RTMServerClient) SetConnectTimeOut(timeout time.Duration) {
 	client.client.SetConnectTimeOut(timeout)
 }
@@ -110,6 +114,18 @@ func (client *RTMServerClient) SetLogger(logger *log.Logger) {
 
 func (client *RTMServerClient) Endpoint() string {
 	return client.client.Endpoint()
+}
+
+func (client *RTMServerClient) Connect() bool {
+	return client.client.Connect()
+}
+
+func (client *RTMServerClient) Dail() bool {
+	return client.client.Dail()
+}
+
+func (client *RTMServerClient) IsConnected() bool {
+	return client.client.IsConnected()
 }
 
 /*

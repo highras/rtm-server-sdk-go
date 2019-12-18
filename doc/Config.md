@@ -69,3 +69,30 @@ FPNN 的 Config 对象，将会影响 rtm 客户端的行为。
 
 	true 采用 256 位密钥加密，false 采用 128 位密钥加密。  
 	默认为 true
+
+### func (client *RTMServerClient) SetAutoReconnect(autoReconnect bool)
+
+	func (client *RTMServerClient) SetAutoReconnect(autoReconnect bool)
+
+配置连接方式。true 为自动连接，false 需要显式调用 Connect() 或者 Dail() 方法建立连接。 
+未配置时，默认自动建立连接。
+
+### func (client *RTMServerClient) Connect() bool
+
+	func (client *RTMServerClient) Connect() bool
+
+显式建立连接。如果 SetAutoReconnect() 设置为 false，必须调用该方法才能与服务器建立连接。  
+与 `func (client *RTMServerClient) Dail() bool` 相同。
+
+### func (client *RTMServerClient) Dail() bool
+
+	func (client *RTMServerClient) Dail() bool
+
+显式建立连接。如果 SetAutoReconnect() 设置为 false，必须调用该方法才能与服务器建立连接。  
+与 `func (client *RTMServerClient) Connect() bool` 相同。
+
+### func (client *RTMServerClient) IsConnected() bool
+
+	func (client *RTMServerClient) IsConnected() bool
+
+查询链接是否**已经**建立。
