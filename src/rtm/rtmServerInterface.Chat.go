@@ -1,7 +1,6 @@
 package rtm
 
 import (
-	"encoding/base64"
 	"fmt"
 	"time"
 
@@ -39,8 +38,8 @@ func (client *RTMServerClient) SendChat(fromUid int64, toUid int64, message stri
 		If include func param, this function will enter into async mode, and return (0, error);
 		else this function work in sync mode, and return (mtime int64, err error)
 */
-func (client *RTMServerClient) SendAudio(fromUid int64, toUid int64, message string, rest ...interface{}) (int64, error) {
-	return client.SendMessage(fromUid, toUid, defaultMtype_Audio, base64.StdEncoding.EncodeToString([]byte(message)), rest...)
+func (client *RTMServerClient) SendAudio(fromUid int64, toUid int64, message []byte, rest ...interface{}) (int64, error) {
+	return client.SendMessage(fromUid, toUid, defaultMtype_Audio, string(message), rest...)
 }
 
 /*
@@ -81,8 +80,8 @@ func (client *RTMServerClient) SendChats(fromUid int64, toUids []int64, message 
 		If include func param, this function will enter into async mode, and return (0, error);
 		else this function work in sync mode, and return (mtime int64, err error)
 */
-func (client *RTMServerClient) SendAudios(fromUid int64, toUids []int64, message string, rest ...interface{}) (int64, error) {
-	return client.SendMessages(fromUid, toUids, defaultMtype_Audio, base64.StdEncoding.EncodeToString([]byte(message)), rest...)
+func (client *RTMServerClient) SendAudios(fromUid int64, toUids []int64, message []byte, rest ...interface{}) (int64, error) {
+	return client.SendMessages(fromUid, toUids, defaultMtype_Audio, string(message), rest...)
 }
 
 /*
@@ -123,8 +122,8 @@ func (client *RTMServerClient) SendGroupChat(fromUid int64, groupId int64, messa
 		If include func param, this function will enter into async mode, and return (0, error);
 		else this function work in sync mode, and return (mtime int64, err error)
 */
-func (client *RTMServerClient) SendGroupAudio(fromUid int64, groupId int64, message string, rest ...interface{}) (int64, error) {
-	return client.SendGroupMessage(fromUid, groupId, defaultMtype_Audio, base64.StdEncoding.EncodeToString([]byte(message)), rest...)
+func (client *RTMServerClient) SendGroupAudio(fromUid int64, groupId int64, message []byte, rest ...interface{}) (int64, error) {
+	return client.SendGroupMessage(fromUid, groupId, defaultMtype_Audio, string(message), rest...)
 }
 
 /*
@@ -165,8 +164,8 @@ func (client *RTMServerClient) SendRoomChat(fromUid int64, roomId int64, message
 		If include func param, this function will enter into async mode, and return (0, error);
 		else this function work in sync mode, and return (mtime int64, err error)
 */
-func (client *RTMServerClient) SendRoomAudio(fromUid int64, roomId int64, message string, rest ...interface{}) (int64, error) {
-	return client.SendRoomMessage(fromUid, roomId, defaultMtype_Audio, base64.StdEncoding.EncodeToString([]byte(message)), rest...)
+func (client *RTMServerClient) SendRoomAudio(fromUid int64, roomId int64, message []byte, rest ...interface{}) (int64, error) {
+	return client.SendRoomMessage(fromUid, roomId, defaultMtype_Audio, string(message), rest...)
 }
 
 /*
@@ -207,8 +206,8 @@ func (client *RTMServerClient) SendBroadcastChat(fromUid int64, message string, 
 		If include func param, this function will enter into async mode, and return (0, error);
 		else this function work in sync mode, and return (mtime int64, err error)
 */
-func (client *RTMServerClient) SendBroadcastAudio(fromUid int64, message string, rest ...interface{}) (int64, error) {
-	return client.SendBroadcastMessage(fromUid, defaultMtype_Audio, base64.StdEncoding.EncodeToString([]byte(message)), rest...)
+func (client *RTMServerClient) SendBroadcastAudio(fromUid int64, message []byte, rest ...interface{}) (int64, error) {
+	return client.SendBroadcastMessage(fromUid, defaultMtype_Audio, string(message), rest...)
 }
 
 /*
@@ -327,6 +326,10 @@ func (client *RTMServerClient) GetP2PChat(uid int64, peerUid int64, desc bool, n
 */
 func (client *RTMServerClient) DelP2PChat(mid int64, fromUid int64, to int64, rest ...interface{}) error {
 	return client.DelMessage(mid, fromUid, to, MessageType_P2P, rest...)
+}
+
+func (client *RTMServerClient) GetChat(mid int64, fromUid int64, xid int64, messageType MessageType, rest ...interface{}) (int64, int8, string, string, int64, error) {
+	return client.GetMessage(mid, fromUid, xid, messageType, rest...)
 }
 
 /*
@@ -456,7 +459,7 @@ func (client *RTMServerClient) sendTranslateQuest(quest *fpnn.Quest, timeout tim
 		else this function work in sync mode, and return (result *TranslateResult, err error)
 */
 func (client *RTMServerClient) Translate(text string, sourceLanguage string, targetLanguage string,
-	textType string, profanity string, rest ...interface{}) (result *TranslateResult, err error) {
+	textType string, profanity string, postProfanity bool, uid int64, rest ...interface{}) (result *TranslateResult, err error) {
 
 	var timeout time.Duration
 	var callback func(*TranslateResult, int, string)
@@ -489,6 +492,14 @@ func (client *RTMServerClient) Translate(text string, sourceLanguage string, tar
 		quest.Param("profanity", profanity)
 	}
 
+	if postProfanity {
+		quest.Param("postProfanity", postProfanity)
+	}
+
+	if uid > 0 {
+		quest.Param("uid", uid)
+	}
+
 	return client.sendTranslateQuest(quest, timeout, callback)
 }
 
@@ -509,7 +520,7 @@ func (client *RTMServerClient) Translate(text string, sourceLanguage string, tar
 		If include func param, this function will enter into async mode, and return ("", error);
 		else this function work in sync mode, and return (text string, err error)
 */
-func (client *RTMServerClient) Profanity(text string, action string, rest ...interface{}) (string, error) {
+func (client *RTMServerClient) Profanity(text string, classify bool, uid int64, rest ...interface{}) (string, error) {
 
 	var timeout time.Duration
 	var callback func(string, int, string)
@@ -527,18 +538,17 @@ func (client *RTMServerClient) Profanity(text string, action string, rest ...int
 
 	quest := client.genServerQuest("profanity")
 	quest.Param("text", text)
-	quest.Param("action", action)
+	quest.Param("classify", classify)
+
+	if uid > 0 {
+		quest.Param("uid", uid)
+	}
 
 	return client.sendStringQuest(quest, timeout, "text", callback)
 }
 
 /*
 	Params:
-		action:
-			"stop": will return error when sensitive words found;
-			"censor": replace all sensitive words as '*'.
-
-		Can be empty as "censor".
 
 		rest: can be include following params:
 			timeout time.Duration
@@ -547,7 +557,7 @@ func (client *RTMServerClient) Profanity(text string, action string, rest ...int
 		If include func param, this function will enter into async mode, and return ("", error);
 		else this function work in sync mode, and return (text string, err error)
 */
-func (client *RTMServerClient) Transcribe(audio string, action string, lang string, rest ...interface{}) (string, string, error) {
+func (client *RTMServerClient) Transcribe(audio []byte, uid int64, rest ...interface{}) (string, string, error) {
 
 	var timeout time.Duration
 	var callback func(string, string, int, string)
@@ -564,9 +574,11 @@ func (client *RTMServerClient) Transcribe(audio string, action string, lang stri
 	}
 
 	quest := client.genServerQuest("transcribe")
-	quest.Param("audio", audio)
-	quest.Param("action", action)
-	quest.Param("lang", lang)
+	quest.Param("audio", string(audio))
+
+	if uid > 0 {
+		quest.Param("uid", uid)
+	}
 
 	return client.sendTranscribeQuest(quest, timeout, callback)
 }

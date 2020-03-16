@@ -161,6 +161,12 @@ func (processor *rtmServerQuestProcessor) Process(method string) func(*fpnn.Ques
 		return processor.processPushRoomMessage
 	case "pushevent":
 		return processor.processPushEvent
+	case "pushfile":
+		return processor.processPushFile
+	case "pushgroupfile":
+		return processor.processPushGroupFile
+	case "pushroomfile":
+		return processor.processPushRoomFile
 	default:
 		return nil
 	}
@@ -181,7 +187,7 @@ func (processor *rtmServerQuestProcessor) processPushMessage(quest *fpnn.Quest) 
 		if mtype == defaultMtype_Chat {
 			go processor.monitor.P2PChat(fromUid, toUid, mid, message, attrs, mtime)
 		} else if mtype == defaultMtype_Audio {
-			go processor.monitor.P2PAudio(fromUid, toUid, mid, message, attrs, mtime)
+			go processor.monitor.P2PAudio(fromUid, toUid, mid, []byte(message), attrs, mtime)
 		} else if mtype == defaultMtype_Cmd {
 			go processor.monitor.P2PCmd(fromUid, toUid, mid, message, attrs, mtime)
 		} else {
@@ -207,7 +213,7 @@ func (processor *rtmServerQuestProcessor) processPushGroupMessage(quest *fpnn.Qu
 		if mtype == defaultMtype_Chat {
 			go processor.monitor.GroupChat(fromUid, groupId, mid, message, attrs, mtime)
 		} else if mtype == defaultMtype_Audio {
-			go processor.monitor.GroupAudio(fromUid, groupId, mid, message, attrs, mtime)
+			go processor.monitor.GroupAudio(fromUid, groupId, mid, []byte(message), attrs, mtime)
 		} else if mtype == defaultMtype_Cmd {
 			go processor.monitor.GroupCmd(fromUid, groupId, mid, message, attrs, mtime)
 		} else {
@@ -233,7 +239,7 @@ func (processor *rtmServerQuestProcessor) processPushRoomMessage(quest *fpnn.Que
 		if mtype == defaultMtype_Chat {
 			go processor.monitor.RoomChat(fromUid, roomId, mid, message, attrs, mtime)
 		} else if mtype == defaultMtype_Audio {
-			go processor.monitor.RoomAudio(fromUid, roomId, mid, message, attrs, mtime)
+			go processor.monitor.RoomAudio(fromUid, roomId, mid, []byte(message), attrs, mtime)
 		} else if mtype == defaultMtype_Cmd {
 			go processor.monitor.RoomCmd(fromUid, roomId, mid, message, attrs, mtime)
 		} else {
@@ -260,5 +266,53 @@ func (processor *rtmServerQuestProcessor) processPushEvent(quest *fpnn.Quest) (*
 }
 
 func (processor *rtmServerQuestProcessor) processPing(quest *fpnn.Quest) (*fpnn.Answer, error) {
+	return fpnn.NewAnswer(quest), nil
+}
+
+func (processor *rtmServerQuestProcessor) processPushFile(quest *fpnn.Quest) (*fpnn.Answer, error) {
+
+	fromUid := quest.WantInt64("from")
+	to := quest.WantInt64("to")
+	mtype := quest.WantInt8("mtype")
+
+	mid := quest.WantInt64("mid")
+	message := quest.WantString("msg")
+	attrs := quest.WantString("attrs")
+	mtime := quest.WantInt64("mtime")
+
+	go processor.monitor.P2PFile(fromUid, to, mtype, mid, message, attrs, mtime)
+
+	return fpnn.NewAnswer(quest), nil
+}
+
+func (processor *rtmServerQuestProcessor) processPushGroupFile(quest *fpnn.Quest) (*fpnn.Answer, error) {
+
+	fromUid := quest.WantInt64("from")
+	gid := quest.WantInt64("gid")
+	mtype := quest.WantInt8("mtype")
+
+	mid := quest.WantInt64("mid")
+	message := quest.WantString("msg")
+	attrs := quest.WantString("attrs")
+	mtime := quest.WantInt64("mtime")
+
+	go processor.monitor.GroupFile(fromUid, gid, mtype, mid, message, attrs, mtime)
+
+	return fpnn.NewAnswer(quest), nil
+}
+
+func (processor *rtmServerQuestProcessor) processPushRoomFile(quest *fpnn.Quest) (*fpnn.Answer, error) {
+
+	fromUid := quest.WantInt64("from")
+	rid := quest.WantInt64("rid")
+	mtype := quest.WantInt8("mtype")
+
+	mid := quest.WantInt64("mid")
+	message := quest.WantString("msg")
+	attrs := quest.WantString("attrs")
+	mtime := quest.WantInt64("mtime")
+
+	go processor.monitor.RoomFile(fromUid, rid, mtype, mid, message, attrs, mtime)
+
 	return fpnn.NewAnswer(quest), nil
 }

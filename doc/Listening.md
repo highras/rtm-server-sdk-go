@@ -14,12 +14,15 @@
 		P2PChat(fromUid int64, toUid int64, mid int64, message string, attrs string, mtime int64)
 		GroupChat(fromUid int64, groupId int64, mid int64, message string, attrs string, mtime int64)
 		RoomChat(fromUid int64, roomIid int64, mid int64, message string, attrs string, mtime int64)
-		P2PAudio(fromUid int64, toUid int64, mid int64, message string, attrs string, mtime int64)
-	        GroupAudio(fromUid int64, groupId int64, mid int64, message string, attrs string, mtime int64)
-	        RoomAudio(fromUid int64, roomIid int64, mid int64, message string, attrs string, mtime int64)
-	        P2PCmd(fromUid int64, toUid int64, mid int64, message string, attrs string, mtime int64)
-	        GroupCmd(fromUid int64, groupId int64, mid int64, message string, attrs string, mtime int64)
-	        RoomCmd(fromUid int64, roomIid int64, mid int64, message string, attrs string, mtime int64)
+		P2PAudio(fromUid int64, toUid int64, mid int64, message []byte, attrs string, mtime int64)
+	    GroupAudio(fromUid int64, groupId int64, mid int64, message []byte, attrs string, mtime int64)
+	    RoomAudio(fromUid int64, roomIid int64, mid int64, message []byte, attrs string, mtime int64)
+	    P2PCmd(fromUid int64, toUid int64, mid int64, message string, attrs string, mtime int64)
+	    GroupCmd(fromUid int64, groupId int64, mid int64, message string, attrs string, mtime int64)
+	    RoomCmd(fromUid int64, roomIid int64, mid int64, message string, attrs string, mtime int64)
+		P2PFile(fromUid int64, toUid int64, mtype int8, mid int64, message string, attrs string, mtime int64)
+		GroupFile(fromUid int64, groupId int64, mtype int8, mid int64, message string, attrs string, mtime int64)
+		RoomFile(fromUid int64, roomId int64, mtype int8, mid int64, message string, attrs string, mtime int64)
 	}
 
 消息监听接口。

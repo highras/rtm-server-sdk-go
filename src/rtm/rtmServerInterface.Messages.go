@@ -599,6 +599,55 @@ func (client *RTMServerClient) DelMessage(mid int64, fromUid int64, xid int64, m
 		If include func param, this function will enter into async mode, and return (error);
 		else this function work in sync mode, and return (err error)
 */
+func (client *RTMServerClient) GetMessage(mid int64, fromUid int64, xid int64, messageType MessageType, rest ...interface{}) (int64, int8, string, string, int64, error) {
+
+	var timeout time.Duration
+	var callback func(int64, int8, string, string, int64, int, string)
+
+	for _, value := range rest {
+		switch value := value.(type) {
+		case time.Duration:
+			timeout = value
+		case func(int64, int8, string, string, int64, int, string):
+			callback = value
+		default:
+			panic("Invaild params when call RTMServerClient.DelMessage() function.")
+		}
+	}
+
+	var realType int8
+	switch messageType {
+	case MessageType_P2P:
+		realType = 1
+	case MessageType_Group:
+		realType = 2
+	case MessageType_Room:
+		realType = 3
+	case MessageType_Broadcast:
+		realType = 4
+	default:
+		panic("Invaild messageType when call RTMServerClient.DelMessage() function.")
+	}
+
+	quest := client.genServerQuest("getmsg")
+
+	quest.Param("mid", mid)
+	quest.Param("from", fromUid)
+	quest.Param("xid", xid)
+	quest.Param("type", realType)
+
+	return client.sendGetMsgInfoQuest(quest, timeout, callback)
+}
+
+/*
+	Params:
+		rest: can be include following params:
+			timeout time.Duration
+			func (errorCode int, errInfo string)
+
+		If include func param, this function will enter into async mode, and return (error);
+		else this function work in sync mode, and return (err error)
+*/
 func (client *RTMServerClient) DelP2PMessage(mid int64, fromUid int64, to int64, rest ...interface{}) error {
 	return client.DelMessage(mid, fromUid, to, MessageType_P2P, rest)
 }

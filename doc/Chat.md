@@ -31,9 +31,9 @@
 如果 **callback** 参数**不存在**，则为**同步**发送，返回 mtime 及 error 信息。  
 如果 **callback** 参数**存在**，则为**异步**发送，返回 0 及 error 信息。真实的 mtime，将通过 callback 传递。
 
-### func (client *RTMServerClient) SendAudio(fromUid int64, toUid int64, message string, rest ... interface{}) (int64, error)
+### func (client *RTMServerClient) SendAudio(fromUid int64, toUid int64, message []byte, rest ... interface{}) (int64, error)
 
-	func (client *RTMServerClient) SendAudio(fromUid int64, toUid int64, message string, rest ... interface{}) (int64, error)
+	func (client *RTMServerClient) SendAudio(fromUid int64, toUid int64, message []byte, rest ... interface{}) (int64, error)
 
 发送 P2P 语音消息。
 
@@ -106,9 +106,9 @@
 如果 **callback** 参数**不存在**，则为**同步**发送，返回 mtime 及 error 信息。  
 如果 **callback** 参数**存在**，则为**异步**发送，返回 0 及 error 信息。真实的 mtime，将通过 callback 传递。
 
-### func (client *RTMServerClient) SendAudios(fromUid int64, toUids []int64, message string, rest ... interface{}) (int64, error)
+### func (client *RTMServerClient) SendAudios(fromUid int64, toUids []int64, message []byte, rest ... interface{}) (int64, error)
 
-	func (client *RTMServerClient) SendAudios(fromUid int64, toUids []int64, message string, rest ... interface{}) (int64, error)
+	func (client *RTMServerClient) SendAudios(fromUid int64, toUids []int64, message []byte, rest ... interface{}) (int64, error)
 
 发送多人 P2P 语音消息。
 
@@ -181,9 +181,9 @@
 如果 **callback** 参数**不存在**，则为**同步**发送，返回 mtime 及 error 信息。  
 如果 **callback** 参数**存在**，则为**异步**发送，返回 0 及 error 信息。真实的 mtime，将通过 callback 传递。
 
-### func (client *RTMServerClient) SendGroupAudio(fromUid int64, groupId int64, message string, rest ... interface{}) (int64, error)
+### func (client *RTMServerClient) SendGroupAudio(fromUid int64, groupId int64, message []byte, rest ... interface{}) (int64, error)
 
-	func (client *RTMServerClient) SendGroupAudio(fromUid int64, groupId int64, message string, rest ... interface{}) (int64, error)
+	func (client *RTMServerClient) SendGroupAudio(fromUid int64, groupId int64, message []byte, rest ... interface{}) (int64, error)
 
 发送群组语音消息。
 
@@ -256,9 +256,9 @@
 如果 **callback** 参数**不存在**，则为**同步**发送，返回 mtime 及 error 信息。  
 如果 **callback** 参数**存在**，则为**异步**发送，返回 0 及 error 信息。真实的 mtime，将通过 callback 传递。
 
-### func (client *RTMServerClient) SendRoomAudio(fromUid int64, roomId int64, message string, rest ... interface{}) (int64, error)
+### func (client *RTMServerClient) SendRoomAudio(fromUid int64, roomId int64, message []byte, rest ... interface{}) (int64, error)
 
-	func (client *RTMServerClient) SendRoomAudio(fromUid int64, roomId int64, message string, rest ... interface{}) (int64, error)
+	func (client *RTMServerClient) SendRoomAudio(fromUid int64, roomId int64, message []byte, rest ... interface{}) (int64, error)
 
 发送房间语音消息。
 
@@ -331,9 +331,9 @@
 如果 **callback** 参数**不存在**，则为**同步**发送，返回 mtime 及 error 信息。  
 如果 **callback** 参数**存在**，则为**异步**发送，返回 0 及 error 信息。真实的 mtime，将通过 callback 传递。
 
-### func (client *RTMServerClient) SendBroadcastAudio(fromUid int64, message string, rest ... interface{}) (int64, error)
+### func (client *RTMServerClient) SendBroadcastAudio(fromUid int64, message []byte, rest ... interface{}) (int64, error)
 
-	func (client *RTMServerClient) SendBroadcastAudio(fromUid int64, message string, rest ... interface{}) (int64, error)
+	func (client *RTMServerClient) SendBroadcastAudio(fromUid int64, message []byte, rest ... interface{}) (int64, error)
 
 发送广播语音消息。
 
@@ -705,7 +705,8 @@
 
 翻译聊天消息返回结果。
 
-### func (client *RTMServerClient) Translate(text string, sourceLanguage string, targetLanguage string, textType string, profanity string, rest ... interface{}) (result *TranslateResult, err error)
+### func (client *RTMServerClient) Translate(text string, sourceLanguage string, targetLanguage string,
+	textType string, profanity string, postProfanity bool, uid int64, rest ...interface{}) (result *TranslateResult, err error)
 
 	func (client *RTMServerClient) Translate(text string, sourceLanguage string, targetLanguage string, textType string, profanity string, rest ... interface{}) (result *TranslateResult, err error)
 
@@ -746,6 +747,11 @@
 
 	如果为空字符串，则默认为 `off`。
 
++ `postProfanity bool`
+
+	是否把翻译后的文本过滤。
+
+
 可接受的参数为：
 
 
@@ -765,7 +771,7 @@
 
 ### -----------------------[ 敏感词主动过滤 ]-----------------------------
 
-### func (client *RTMServerClient) Profanity(text string, action string, rest ... interface{}) (string, error)
+### func (client *RTMServerClient) Profanity(text string, classify bool, uid int64, rest ... interface{}) (string, error)
 
 	func (client *RTMServerClient) Profanity(text string, action string, rest ... interface{}) (string, error)
 
@@ -773,16 +779,9 @@
 
 必选参数：
 
-+ `action string`
++ `classify bool`
 
-	是否触发敏感词过滤。
-
-	可选值：
-
-		* stop：当发现敏感词时，接口返回错误；
-		* censor：当发现敏感词时，敏感词将被 `*` 替代。
-
-	如果为空字符串，则默认为 `censor`。
+	是否进行文本分类检测。
 
 可接受的参数为：
 
@@ -801,24 +800,13 @@
 
 ### -----------------------[ 语音识别 ]-----------------------------
 
-### func (client *RTMServerClient) Transcribe(audio string, lang string, action string, rest ... interface{}) (string, string, error)
+### func (client *RTMServerClient) Transcribe(audio []byte, rest ... interface{}) (string, string, error)
 
-	func (client *RTMServerClient) Transcribe(audio string, lang string, action string, rest ... interface{}) (string, string, error)
+	func (client *RTMServerClient) Transcribe(audio []byte, lang string, action string, rest ... interface{}) (string, string, error)
 
-敏感词过滤。
+语音识别。
 
 必选参数：
-
-+ `action string`
-
-	是否触发敏感词过滤。
-
-	可选值：
-
-		* stop：当发现敏感词时，接口返回错误；
-		* censor：当发现敏感词时，敏感词将被 `*` 替代。
-
-	如果为空字符串，则默认为 `censor`。
 
 可接受的参数为：
 

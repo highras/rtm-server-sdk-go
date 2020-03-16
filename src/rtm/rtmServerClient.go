@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	SDKVersion = "0.2.4"
+	SDKVersion = "0.2.5"
 )
 
 type RTMServerMonitor interface {
@@ -25,12 +25,15 @@ type RTMServerMonitor interface {
 	P2PChat(fromUid int64, toUid int64, mid int64, message string, attrs string, mtime int64)
 	GroupChat(fromUid int64, groupId int64, mid int64, message string, attrs string, mtime int64)
 	RoomChat(fromUid int64, roomIid int64, mid int64, message string, attrs string, mtime int64)
-	P2PAudio(fromUid int64, toUid int64, mid int64, message string, attrs string, mtime int64)
-	GroupAudio(fromUid int64, groupId int64, mid int64, message string, attrs string, mtime int64)
-	RoomAudio(fromUid int64, roomIid int64, mid int64, message string, attrs string, mtime int64)
+	P2PAudio(fromUid int64, toUid int64, mid int64, message []byte, attrs string, mtime int64)
+	GroupAudio(fromUid int64, groupId int64, mid int64, message []byte, attrs string, mtime int64)
+	RoomAudio(fromUid int64, roomIid int64, mid int64, message []byte, attrs string, mtime int64)
 	P2PCmd(fromUid int64, toUid int64, mid int64, message string, attrs string, mtime int64)
 	GroupCmd(fromUid int64, groupId int64, mid int64, message string, attrs string, mtime int64)
 	RoomCmd(fromUid int64, roomIid int64, mid int64, message string, attrs string, mtime int64)
+	P2PFile(fromUid int64, toUid int64, mtype int8, mid int64, message string, attrs string, mtime int64)
+	GroupFile(fromUid int64, groupId int64, mtype int8, mid int64, message string, attrs string, mtime int64)
+	RoomFile(fromUid int64, roomId int64, mtype int8, mid int64, message string, attrs string, mtime int64)
 }
 
 //------------------------------[ RTM Server Client ]---------------------------------------//
@@ -439,6 +442,34 @@ func (client *RTMServerClient) sendGetObjectInfoQuest(quest *fpnn.Quest, timeout
 		return answer.WantString("oinfo"), answer.WantString("pinfo"), nil
 	} else {
 		return "", "", fmt.Errorf("[Exception] code: %d, ex: %s", answer.WantInt("code"), answer.WantString("ex"))
+	}
+}
+
+func (client *RTMServerClient) sendGetMsgInfoQuest(quest *fpnn.Quest, timeout time.Duration,
+	callback func(id int64, mtype int8, msg string, attr string, mtime int64, errorCode int, errInfo string)) (int64, int8, string, string, int64, error) {
+
+	if callback != nil {
+		callbackFunc := func(answer *fpnn.Answer, errorCode int) {
+			if errorCode == fpnn.FPNN_EC_OK {
+				callback(answer.WantInt64("id"), answer.WantInt8("mtype"), answer.WantString("msg"), answer.WantString("attr"), answer.WantInt64("mtime"), fpnn.FPNN_EC_OK, "")
+			} else if answer == nil {
+				callback(0, 0, "", "", 0, errorCode, "")
+			} else {
+				callback(0, 0, "", "", 0, answer.WantInt("code"), answer.WantString("ex"))
+			}
+		}
+
+		_, err := client.sendQuest(quest, timeout, callbackFunc)
+		return 0, 0, "", "", 0, err
+	}
+
+	answer, err := client.sendQuest(quest, timeout, nil)
+	if err != nil {
+		return 0, 0, "", "", 0, err
+	} else if !answer.IsException() {
+		return answer.WantInt64("id"), answer.WantInt8("mtype"), answer.WantString("msg"), answer.WantString("attr"), answer.WantInt64("mtime"), nil
+	} else {
+		return 0, 0, "", "", 0, fmt.Errorf("[Exception] code: %d, ex: %s", answer.WantInt("code"), answer.WantString("ex"))
 	}
 }
 
