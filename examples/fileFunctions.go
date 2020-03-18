@@ -10,7 +10,7 @@ import (
 	"strings"
 	"io/ioutil"
 	"github.com/highras/fpnn-sdk-go/src/fpnn"
-	"../src/rtm"
+	"github.com/highras/rtm-server-sdk-go/src/rtm"
 )
 
 //---------------[ Help tools for serializing concurrent printing. ]---------------------//

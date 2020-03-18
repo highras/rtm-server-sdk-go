@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 
-	"../src/rtm"
+	"github.com/highras/rtm-server-sdk-go/src/rtm"
 	"github.com/highras/fpnn-sdk-go/src/fpnn"
 )
 
