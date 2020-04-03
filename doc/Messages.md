@@ -161,9 +161,9 @@
 
 历史消息返回结果。
 
-### func (client *RTMServerClient) GetGroupMessage(groupId int64, desc bool, num int16, begin int64, end int64, lastid int64, rest ... interface{}) (*HistoryMessageResult, error)
+### func (client *RTMServerClient) GetGroupMessage(groupId int64, desc bool, num int16, begin int64, end int64, lastid int64, uid int64, rest ... interface{}) (*HistoryMessageResult, error)
 
-	func (client *RTMServerClient) GetGroupMessage(groupId int64, desc bool, num int16, begin int64, end int64, lastid int64, rest ... interface{}) (*HistoryMessageResult, error)
+	func (client *RTMServerClient) GetGroupMessage(groupId int64, desc bool, num int16, begin int64, end int64, lastid int64, uid int64, rest ... interface{}) (*HistoryMessageResult, error)
 
 获取群组历史消息。
 
@@ -196,6 +196,10 @@
 
 	指定获取的 mtype 类型。
 
++ `uid int64`
+
+	用户id
+
 + `timeout time.Duration`
 
 	请求超时。  
@@ -211,9 +215,9 @@
 
 
 
-### func (client *RTMServerClient) GetRoomMessage(roomId int64, desc bool, num int16, begin int64, end int64, lastid int64, rest ... interface{}) (*HistoryMessageResult, error)
+### func (client *RTMServerClient) GetRoomMessage(roomId int64, desc bool, num int16, begin int64, end int64, lastid int64, uid int64, rest ... interface{}) (*HistoryMessageResult, error)
 
-	func (client *RTMServerClient) GetRoomMessage(roomId int64, desc bool, num int16, begin int64, end int64, lastid int64, rest ... interface{}) (*HistoryMessageResult, error)
+	func (client *RTMServerClient) GetRoomMessage(roomId int64, desc bool, num int16, begin int64, end int64, lastid int64, uid int64, rest ... interface{}) (*HistoryMessageResult, error)
 
 获取房间历史消息。
 
@@ -246,6 +250,10 @@
 
 	指定获取的 mtype 类型。
 
++ `uid int64`
+
+	用户id
+
 + `timeout time.Duration`
 
 	请求超时。  
@@ -261,9 +269,9 @@
 
 
 
-### func (client *RTMServerClient) GetBroadcastMessage(desc bool, num int16, begin int64, end int64, lastid int64, rest ... interface{}) (*HistoryMessageResult, error)
+### func (client *RTMServerClient) GetBroadcastMessage(desc bool, num int16, begin int64, end int64, lastid int64, uid int64, rest ... interface{}) (*HistoryMessageResult, error)
 
-	func (client *RTMServerClient) GetBroadcastMessage(desc bool, num int16, begin int64, end int64, lastid int64, rest ... interface{}) (*HistoryMessageResult, error)
+	func (client *RTMServerClient) GetBroadcastMessage(desc bool, num int16, begin int64, end int64, lastid int64, uid int64, rest ... interface{}) (*HistoryMessageResult, error)
 
 获取广播历史消息。
 
@@ -289,6 +297,10 @@
 + `lastid int64`
 
 	最后一条消息的id，第一次填默认0。条件：> 或者 <
+
++ `uid int64`
+
+	用户id
 
 可接受的参数为：
 

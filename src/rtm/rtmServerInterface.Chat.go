@@ -236,7 +236,7 @@ func (client *RTMServerClient) SendBroadcastCmd(fromUid int64, message string, r
 		else this function work in sync mode, and return (result *HistoryMessageResult, err error)
 */
 func (client *RTMServerClient) GetGroupChat(groupId int64, desc bool, num int16,
-	begin int64, end int64, lastid int64, rest ...interface{}) (*HistoryMessageResult, error) {
+	begin int64, end int64, lastid int64, uid int64, rest ...interface{}) (*HistoryMessageResult, error) {
 
 	for _, value := range rest {
 		switch value.(type) {
@@ -245,7 +245,7 @@ func (client *RTMServerClient) GetGroupChat(groupId int64, desc bool, num int16,
 		}
 	}
 
-	return client.GetGroupMessage(groupId, desc, num, begin, end, lastid, append(rest, []int8{defaultMtype_Chat, defaultMtype_Audio, defaultMtype_Cmd})...)
+	return client.GetGroupMessage(groupId, desc, num, begin, end, lastid, uid, append(rest, []int8{defaultMtype_Chat, defaultMtype_Audio, defaultMtype_Cmd})...)
 }
 
 /*
@@ -258,7 +258,7 @@ func (client *RTMServerClient) GetGroupChat(groupId int64, desc bool, num int16,
 		else this function work in sync mode, and return (result *HistoryMessageResult, err error)
 */
 func (client *RTMServerClient) GetRoomChat(roomId int64, desc bool, num int16,
-	begin int64, end int64, lastid int64, rest ...interface{}) (*HistoryMessageResult, error) {
+	begin int64, end int64, lastid int64, uid int64, rest ...interface{}) (*HistoryMessageResult, error) {
 
 	for _, value := range rest {
 		switch value.(type) {
@@ -267,7 +267,7 @@ func (client *RTMServerClient) GetRoomChat(roomId int64, desc bool, num int16,
 		}
 	}
 
-	return client.GetRoomMessage(roomId, desc, num, begin, end, lastid, append(rest, []int8{defaultMtype_Chat, defaultMtype_Audio, defaultMtype_Cmd})...)
+	return client.GetRoomMessage(roomId, desc, num, begin, end, lastid, uid, append(rest, []int8{defaultMtype_Chat, defaultMtype_Audio, defaultMtype_Cmd})...)
 }
 
 /*
@@ -280,7 +280,7 @@ func (client *RTMServerClient) GetRoomChat(roomId int64, desc bool, num int16,
 		else this function work in sync mode, and return (result *HistoryMessageResult, err error)
 */
 func (client *RTMServerClient) GetBroadcastChat(desc bool, num int16,
-	begin int64, end int64, lastid int64, rest ...interface{}) (*HistoryMessageResult, error) {
+	begin int64, end int64, lastid int64, uid int64, rest ...interface{}) (*HistoryMessageResult, error) {
 
 	for _, value := range rest {
 		switch value.(type) {
@@ -289,7 +289,7 @@ func (client *RTMServerClient) GetBroadcastChat(desc bool, num int16,
 		}
 	}
 
-	return client.GetBroadcastMessage(desc, num, begin, end, lastid, append(rest, []int8{defaultMtype_Chat, defaultMtype_Audio, defaultMtype_Cmd})...)
+	return client.GetBroadcastMessage(desc, num, begin, end, lastid, uid, append(rest, []int8{defaultMtype_Chat, defaultMtype_Audio, defaultMtype_Cmd})...)
 }
 
 /*
@@ -557,7 +557,7 @@ func (client *RTMServerClient) Profanity(text string, classify bool, uid int64, 
 		If include func param, this function will enter into async mode, and return ("", error);
 		else this function work in sync mode, and return (text string, err error)
 */
-func (client *RTMServerClient) Transcribe(audio []byte, uid int64, rest ...interface{}) (string, string, error) {
+func (client *RTMServerClient) Transcribe(audio []byte, uid int64, profanityFilter bool, rest ...interface{}) (string, string, error) {
 
 	var timeout time.Duration
 	var callback func(string, string, int, string)
@@ -575,6 +575,7 @@ func (client *RTMServerClient) Transcribe(audio []byte, uid int64, rest ...inter
 
 	quest := client.genServerQuest("transcribe")
 	quest.Param("audio", string(audio))
+	quest.Param("profanityFilter", profanityFilter)
 
 	if uid > 0 {
 		quest.Param("uid", uid)

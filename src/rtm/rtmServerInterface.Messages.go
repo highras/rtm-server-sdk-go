@@ -357,7 +357,7 @@ func (client *RTMServerClient) sendHistoryMessageQuest(quest *fpnn.Quest, timeou
 		else this function work in sync mode, and return (result *HistoryMessageResult, err error)
 */
 func (client *RTMServerClient) GetGroupMessage(groupId int64, desc bool, num int16,
-	begin int64, end int64, lastid int64, rest ...interface{}) (*HistoryMessageResult, error) {
+	begin int64, end int64, lastid int64, uid int64, rest ...interface{}) (*HistoryMessageResult, error) {
 
 	var mtypes []int8
 	var timeout time.Duration
@@ -384,6 +384,7 @@ func (client *RTMServerClient) GetGroupMessage(groupId int64, desc bool, num int
 	quest.Param("begin", begin)
 	quest.Param("end", end)
 	quest.Param("lastid", lastid)
+	quest.Param("uid", uid)
 
 	if mtypes != nil {
 		quest.Param("mtypes", mtypes)
@@ -403,7 +404,7 @@ func (client *RTMServerClient) GetGroupMessage(groupId int64, desc bool, num int
 		else this function work in sync mode, and return (result *HistoryMessageResult, err error)
 */
 func (client *RTMServerClient) GetRoomMessage(roomId int64, desc bool, num int16,
-	begin int64, end int64, lastid int64, rest ...interface{}) (*HistoryMessageResult, error) {
+	begin int64, end int64, lastid int64, uid int64, rest ...interface{}) (*HistoryMessageResult, error) {
 
 	var mtypes []int8
 	var timeout time.Duration
@@ -430,6 +431,7 @@ func (client *RTMServerClient) GetRoomMessage(roomId int64, desc bool, num int16
 	quest.Param("begin", begin)
 	quest.Param("end", end)
 	quest.Param("lastid", lastid)
+	quest.Param("uid", uid)
 
 	if mtypes != nil {
 		quest.Param("mtypes", mtypes)
@@ -449,7 +451,7 @@ func (client *RTMServerClient) GetRoomMessage(roomId int64, desc bool, num int16
 		else this function work in sync mode, and return (result *HistoryMessageResult, err error)
 */
 func (client *RTMServerClient) GetBroadcastMessage(desc bool, num int16,
-	begin int64, end int64, lastid int64, rest ...interface{}) (*HistoryMessageResult, error) {
+	begin int64, end int64, lastid int64, uid int64, rest ...interface{}) (*HistoryMessageResult, error) {
 
 	var mtypes []int8
 	var timeout time.Duration
@@ -475,6 +477,7 @@ func (client *RTMServerClient) GetBroadcastMessage(desc bool, num int16,
 	quest.Param("begin", begin)
 	quest.Param("end", end)
 	quest.Param("lastid", lastid)
+	quest.Param("uid", uid)
 
 	if mtypes != nil {
 		quest.Param("mtypes", mtypes)

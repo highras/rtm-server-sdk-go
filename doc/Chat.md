@@ -411,9 +411,9 @@
 
 聊天历史返回结果。
 
-### func (client *RTMServerClient) GetGroupChat(groupId int64, desc bool, num int16, begin int64, end int64, lastid int64, rest ... interface{}) (*HistoryMessageResult, error)
+### func (client *RTMServerClient) GetGroupChat(groupId int64, desc bool, num int16, begin int64, end int64, lastid int64, uid int64, rest ... interface{}) (*HistoryMessageResult, error)
 
-	func (client *RTMServerClient) GetGroupChat(groupId int64, desc bool, num int16, begin int64, end int64, lastid int64, rest ... interface{}) (*HistoryMessageResult, error)
+	func (client *RTMServerClient) GetGroupChat(groupId int64, desc bool, num int16, begin int64, end int64, lastid int64, uid int64, rest ... interface{}) (*HistoryMessageResult, error)
 
 获取群组聊天历史。
 
@@ -440,6 +440,10 @@
 
 	最后一条消息的id，第一次填默认0。条件：> 或者 <
 
++ `uid int64`
+
+	用户id
+
 可接受的参数为：
 
 + `timeout time.Duration`
@@ -456,9 +460,9 @@
 如果 **callback** 参数**存在**，则为**异步**请求，返回 nil 及 error 信息。真实的 *HistoryMessageResult 结果，将通过 callback 传递。
 
 
-### func (client *RTMServerClient) GetRoomChat(roomId int64, desc bool, num int16, begin int64, end int64, lastid int64, rest ... interface{}) (*HistoryMessageResult, error)
+### func (client *RTMServerClient) GetRoomChat(roomId int64, desc bool, num int16, begin int64, end int64, lastid int64, uid int64, rest ... interface{}) (*HistoryMessageResult, error)
 
-	func (client *RTMServerClient) GetRoomChat(roomId int64, desc bool, num int16, begin int64, end int64, lastid int64, rest ... interface{}) (*HistoryMessageResult, error)
+	func (client *RTMServerClient) GetRoomChat(roomId int64, desc bool, num int16, begin int64, end int64, lastid int64, uid int64, rest ... interface{}) (*HistoryMessageResult, error)
 
 获取房间聊天历史。
 
@@ -485,6 +489,10 @@
 
 	最后一条消息的id，第一次填默认0。条件：> 或者 <
 
++ `uid int64`
+
+	用户id
+
 可接受的参数为：
 
 + `timeout time.Duration`
@@ -502,9 +510,9 @@
 
 
 
-### func (client *RTMServerClient) GetBroadcastChat(desc bool, num int16, begin int64, end int64, lastid int64, rest ... interface{}) (*HistoryMessageResult, error)
+### func (client *RTMServerClient) GetBroadcastChat(desc bool, num int16, begin int64, end int64, lastid int64, uid int64, rest ... interface{}) (*HistoryMessageResult, error)
 
-	func (client *RTMServerClient) GetBroadcastChat(desc bool, num int16, begin int64, end int64, lastid int64, rest ... interface{}) (*HistoryMessageResult, error)
+	func (client *RTMServerClient) GetBroadcastChat(desc bool, num int16, begin int64, end int64, lastid int64, uid int64, rest ... interface{}) (*HistoryMessageResult, error)
 
 获取广播聊天历史。
 
@@ -530,6 +538,10 @@
 + `lastid int64`
 
 	最后一条消息的id，第一次填默认0。条件：> 或者 <
+
++ `uid int64`
+
+	用户id
 
 可接受的参数为：
 
@@ -800,13 +812,25 @@
 
 ### -----------------------[ 语音识别 ]-----------------------------
 
-### func (client *RTMServerClient) Transcribe(audio []byte, rest ... interface{}) (string, string, error)
+### func (client *RTMServerClient) Transcribe(audio []byte, uid int64, profanityFilter bool, rest ... interface{}) (string, string, error)
 
-	func (client *RTMServerClient) Transcribe(audio []byte, lang string, action string, rest ... interface{}) (string, string, error)
+	func (client *RTMServerClient) Transcribe(audio []byte, uid int64, profanityFilter bool, rest ... interface{}) (string, string, error)
 
 语音识别。
 
 必选参数：
+
++ `audio []byte`
+
+	语音数据
+
++ `uid int64`
+
+	用户id
+
++ `profanityFilter bool`
+
+	是否过滤
 
 可接受的参数为：
 
