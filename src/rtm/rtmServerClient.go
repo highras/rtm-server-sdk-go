@@ -421,6 +421,53 @@ func (client *RTMServerClient) sendTranscribeQuest(quest *fpnn.Quest, timeout ti
 	}
 }
 
+func convertSliceToStringSlice(slice []interface{}) []string {
+	if slice == nil || len(slice) == 0 {
+		return make([]string, 0, 1)
+	}
+
+	rev := make([]string, 0, len(slice))
+	for _, elem := range slice {
+		val := convertToString(elem)
+		rev = append(rev, val)
+	}
+	return rev
+}
+
+func (client *RTMServerClient) sendProfanityQuest(quest *fpnn.Quest, timeout time.Duration,
+	callback func(text string, classification []string, errorCode int, errInfo string)) (string, []string, error) {
+
+	if callback != nil {
+		callbackFunc := func(answer *fpnn.Answer, errorCode int) {
+			if errorCode == fpnn.FPNN_EC_OK {
+				text := answer.WantString("text")
+				slice, _ := answer.GetSlice("classification")
+				classification := convertSliceToStringSlice(slice)
+				callback(text, classification, fpnn.FPNN_EC_OK, "")
+			} else if answer == nil {
+				callback("", make([]string, 0, 1), errorCode, "")
+			} else {
+				callback("", make([]string, 0, 1), answer.WantInt("code"), answer.WantString("ex"))
+			}
+		}
+
+		_, err := client.sendQuest(quest, timeout, callbackFunc)
+		return "", make([]string, 0, 1), err
+	}
+
+	answer, err := client.sendQuest(quest, timeout, nil)
+	if err != nil {
+		return "", make([]string, 0, 1), err
+	} else if !answer.IsException() {
+		text := answer.WantString("text")
+		slice, _ := answer.GetSlice("classification")
+		classification := convertSliceToStringSlice(slice)
+		return text, classification, nil
+	} else {
+		return "", make([]string, 0, 1), fmt.Errorf("[Exception] code: %d, ex: %s", answer.WantInt("code"), answer.WantString("ex"))
+	}
+}
+
 func (client *RTMServerClient) sendGetObjectInfoQuest(quest *fpnn.Quest, timeout time.Duration,
 	callback func(publicInfo string, privateInfo string, errorCode int, errInfo string)) (string, string, error) {
 

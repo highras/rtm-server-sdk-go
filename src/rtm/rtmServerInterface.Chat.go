@@ -507,12 +507,6 @@ func (client *RTMServerClient) Translate(text string, sourceLanguage string, tar
 
 /*
 	Params:
-		action:
-			"stop": will return error when sensitive words found;
-			"censor": replace all sensitive words as '*'.
-
-		Can be empty as "censor".
-
 		rest: can be include following params:
 			timeout time.Duration
 			func (text string, errorCode int, errInfo string)
@@ -520,16 +514,16 @@ func (client *RTMServerClient) Translate(text string, sourceLanguage string, tar
 		If include func param, this function will enter into async mode, and return ("", error);
 		else this function work in sync mode, and return (text string, err error)
 */
-func (client *RTMServerClient) Profanity(text string, classify bool, uid int64, rest ...interface{}) (string, error) {
+func (client *RTMServerClient) Profanity(text string, classify bool, uid int64, rest ...interface{}) (string, []string, error) {
 
 	var timeout time.Duration
-	var callback func(string, int, string)
+	var callback func(string, []string, int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
 		case time.Duration:
 			timeout = value
-		case func(string, int, string):
+		case func(string, []string, int, string):
 			callback = value
 		default:
 			panic("Invaild params when call RTMServerClient.Profanity() function.")
@@ -544,7 +538,7 @@ func (client *RTMServerClient) Profanity(text string, classify bool, uid int64, 
 		quest.Param("uid", uid)
 	}
 
-	return client.sendStringQuest(quest, timeout, "text", callback)
+	return client.sendProfanityQuest(quest, timeout, callback)
 }
 
 /*
