@@ -20,6 +20,9 @@
 
 	import "github.com/highras/rtm-server-sdk-go/src/rtm"
 
+### Notice
+
+* Before using the SDK, please make sure the server time is correct, RTM-Server will check whether the signature time has expired
 
 ## Usage
 
