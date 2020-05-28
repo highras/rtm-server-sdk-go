@@ -116,10 +116,19 @@ func (client *RTMServerClient) SetListen(groupIds []int64, roomIds []int64, uids
 	}
 
 	quest := client.genServerQuest("setlisten")
-	quest.Param("gids", groupIds)
-	quest.Param("rids", roomIds)	
-	quest.Param("uids", uids)	
-	quest.Param("events", events)
+
+	if groupIds != nil {
+		quest.Param("gids", groupIds)
+	}
+	if roomIds != nil {
+		quest.Param("rids", roomIds)
+	}
+	if uids != nil {
+		quest.Param("uids", uids)
+	}
+	if events != nil {
+		quest.Param("events", events)
+	}
 
 	return client.sendSilentQuest(quest, timeout, callback)
 }
