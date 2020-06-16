@@ -14,11 +14,11 @@ import (
 )
 
 const (
-	SDKVersion = "0.2.9"
+	SDKVersion = "0.3.1"
 )
 
 const (
-	APIVersion = "2.0.1"
+	APIVersion = "2.1.0"
 )
 
 type RTMServerMonitor interface {
