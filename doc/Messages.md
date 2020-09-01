@@ -10,6 +10,8 @@
 
 	func (client *RTMServerClient) SendMessage(fromUid int64, toUid int64, mtype int8, message string, rest ... interface{}) (int64, error)
 
+	func (client *RTMServerClient) SendMessageByByteArray(fromUid int64, toUid int64, messageType int8, message []byte, rest ...interface{}) (int64, error)
+
 发送 P2P 消息。
 
 可接受的参数为：
@@ -34,6 +36,8 @@
 ### func (client *RTMServerClient) SendMessages(fromUid int64, toUids []int64, mtype int8, message string, rest ... interface{}) (int64, error)
 
 	func (client *RTMServerClient) SendMessages(fromUid int64, toUids []int64, mtype int8, message string, rest ... interface{}) (int64, error)
+
+	func (client *RTMServerClient) SendMessagesByByteArray(fromUid int64, toUids []int64, messageType int8, message []byte, rest ...interface{}) (int64, error)
 
 发送多人 P2P 消息。
 
@@ -60,6 +64,8 @@
 
 	func (client *RTMServerClient) SendGroupMessage(fromUid int64, groupId int64, mtype int8, message string, rest ... interface{}) (int64, error)
 
+	func (client *RTMServerClient) SendGroupMessageByByteArray(fromUid int64, groupId int64, messageType int8, message []byte, rest ...interface{}) (int64, error)
+
 发送群组消息。
 
 可接受的参数为：
@@ -84,6 +90,8 @@
 ### func (client *RTMServerClient) SendRoomMessage(fromUid int64, roomId int64, mtype int8, message string, rest ... interface{}) (int64, error)
 
 	func (client *RTMServerClient) SendRoomMessage(fromUid int64, roomId int64, mtype int8, message string, rest ... interface{}) (int64, error)
+
+	func (client *RTMServerClient) SendRoomMessageByteArray(fromUid int64, roomId int64, messageType int8, message []byte, rest ...interface{}) (int64, error)
 
 发送房间消息。
 
@@ -110,6 +118,8 @@
 
 	func (client *RTMServerClient) SendBroadcastMessage(fromUid int64, mtype int8, message string, rest ... interface{}) (int64, error)
 
+	func (client *RTMServerClient) SendBroadcastMessageByteArray(fromUid int64, messageType int8, message []byte, rest ...interface{}) (int64, error)
+	
 发送广播消息。
 
 可接受的参数为：
@@ -134,17 +144,24 @@
 
 ### -----------------------[ 获取历史消息 ]-----------------------------
 
+### type RTMMessage
+
+	type RTMMessage struct {
+		FromUid			int64
+		ToId        	int64
+		MessageType 	int8
+		MessageId   	int64
+		Message     	string
+		Attrs       	string
+		ModifiedTime	int64
+		Audio        	*AudioInfo
+	}
+
 ### type HistoryMessageUnit
 
 	type HistoryMessageUnit struct {
-		Id			int64
-		FromUid		int64
-		MType		int8
-		Mid			int64
-		Deleted		bool						//-- 是否已被删除/撤销
-		Message		string
-		Attrs		string
-		MTime		int64
+		CursorId int64
+		RTMMessage
 	}
 
 历史消息数据单元。
@@ -152,11 +169,11 @@
 ### type HistoryMessageResult
 
 	type HistoryMessageResult struct {
-		Num			int16						//-- 实际返回的条目数量
-		LastId		int64						//-- 继续轮询时，下次调用使用的 lastid 参数的值
-		Begin		int64						//-- 继续轮询时，下次调用使用的 begin 参数的值
-		End			int64						//-- 继续轮询时，下次调用使用的 end 参数的值
-		Messages	[]*HistoryMessageUnit
+		Num				int16						//-- 实际返回的条目数量
+		LastCursorId	nt64						//-- 继续轮询时，下次调用使用的 lastid 参数的值
+		Begin			int64						//-- 继续轮询时，下次调用使用的 begin 参数的值
+		End				int64						//-- 继续轮询时，下次调用使用的 end 参数的值
+		Messages		[]*HistoryMessageUnit
 	}
 
 历史消息返回结果。

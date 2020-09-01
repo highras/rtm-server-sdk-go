@@ -1,8 +1,10 @@
 package rtm
 
 import (
+	"errors"
 	"fmt"
 	"time"
+
 	"github.com/highras/fpnn-sdk-go/src/fpnn"
 )
 
@@ -15,19 +17,19 @@ import (
 		If include func param, this function will enter into async mode, and return (nil, error);
 		else this function work in sync mode, and return (uids []int64, err error)
 */
-func (client *RTMServerClient) GetOnlineUsers(uids []int64, rest ... interface{}) ([]int64, error) {
+func (client *RTMServerClient) GetOnlineUsers(uids []int64, rest ...interface{}) ([]int64, error) {
 
 	var timeout time.Duration
-	var callback func ([]int64, int, string)
+	var callback func([]int64, int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case time.Duration:
-				timeout = value
-			case func ([]int64, int, string):
-				callback = value
-			default:
-				panic("Invaild params when call RTMServerClient.GetOnlineUsers() function.")
+		case time.Duration:
+			timeout = value
+		case func([]int64, int, string):
+			callback = value
+		default:
+			return nil, errors.New("Invaild params when call RTMServerClient.GetOnlineUsers() function.")
 		}
 	}
 
@@ -46,19 +48,19 @@ func (client *RTMServerClient) GetOnlineUsers(uids []int64, rest ... interface{}
 		If include func param, this function will enter into async mode, and return (error);
 		else this function work in sync mode, and return (err error)
 */
-func (client *RTMServerClient) AddProjectBlack(uid int64, bannedSeconds int32, rest ... interface{}) error {
+func (client *RTMServerClient) AddProjectBlack(uid int64, bannedSeconds int32, rest ...interface{}) error {
 
 	var timeout time.Duration
-	var callback func (int, string)
+	var callback func(int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case time.Duration:
-				timeout = value
-			case func (int, string):
-				callback = value
-			default:
-				panic("Invaild params when call RTMServerClient.AddProjectBlack() function.")
+		case time.Duration:
+			timeout = value
+		case func(int, string):
+			callback = value
+		default:
+			return errors.New("Invaild params when call RTMServerClient.AddProjectBlack() function.")
 		}
 	}
 
@@ -78,19 +80,19 @@ func (client *RTMServerClient) AddProjectBlack(uid int64, bannedSeconds int32, r
 		If include func param, this function will enter into async mode, and return (error);
 		else this function work in sync mode, and return (err error)
 */
-func (client *RTMServerClient) RemoveProjectBlack(uid int64, rest ... interface{}) error {
+func (client *RTMServerClient) RemoveProjectBlack(uid int64, rest ...interface{}) error {
 
 	var timeout time.Duration
-	var callback func (int, string)
+	var callback func(int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case time.Duration:
-				timeout = value
-			case func (int, string):
-				callback = value
-			default:
-				panic("Invaild params when call RTMServerClient.RemoveProjectBlack() function.")
+		case time.Duration:
+			timeout = value
+		case func(int, string):
+			callback = value
+		default:
+			return errors.New("Invaild params when call RTMServerClient.RemoveProjectBlack() function.")
 		}
 	}
 
@@ -109,19 +111,19 @@ func (client *RTMServerClient) RemoveProjectBlack(uid int64, rest ... interface{
 		If include func param, this function will enter into async mode, and return (true, error);
 		else this function work in sync mode, and return (ok bool, err error)
 */
-func (client *RTMServerClient) IsProjectBlack(uid int64, rest ... interface{}) (bool, error) {
+func (client *RTMServerClient) IsProjectBlack(uid int64, rest ...interface{}) (bool, error) {
 
 	var timeout time.Duration
-	var callback func (bool, int, string)
+	var callback func(bool, int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case time.Duration:
-				timeout = value
-			case func (bool, int, string):
-				callback = value
-			default:
-				panic("Invaild params when call RTMServerClient.IsProjectBlack() function.")
+		case time.Duration:
+			timeout = value
+		case func(bool, int, string):
+			callback = value
+		default:
+			return false, errors.New("Invaild params when call RTMServerClient.IsProjectBlack() function.")
 		}
 	}
 
@@ -148,19 +150,19 @@ func (client *RTMServerClient) IsProjectBlack(uid int64, rest ... interface{}) (
 		If include func param, this function will enter into async mode, and return (error);
 		else this function work in sync mode, and return (err error)
 */
-func (client *RTMServerClient) SetUserInfo(uid int64, publicInfo *string, privateInfo *string, rest ... interface{}) error {
+func (client *RTMServerClient) SetUserInfo(uid int64, publicInfo *string, privateInfo *string, rest ...interface{}) error {
 
 	var timeout time.Duration
-	var callback func (int, string)
+	var callback func(int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case time.Duration:
-				timeout = value
-			case func (int, string):
-				callback = value
-			default:
-				panic("Invaild params when call RTMServerClient.SetUserInfo() function.")
+		case time.Duration:
+			timeout = value
+		case func(int, string):
+			callback = value
+		default:
+			return errors.New("Invaild params when call RTMServerClient.SetUserInfo() function.")
 		}
 	}
 
@@ -170,7 +172,7 @@ func (client *RTMServerClient) SetUserInfo(uid int64, publicInfo *string, privat
 	if publicInfo != nil {
 		quest.Param("oinfo", *publicInfo)
 	}
-	
+
 	if privateInfo != nil {
 		quest.Param("pinfo", *privateInfo)
 	}
@@ -187,19 +189,19 @@ func (client *RTMServerClient) SetUserInfo(uid int64, publicInfo *string, privat
 		If include func param, this function will enter into async mode, and return ("", "", error);
 		else this function work in sync mode, and return (publicInfo string, privateInfo string, err error)
 */
-func (client *RTMServerClient) GetUserInfo(uid int64, rest ... interface{}) (string, string, error) {
+func (client *RTMServerClient) GetUserInfo(uid int64, rest ...interface{}) (string, string, error) {
 
 	var timeout time.Duration
-	var callback func (string, string, int, string)
+	var callback func(string, string, int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case time.Duration:
-				timeout = value
-			case func (string, string, int, string):
-				callback = value
-			default:
-				panic("Invaild params when call RTMServerClient.GetUserInfo() function.")
+		case time.Duration:
+			timeout = value
+		case func(string, string, int, string):
+			callback = value
+		default:
+			return "", "", errors.New("Invaild params when call RTMServerClient.GetUserInfo() function.")
 		}
 	}
 
@@ -209,14 +211,13 @@ func (client *RTMServerClient) GetUserInfo(uid int64, rest ... interface{}) (str
 	return client.sendGetObjectInfoQuest(quest, timeout, callback)
 }
 
-
-func convertUserPublicInfoMap(info map[interface{}]interface{}) map[string]string {
+func (client *RTMServerClient) convertUserPublicInfoMap(info map[interface{}]interface{}) map[string]string {
 
 	result := make(map[string]string)
 
 	for k, v := range info {
-		key := convertToString(k)
-		result[key] = convertToString(v)
+		key := client.convertToString(k)
+		result[key] = client.convertToString(v)
 	}
 
 	return result
@@ -228,7 +229,7 @@ func (client *RTMServerClient) sendGetUserPublicInfoQuest(quest *fpnn.Quest, tim
 	if callback != nil {
 		callbackFunc := func(answer *fpnn.Answer, errorCode int) {
 			if errorCode == fpnn.FPNN_EC_OK {
-				callback(convertUserPublicInfoMap(answer.WantMap("info")), fpnn.FPNN_EC_OK, "")
+				callback(client.convertUserPublicInfoMap(answer.WantMap("info")), fpnn.FPNN_EC_OK, "")
 			} else if answer == nil {
 				callback(nil, errorCode, "")
 			} else {
@@ -244,7 +245,7 @@ func (client *RTMServerClient) sendGetUserPublicInfoQuest(quest *fpnn.Quest, tim
 	if err != nil {
 		return nil, err
 	} else if !answer.IsException() {
-		return convertUserPublicInfoMap(answer.WantMap("info")), nil
+		return client.convertUserPublicInfoMap(answer.WantMap("info")), nil
 	} else {
 		return nil, fmt.Errorf("[Exception] code: %d, ex: %s", answer.WantInt("code"), answer.WantString("ex"))
 	}
@@ -259,19 +260,19 @@ func (client *RTMServerClient) sendGetUserPublicInfoQuest(quest *fpnn.Quest, tim
 		If include func param, this function will enter into async mode, and return (nil, error);
 		else this function work in sync mode, and return (map[string]string, err error)
 */
-func (client *RTMServerClient) GetUserPublicInfo(uids []int64, rest ... interface{}) (map[string]string, error) {
+func (client *RTMServerClient) GetUserPublicInfo(uids []int64, rest ...interface{}) (map[string]string, error) {
 
 	var timeout time.Duration
-	var callback func (map[string]string, int, string)
+	var callback func(map[string]string, int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case time.Duration:
-				timeout = value
-			case func (map[string]string, int, string):
-				callback = value
-			default:
-				panic("Invaild params when call RTMServerClient.GetUserPublicInfo() function.")
+		case time.Duration:
+			timeout = value
+		case func(map[string]string, int, string):
+			callback = value
+		default:
+			return nil, errors.New("Invaild params when call RTMServerClient.GetUserPublicInfo() function.")
 		}
 	}
 

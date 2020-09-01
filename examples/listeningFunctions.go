@@ -8,31 +8,34 @@ import (
 	"sync"
 	"time"
 
-	"github.com/highras/rtm-server-sdk-go/src/rtm"
 	"github.com/highras/fpnn-sdk-go/src/fpnn"
+	"github.com/highras/rtm-server-sdk-go/src/rtm"
 )
 
 type PrintLocker struct {
 	mutex sync.Mutex
 }
 
-func (locker *PrintLocker) P2PMessage(fromUid int64, toUid int64, mtype int8, mid int64, message string, attrs string, mtime int64) {
+func (locker *PrintLocker) P2PMessage(messageInfo *rtm.RTMMessage) {
 	locker.mutex.Lock()
 	defer locker.mutex.Unlock()
 
-	fmt.Printf("[Server Push] Receive P2P msg: from:%d -> to:%d mtype:%d, mid:%d mtime: %d\nmessage: %s\nattrs: %s\n", fromUid, toUid, mtype, mid, mtime, message, attrs)
+	fmt.Printf("[Server Push] Receive P2P msg: from:%d -> to:%d mtype:%d, mid:%d mtime: %d\nmessage: %s\nattrs: %s\n",
+	messageInfo.FromUid, messageInfo.ToId, messageInfo.MessageType, messageInfo.MessageId, messageInfo.ModifiedTime, messageInfo.Message, messageInfo.Attrs))
 }
-func (locker *PrintLocker) GroupMessage(fromUid int64, groupId int64, mtype int8, mid int64, message string, attrs string, mtime int64) {
+func (locker *PrintLocker) GroupMessage(messageInfo *rtm.RTMMessage) {
 	locker.mutex.Lock()
 	defer locker.mutex.Unlock()
 
-	fmt.Printf("[Server Push] Receive group msg: from:%d -> group:%d mtype:%d, mid:%d mtime: %d\nmessage: %s\nattrs: %s\n", fromUid, groupId, mtype, mid, mtime, message, attrs)
+	fmt.Printf("[Server Push] Receive group msg: from:%d -> group:%d mtype:%d, mid:%d mtime: %d\nmessage: %s\nattrs: %s\n",
+	messageInfo.FromUid, messageInfo.ToId, messageInfo.MessageType, messageInfo.MessageId, messageInfo.ModifiedTime, messageInfo.Message, messageInfo.Attrs))
 }
-func (locker *PrintLocker) RoomMessage(fromUid int64, roomId int64, mtype int8, mid int64, message string, attrs string, mtime int64) {
+func (locker *PrintLocker) RoomMessage(messageInfo *rtm.RTMMessage) {
 	locker.mutex.Lock()
 	defer locker.mutex.Unlock()
 
-	fmt.Printf("[Server Push] Receive room msg: from:%d -> room:%d mtype:%d, mid:%d mtime: %d\nmessage: %s\nattrs: %s\n", fromUid, roomId, mtype, mid, mtime, message, attrs)
+	fmt.Printf("[Server Push] Receive room msg: from:%d -> room:%d mtype:%d, mid:%d mtime: %d\nmessage: %s\nattrs: %s\n",
+	messageInfo.FromUid, messageInfo.ToId, messageInfo.MessageType, messageInfo.MessageId, messageInfo.ModifiedTime, messageInfo.Message, messageInfo.Attrs)
 }
 func (locker *PrintLocker) Event(pid int32, event string, uid int64, eventTime int32, endpoint string, data string) {
 	locker.mutex.Lock()
@@ -40,59 +43,68 @@ func (locker *PrintLocker) Event(pid int32, event string, uid int64, eventTime i
 
 	fmt.Println("[Server Push] Receive event: %s: user:%d, time:%d, endpoint:%s, data:%s\n", event, uid, eventTime, endpoint, data)
 }
-func (locker *PrintLocker) P2PChat(fromUid int64, toUid int64, mid int64, message string, attrs string, mtime int64) {
+func (locker *PrintLocker) P2PChat(messageInfo *rtm.RTMMessage) {
 	locker.mutex.Lock()
 	defer locker.mutex.Unlock()
 
-	fmt.Printf("[Server Push] Receive P2P msg: from:%d -> to:%d mid:%d mtime: %d\nmessage: %s\nattrs: %s\n", fromUid, toUid, mid, mtime, message, attrs)
+	fmt.Printf("[Server Push] Receive P2P msg: from:%d -> to:%d mid:%d mtime: %d\nmessage: %s\nattrs: %s\n",
+	messageInfo.FromUid, messageInfo.ToId, messageInfo.MessageId, messageInfo.ModifiedTime, messageInfo.Message, messageInfo.Attrs)
 }
-func (locker *PrintLocker) GroupChat(fromUid int64, groupId int64, mid int64, message string, attrs string, mtime int64) {
+func (locker *PrintLocker) GroupChat(messageInfo *rtm.RTMMessage) {
 	locker.mutex.Lock()
 	defer locker.mutex.Unlock()
 
-	fmt.Printf("[Server Push] Receive group msg: from:%d -> group:%d mid:%d mtime: %d\nmessage: %s\nattrs: %s\n", fromUid, groupId, mid, mtime, message, attrs)
+	fmt.Printf("[Server Push] Receive group msg: from:%d -> group:%d mid:%d mtime: %d\nmessage: %s\nattrs: %s\n",
+		messageInfo.FromUid, messageInfo.ToId, messageInfo.MessageId, messageInfo.ModifiedTime, messageInfo.Message, messageInfo.Attrs)
 }
-func (locker *PrintLocker) RoomChat(fromUid int64, roomId int64, mid int64, message string, attrs string, mtime int64) {
+func (locker *PrintLocker) RoomChat(messageInfo *rtm.RTMMessage) {
 	locker.mutex.Lock()
 	defer locker.mutex.Unlock()
 
-	fmt.Printf("[Server Push] Receive room msg: from:%d -> room:%d mid:%d mtime: %d\nmessage: %s\nattrs: %s\n", fromUid, roomId, mid, mtime, message, attrs)
+	fmt.Printf("[Server Push] Receive room msg: from:%d -> room:%d mid:%d mtime: %d\nmessage: %s\nattrs: %s\n",
+	messageInfo.FromUid, messageInfo.ToId, messageInfo.MessageId, messageInfo.ModifiedTime, messageInfo.Message, messageInfo.Attrs)
 }
-func (locker *PrintLocker) P2PAudio(fromUid int64, roomId int64, mid int64, message string, attrs string, mtime int64) {
+func (locker *PrintLocker) P2PAudio(messageInfo *rtm.RTMMessage) {
 	locker.mutex.Lock()
 	defer locker.mutex.Unlock()
 
-	fmt.Printf("[Server Push] Receive P2P audio: from:%d -> to:%d mid:%d mtime: %d\nmessage: %s\nattrs: %s\n", fromUid, toUid, mid, mtime, message, attrs)
+	fmt.Printf("[Server Push] Receive P2P audio: from:%d -> to:%d mid:%d mtime: %d\nmessage: %s\nattrs: %s\n",
+	messageInfo.FromUid, messageInfo.ToId, messageInfo.MessageId, messageInfo.ModifiedTime, messageInfo.Message, messageInfo.Attrs)
 }
-func (locker *PrintLocker) P2PCmd(fromUid int64, roomId int64, mid int64, message string, attrs string, mtime int64) {
+func (locker *PrintLocker) P2PCmd(messageInfo *rtm.RTMMessage) {
 	locker.mutex.Lock()
 	defer locker.mutex.Unlock()
 
-	fmt.Printf("[Server Push] Receive P2P cmd: from:%d -> to:%d mid:%d mtime: %d\nmessage: %s\nattrs: %s\n", fromUid, toUid, mid, mtime, message, attrs)
+	fmt.Printf("[Server Push] Receive P2P cmd: from:%d -> to:%d mid:%d mtime: %d\nmessage: %s\nattrs: %s\n",
+	messageInfo.FromUid, messageInfo.ToId, messageInfo.MessageId, messageInfo.ModifiedTime, messageInfo.Message, messageInfo.Attrs)
 }
-func (locker *PrintLocker) GroupAudio(fromUid int64, groupId int64, mid int64, message string, attrs string, mtime int64) {
+func (locker *PrintLocker) GroupAudio(messageInfo *rtm.RTMMessage) {
 	locker.mutex.Lock()
 	defer locker.mutex.Unlock()
 
-	fmt.Printf("[Server Push] Receive group audio: from:%d -> group:%d mid:%d mtime: %d\nmessage: %s\nattrs: %s\n", fromUid, groupId, mid, mtime, message, attrs)
+	fmt.Printf("[Server Push] Receive group audio: from:%d -> group:%d mid:%d mtime: %d\nmessage: %s\nattrs: %s\n",
+	messageInfo.FromUid, messageInfo.ToId, messageInfo.MessageId, messageInfo.ModifiedTime, messageInfo.Message, messageInfo.Attrs)
 }
-func (locker *PrintLocker) GroupCmd(fromUid int64, groupId int64, mid int64, message string, attrs string, mtime int64) {
+func (locker *PrintLocker) GroupCmd(messageInfo *rtm.RTMMessage) {
 	locker.mutex.Lock()
 	defer locker.mutex.Unlock()
 
-	fmt.Printf("[Server Push] Receive group cmd: from:%d -> group:%d mid:%d mtime: %d\nmessage: %s\nattrs: %s\n", fromUid, groupId, mid, mtime, message, attrs)
+	fmt.Printf("[Server Push] Receive group cmd: from:%d -> group:%d mid:%d mtime: %d\nmessage: %s\nattrs: %s\n",
+	messageInfo.FromUid, messageInfo.ToId, messageInfo.MessageId, messageInfo.ModifiedTime, messageInfo.Message, messageInfo.Attrs)
 }
-func (locker *PrintLocker) RoomAudio(fromUid int64, roomId int64, mid int64, message string, attrs string, mtime int64) {
+func (locker *PrintLocker) RoomAudio(messageInfo *rtm.RTMMessage) {
 	locker.mutex.Lock()
 	defer locker.mutex.Unlock()
 
-	fmt.Printf("[Server Push] Receive room audio: from:%d -> room:%d mid:%d mtime: %d\nmessage: %s\nattrs: %s\n", fromUid, roomId, mid, mtime, message, attrs)
+	fmt.Printf("[Server Push] Receive room audio: from:%d -> room:%d mid:%d mtime: %d\nmessage: %s\nattrs: %s\n",
+	messageInfo.FromUid, messageInfo.ToId, messageInfo.MessageId, messageInfo.ModifiedTime, messageInfo.Message, messageInfo.Attrs)
 }
-func (locker *PrintLocker) RoomCmd(fromUid int64, roomId int64, mid int64, message string, attrs string, mtime int64) {
+func (locker *PrintLocker) RoomCmd(messageInfo *rtm.RTMMessage) {
 	locker.mutex.Lock()
 	defer locker.mutex.Unlock()
 
-	fmt.Printf("[Server Push] Receive room cmd: from:%d -> room:%d mid:%d mtime: %d\nmessage: %s\nattrs: %s\n", fromUid, roomId, mid, mtime, message, attrs)
+	fmt.Printf("[Server Push] Receive room cmd: from:%d -> room:%d mid:%d mtime: %d\nmessage: %s\nattrs: %s\n",
+		messageInfo.FromUid, messageInfo.ToId, messageInfo.MessageId, messageInfo.ModifiedTime, messageInfo.Message, messageInfo.Attrs)
 }
 func (locker *PrintLocker) print(proc func()) {
 	locker.mutex.Lock()

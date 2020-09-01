@@ -8,8 +8,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/highras/rtm-server-sdk-go/src/rtm"
 	"github.com/highras/fpnn-sdk-go/src/fpnn"
+	"github.com/highras/rtm-server-sdk-go/src/rtm"
 )
 
 //---------------[ Help tools for serializing concurrent printing. ]---------------------//
@@ -39,9 +39,9 @@ var (
 //---------------[ Demo ]--------------------//
 
 func printHistory(result *rtm.HistoryMessageResult) {
-	fmt.Printf("History count %d, lastId %d, begin %d, end %d\n", result.Num, result.LastId, result.Begin, result.End)
+	fmt.Printf("History count %d, lastId %d, begin %d, end %d\n", result.Num, result.LastCursorId, result.Begin, result.End)
 	for _, v := range result.Messages {
-		fmt.Printf(" -- id %d, sender %d, mtype %d, mid %d, mtime: %d\n", v.Id, v.FromUid, v.MType, v.Mid, v.MTime)
+		fmt.Printf(" -- id %d, sender %d, mtype %d, mid %d, mtime: %d\n", v.CursorId, v.FromUid, v.MessageType, v.MessageId, v.ModifiedTime)
 		fmt.Printf(" -- message: %s\n", v.Message)
 		fmt.Printf(" -- attrs: %s\n", v.Attrs)
 	}

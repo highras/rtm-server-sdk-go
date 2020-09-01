@@ -1,9 +1,9 @@
 package rtm
 
 import (
+	"errors"
 	"time"
 )
-
 
 //-----------[ Room functions ]-------------------//
 
@@ -16,19 +16,19 @@ import (
 		If include func param, this function will enter into async mode, and return (error);
 		else this function work in sync mode, and return (err error)
 */
-func (client *RTMServerClient) AddRoomMember(roomId int64, uid int64, rest ... interface{}) error {
+func (client *RTMServerClient) AddRoomMember(roomId int64, uid int64, rest ...interface{}) error {
 
 	var timeout time.Duration
-	var callback func (int, string)
+	var callback func(int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case time.Duration:
-				timeout = value
-			case func (int, string):
-				callback = value
-			default:
-				panic("Invaild params when call RTMServerClient.AddRoomMember() function.")
+		case time.Duration:
+			timeout = value
+		case func(int, string):
+			callback = value
+		default:
+			return errors.New("Invaild params when call RTMServerClient.AddRoomMember() function.")
 		}
 	}
 
@@ -48,19 +48,19 @@ func (client *RTMServerClient) AddRoomMember(roomId int64, uid int64, rest ... i
 		If include func param, this function will enter into async mode, and return (error);
 		else this function work in sync mode, and return (err error)
 */
-func (client *RTMServerClient) DelRoomMember(roomId int64, uid int64, rest ... interface{}) error {
+func (client *RTMServerClient) DelRoomMember(roomId int64, uid int64, rest ...interface{}) error {
 
 	var timeout time.Duration
-	var callback func (int, string)
+	var callback func(int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case time.Duration:
-				timeout = value
-			case func (int, string):
-				callback = value
-			default:
-				panic("Invaild params when call RTMServerClient.DelRoomMember() function.")
+		case time.Duration:
+			timeout = value
+		case func(int, string):
+			callback = value
+		default:
+			return errors.New("Invaild params when call RTMServerClient.DelRoomMember() function.")
 		}
 	}
 
@@ -80,19 +80,19 @@ func (client *RTMServerClient) DelRoomMember(roomId int64, uid int64, rest ... i
 		If include func param, this function will enter into async mode, and return (error);
 		else this function work in sync mode, and return (err error)
 */
-func (client *RTMServerClient) AddRoomBan(roomId int64, uid int64, bannedSeconds int32, rest ... interface{}) error {
+func (client *RTMServerClient) AddRoomBan(roomId int64, uid int64, bannedSeconds int32, rest ...interface{}) error {
 
 	var timeout time.Duration
-	var callback func (int, string)
+	var callback func(int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case time.Duration:
-				timeout = value
-			case func (int, string):
-				callback = value
-			default:
-				panic("Invaild params when call RTMServerClient.AddRoomBan() function.")
+		case time.Duration:
+			timeout = value
+		case func(int, string):
+			callback = value
+		default:
+			return errors.New("Invaild params when call RTMServerClient.AddRoomBan() function.")
 		}
 	}
 
@@ -113,19 +113,19 @@ func (client *RTMServerClient) AddRoomBan(roomId int64, uid int64, bannedSeconds
 		If include func param, this function will enter into async mode, and return (error);
 		else this function work in sync mode, and return (err error)
 */
-func (client *RTMServerClient) RemoveRoomBan(roomId int64, uid int64, rest ... interface{}) error {
+func (client *RTMServerClient) RemoveRoomBan(roomId int64, uid int64, rest ...interface{}) error {
 
 	var timeout time.Duration
-	var callback func (int, string)
+	var callback func(int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case time.Duration:
-				timeout = value
-			case func (int, string):
-				callback = value
-			default:
-				panic("Invaild params when call RTMServerClient.RemoveRoomBan() function.")
+		case time.Duration:
+			timeout = value
+		case func(int, string):
+			callback = value
+		default:
+			return errors.New("Invaild params when call RTMServerClient.RemoveRoomBan() function.")
 		}
 	}
 
@@ -145,19 +145,19 @@ func (client *RTMServerClient) RemoveRoomBan(roomId int64, uid int64, rest ... i
 		If include func param, this function will enter into async mode, and return (true, error);
 		else this function work in sync mode, and return (ok bool, err error)
 */
-func (client *RTMServerClient) IsBanOfRoom(roomId int64, uid int64, rest ... interface{}) (bool, error) {
+func (client *RTMServerClient) IsBanOfRoom(roomId int64, uid int64, rest ...interface{}) (bool, error) {
 
 	var timeout time.Duration
-	var callback func (bool, int, string)
+	var callback func(bool, int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case time.Duration:
-				timeout = value
-			case func (bool, int, string):
-				callback = value
-			default:
-				panic("Invaild params when call RTMServerClient.IsBanOfRoom() function.")
+		case time.Duration:
+			timeout = value
+		case func(bool, int, string):
+			callback = value
+		default:
+			return false, errors.New("Invaild params when call RTMServerClient.IsBanOfRoom() function.")
 		}
 	}
 
@@ -185,19 +185,19 @@ func (client *RTMServerClient) IsBanOfRoom(roomId int64, uid int64, rest ... int
 		If include func param, this function will enter into async mode, and return (error);
 		else this function work in sync mode, and return (err error)
 */
-func (client *RTMServerClient) SetRoomInfo(roomId int64, publicInfo *string, privateInfo *string, rest ... interface{}) error {
+func (client *RTMServerClient) SetRoomInfo(roomId int64, publicInfo *string, privateInfo *string, rest ...interface{}) error {
 
 	var timeout time.Duration
-	var callback func (int, string)
+	var callback func(int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case time.Duration:
-				timeout = value
-			case func (int, string):
-				callback = value
-			default:
-				panic("Invaild params when call RTMServerClient.SetRoomInfo() function.")
+		case time.Duration:
+			timeout = value
+		case func(int, string):
+			callback = value
+		default:
+			return errors.New("Invaild params when call RTMServerClient.SetRoomInfo() function.")
 		}
 	}
 
@@ -207,7 +207,7 @@ func (client *RTMServerClient) SetRoomInfo(roomId int64, publicInfo *string, pri
 	if publicInfo != nil {
 		quest.Param("oinfo", *publicInfo)
 	}
-	
+
 	if privateInfo != nil {
 		quest.Param("pinfo", *privateInfo)
 	}
@@ -224,19 +224,19 @@ func (client *RTMServerClient) SetRoomInfo(roomId int64, publicInfo *string, pri
 		If include func param, this function will enter into async mode, and return ("", "", error);
 		else this function work in sync mode, and return (publicInfo string, privateInfo string, err error)
 */
-func (client *RTMServerClient) GetRoomInfo(roomId int64, rest ... interface{}) (string, string, error) {
+func (client *RTMServerClient) GetRoomInfo(roomId int64, rest ...interface{}) (string, string, error) {
 
 	var timeout time.Duration
-	var callback func (string, string, int, string)
+	var callback func(string, string, int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case time.Duration:
-				timeout = value
-			case func (string, string, int, string):
-				callback = value
-			default:
-				panic("Invaild params when call RTMServerClient.GetRoomInfo() function.")
+		case time.Duration:
+			timeout = value
+		case func(string, string, int, string):
+			callback = value
+		default:
+			return "", "", errors.New("Invaild params when call RTMServerClient.GetRoomInfo() function.")
 		}
 	}
 

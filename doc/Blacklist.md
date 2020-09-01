@@ -1,4 +1,4 @@
-# RTM Server-End Go SDK Black API Docs
+# RTM Server-End Go SDK Blacklist API Docs
 
 # Index
 

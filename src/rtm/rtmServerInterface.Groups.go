@@ -1,6 +1,7 @@
 package rtm
 
 import (
+	"errors"
 	"time"
 )
 
@@ -15,19 +16,19 @@ import (
 		If include func param, this function will enter into async mode, and return (error);
 		else this function work in sync mode, and return (err error)
 */
-func (client *RTMServerClient) AddGroupMembers(groupId int64, uids []int64, rest ... interface{}) error {
+func (client *RTMServerClient) AddGroupMembers(groupId int64, uids []int64, rest ...interface{}) error {
 
 	var timeout time.Duration
-	var callback func (int, string)
+	var callback func(int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case time.Duration:
-				timeout = value
-			case func (int, string):
-				callback = value
-			default:
-				panic("Invaild params when call RTMServerClient.AddGroupMembers() function.")
+		case time.Duration:
+			timeout = value
+		case func(int, string):
+			callback = value
+		default:
+			return errors.New("Invaild params when call RTMServerClient.AddGroupMembers() function.")
 		}
 	}
 
@@ -47,19 +48,19 @@ func (client *RTMServerClient) AddGroupMembers(groupId int64, uids []int64, rest
 		If include func param, this function will enter into async mode, and return (error);
 		else this function work in sync mode, and return (err error)
 */
-func (client *RTMServerClient) DelGroupMembers(groupId int64, uids []int64, rest ... interface{}) error {
+func (client *RTMServerClient) DelGroupMembers(groupId int64, uids []int64, rest ...interface{}) error {
 
 	var timeout time.Duration
-	var callback func (int, string)
+	var callback func(int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case time.Duration:
-				timeout = value
-			case func (int, string):
-				callback = value
-			default:
-				panic("Invaild params when call RTMServerClient.DelGroupMembers() function.")
+		case time.Duration:
+			timeout = value
+		case func(int, string):
+			callback = value
+		default:
+			return errors.New("Invaild params when call RTMServerClient.DelGroupMembers() function.")
 		}
 	}
 
@@ -79,19 +80,19 @@ func (client *RTMServerClient) DelGroupMembers(groupId int64, uids []int64, rest
 		If include func param, this function will enter into async mode, and return (error);
 		else this function work in sync mode, and return (err error)
 */
-func (client *RTMServerClient) DelGroup(groupId int64, rest ... interface{}) error {
+func (client *RTMServerClient) DelGroup(groupId int64, rest ...interface{}) error {
 
 	var timeout time.Duration
-	var callback func (int, string)
+	var callback func(int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case time.Duration:
-				timeout = value
-			case func (int, string):
-				callback = value
-			default:
-				panic("Invaild params when call RTMServerClient.DelGroup() function.")
+		case time.Duration:
+			timeout = value
+		case func(int, string):
+			callback = value
+		default:
+			return errors.New("Invaild params when call RTMServerClient.DelGroup() function.")
 		}
 	}
 
@@ -110,19 +111,19 @@ func (client *RTMServerClient) DelGroup(groupId int64, rest ... interface{}) err
 		If include func param, this function will enter into async mode, and return (nil, error);
 		else this function work in sync mode, and return (uids []int64, err error)
 */
-func (client *RTMServerClient) GetGroupMembers(groupId int64, rest ... interface{}) ([]int64, error) {
+func (client *RTMServerClient) GetGroupMembers(groupId int64, rest ...interface{}) ([]int64, error) {
 
 	var timeout time.Duration
-	var callback func ([]int64, int, string)
+	var callback func([]int64, int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case time.Duration:
-				timeout = value
-			case func ([]int64, int, string):
-				callback = value
-			default:
-				panic("Invaild params when call RTMServerClient.GetGroupMembers() function.")
+		case time.Duration:
+			timeout = value
+		case func([]int64, int, string):
+			callback = value
+		default:
+			return nil, errors.New("Invaild params when call RTMServerClient.GetGroupMembers() function.")
 		}
 	}
 
@@ -141,19 +142,19 @@ func (client *RTMServerClient) GetGroupMembers(groupId int64, rest ... interface
 		If include func param, this function will enter into async mode, and return (true, error);
 		else this function work in sync mode, and return (ok bool, err error)
 */
-func (client *RTMServerClient) IsGroupMember(groupId int64, uid int64, rest ... interface{}) (bool, error) {
+func (client *RTMServerClient) IsGroupMember(groupId int64, uid int64, rest ...interface{}) (bool, error) {
 
 	var timeout time.Duration
-	var callback func (bool, int, string)
+	var callback func(bool, int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case time.Duration:
-				timeout = value
-			case func (bool, int, string):
-				callback = value
-			default:
-				panic("Invaild params when call RTMServerClient.IsGroupMember() function.")
+		case time.Duration:
+			timeout = value
+		case func(bool, int, string):
+			callback = value
+		default:
+			return false, errors.New("Invaild params when call RTMServerClient.IsGroupMember() function.")
 		}
 	}
 
@@ -173,19 +174,19 @@ func (client *RTMServerClient) IsGroupMember(groupId int64, uid int64, rest ... 
 		If include func param, this function will enter into async mode, and return (nil, error);
 		else this function work in sync mode, and return (groupIds []int64, err error)
 */
-func (client *RTMServerClient) GetUserGroups(uid int64, rest ... interface{}) ([]int64, error) {
+func (client *RTMServerClient) GetUserGroups(uid int64, rest ...interface{}) ([]int64, error) {
 
 	var timeout time.Duration
-	var callback func ([]int64, int, string)
+	var callback func([]int64, int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case time.Duration:
-				timeout = value
-			case func ([]int64, int, string):
-				callback = value
-			default:
-				panic("Invaild params when call RTMServerClient.GetUserGroups() function.")
+		case time.Duration:
+			timeout = value
+		case func([]int64, int, string):
+			callback = value
+		default:
+			return nil, errors.New("Invaild params when call RTMServerClient.GetUserGroups() function.")
 		}
 	}
 
@@ -204,19 +205,19 @@ func (client *RTMServerClient) GetUserGroups(uid int64, rest ... interface{}) ([
 		If include func param, this function will enter into async mode, and return (error);
 		else this function work in sync mode, and return (err error)
 */
-func (client *RTMServerClient) AddGroupBan(groupId int64, uid int64, bannedSeconds int32, rest ... interface{}) error {
+func (client *RTMServerClient) AddGroupBan(groupId int64, uid int64, bannedSeconds int32, rest ...interface{}) error {
 
 	var timeout time.Duration
-	var callback func (int, string)
+	var callback func(int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case time.Duration:
-				timeout = value
-			case func (int, string):
-				callback = value
-			default:
-				panic("Invaild params when call RTMServerClient.AddGroupBan() function.")
+		case time.Duration:
+			timeout = value
+		case func(int, string):
+			callback = value
+		default:
+			return errors.New("Invaild params when call RTMServerClient.AddGroupBan() function.")
 		}
 	}
 
@@ -237,19 +238,19 @@ func (client *RTMServerClient) AddGroupBan(groupId int64, uid int64, bannedSecon
 		If include func param, this function will enter into async mode, and return (error);
 		else this function work in sync mode, and return (err error)
 */
-func (client *RTMServerClient) RemoveGroupBan(groupId int64, uid int64, rest ... interface{}) error {
+func (client *RTMServerClient) RemoveGroupBan(groupId int64, uid int64, rest ...interface{}) error {
 
 	var timeout time.Duration
-	var callback func (int, string)
+	var callback func(int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case time.Duration:
-				timeout = value
-			case func (int, string):
-				callback = value
-			default:
-				panic("Invaild params when call RTMServerClient.RemoveGroupBan() function.")
+		case time.Duration:
+			timeout = value
+		case func(int, string):
+			callback = value
+		default:
+			return errors.New("Invaild params when call RTMServerClient.RemoveGroupBan() function.")
 		}
 	}
 
@@ -269,19 +270,19 @@ func (client *RTMServerClient) RemoveGroupBan(groupId int64, uid int64, rest ...
 		If include func param, this function will enter into async mode, and return (true, error);
 		else this function work in sync mode, and return (ok bool, err error)
 */
-func (client *RTMServerClient) IsBanOfGroup(groupId int64, uid int64, rest ... interface{}) (bool, error) {
+func (client *RTMServerClient) IsBanOfGroup(groupId int64, uid int64, rest ...interface{}) (bool, error) {
 
 	var timeout time.Duration
-	var callback func (bool, int, string)
+	var callback func(bool, int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case time.Duration:
-				timeout = value
-			case func (bool, int, string):
-				callback = value
-			default:
-				panic("Invaild params when call RTMServerClient.IsBanOfGroup() function.")
+		case time.Duration:
+			timeout = value
+		case func(bool, int, string):
+			callback = value
+		default:
+			return false, errors.New("Invaild params when call RTMServerClient.IsBanOfGroup() function.")
 		}
 	}
 
@@ -309,19 +310,19 @@ func (client *RTMServerClient) IsBanOfGroup(groupId int64, uid int64, rest ... i
 		If include func param, this function will enter into async mode, and return (error);
 		else this function work in sync mode, and return (err error)
 */
-func (client *RTMServerClient) SetGroupInfo(groupId int64, publicInfo *string, privateInfo *string, rest ... interface{}) error {
+func (client *RTMServerClient) SetGroupInfo(groupId int64, publicInfo *string, privateInfo *string, rest ...interface{}) error {
 
 	var timeout time.Duration
-	var callback func (int, string)
+	var callback func(int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case time.Duration:
-				timeout = value
-			case func (int, string):
-				callback = value
-			default:
-				panic("Invaild params when call RTMServerClient.SetGroupInfo() function.")
+		case time.Duration:
+			timeout = value
+		case func(int, string):
+			callback = value
+		default:
+			return errors.New("Invaild params when call RTMServerClient.SetGroupInfo() function.")
 		}
 	}
 
@@ -331,7 +332,7 @@ func (client *RTMServerClient) SetGroupInfo(groupId int64, publicInfo *string, p
 	if publicInfo != nil {
 		quest.Param("oinfo", *publicInfo)
 	}
-	
+
 	if privateInfo != nil {
 		quest.Param("pinfo", *privateInfo)
 	}
@@ -348,19 +349,19 @@ func (client *RTMServerClient) SetGroupInfo(groupId int64, publicInfo *string, p
 		If include func param, this function will enter into async mode, and return ("", "", error);
 		else this function work in sync mode, and return (publicInfo string, privateInfo string, err error)
 */
-func (client *RTMServerClient) GetGroupInfo(groupId int64, rest ... interface{}) (string, string, error) {
+func (client *RTMServerClient) GetGroupInfo(groupId int64, rest ...interface{}) (string, string, error) {
 
 	var timeout time.Duration
-	var callback func (string, string, int, string)
+	var callback func(string, string, int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case time.Duration:
-				timeout = value
-			case func (string, string, int, string):
-				callback = value
-			default:
-				panic("Invaild params when call RTMServerClient.GetGroupInfo() function.")
+		case time.Duration:
+			timeout = value
+		case func(string, string, int, string):
+			callback = value
+		default:
+			return "", "", errors.New("Invaild params when call RTMServerClient.GetGroupInfo() function.")
 		}
 	}
 

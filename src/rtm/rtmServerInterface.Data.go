@@ -1,8 +1,10 @@
 package rtm
 
 import (
+	"errors"
 	"fmt"
 	"time"
+
 	"github.com/highras/fpnn-sdk-go/src/fpnn"
 )
 
@@ -47,19 +49,19 @@ func (client *RTMServerClient) sendGetDataQuest(quest *fpnn.Quest, timeout time.
 		If include func param, this function will enter into async mode, and return ("", error);
 		else this function work in sync mode, and return (text string, err error)
 */
-func (client *RTMServerClient) GetData(uid int64, key string, rest ... interface{}) (string, error) {
+func (client *RTMServerClient) GetData(uid int64, key string, rest ...interface{}) (string, error) {
 
 	var timeout time.Duration
-	var callback func (string, int, string)
+	var callback func(string, int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case time.Duration:
-				timeout = value
-			case func (string, int, string):
-				callback = value
-			default:
-				panic("Invaild params when call RTMServerClient.GetData() function.")
+		case time.Duration:
+			timeout = value
+		case func(string, int, string):
+			callback = value
+		default:
+			return "", errors.New("Invaild params when call RTMServerClient.GetData() function.")
 		}
 	}
 
@@ -79,19 +81,19 @@ func (client *RTMServerClient) GetData(uid int64, key string, rest ... interface
 		If include func param, this function will enter into async mode, and return (error);
 		else this function work in sync mode, and return (err error)
 */
-func (client *RTMServerClient) SetData(uid int64, key string, value string, rest ... interface{}) error {
+func (client *RTMServerClient) SetData(uid int64, key string, value string, rest ...interface{}) error {
 
 	var timeout time.Duration
-	var callback func (int, string)
+	var callback func(int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case time.Duration:
-				timeout = value
-			case func (int, string):
-				callback = value
-			default:
-				panic("Invaild params when call RTMServerClient.SetData() function.")
+		case time.Duration:
+			timeout = value
+		case func(int, string):
+			callback = value
+		default:
+			return errors.New("Invaild params when call RTMServerClient.SetData() function.")
 		}
 	}
 
@@ -112,19 +114,19 @@ func (client *RTMServerClient) SetData(uid int64, key string, value string, rest
 		If include func param, this function will enter into async mode, and return (error);
 		else this function work in sync mode, and return (err error)
 */
-func (client *RTMServerClient) DelData(uid int64, key string, rest ... interface{}) error {
+func (client *RTMServerClient) DelData(uid int64, key string, rest ...interface{}) error {
 
 	var timeout time.Duration
-	var callback func (int, string)
+	var callback func(int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case time.Duration:
-				timeout = value
-			case func (int, string):
-				callback = value
-			default:
-				panic("Invaild params when call RTMServerClient.DelData() function.")
+		case time.Duration:
+			timeout = value
+		case func(int, string):
+			callback = value
+		default:
+			return errors.New("Invaild params when call RTMServerClient.DelData() function.")
 		}
 	}
 

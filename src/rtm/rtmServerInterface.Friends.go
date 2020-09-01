@@ -1,6 +1,7 @@
 package rtm
 
 import (
+	"errors"
 	"time"
 )
 
@@ -14,19 +15,19 @@ import (
 		If include func param, this function will enter into async mode, and return (error);
 		else this function work in sync mode, and return (err error)
 */
-func (client *RTMServerClient) AddFriends(uid int64, firendUids []int64, rest ... interface{}) error {
+func (client *RTMServerClient) AddFriends(uid int64, firendUids []int64, rest ...interface{}) error {
 
 	var timeout time.Duration
-	var callback func (int, string)
+	var callback func(int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case time.Duration:
-				timeout = value
-			case func (int, string):
-				callback = value
-			default:
-				panic("Invaild params when call RTMServerClient.AddFriends() function.")
+		case time.Duration:
+			timeout = value
+		case func(int, string):
+			callback = value
+		default:
+			return errors.New("Invaild params when call RTMServerClient.AddFriends() function.")
 		}
 	}
 
@@ -46,19 +47,19 @@ func (client *RTMServerClient) AddFriends(uid int64, firendUids []int64, rest ..
 		If include func param, this function will enter into async mode, and return (error);
 		else this function work in sync mode, and return (err error)
 */
-func (client *RTMServerClient) DelFriends(uid int64, firendUids []int64, rest ... interface{}) error {
+func (client *RTMServerClient) DelFriends(uid int64, firendUids []int64, rest ...interface{}) error {
 
 	var timeout time.Duration
-	var callback func (int, string)
+	var callback func(int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case time.Duration:
-				timeout = value
-			case func (int, string):
-				callback = value
-			default:
-				panic("Invaild params when call RTMServerClient.DelFriends() function.")
+		case time.Duration:
+			timeout = value
+		case func(int, string):
+			callback = value
+		default:
+			return errors.New("Invaild params when call RTMServerClient.DelFriends() function.")
 		}
 	}
 
@@ -78,19 +79,19 @@ func (client *RTMServerClient) DelFriends(uid int64, firendUids []int64, rest ..
 		If include func param, this function will enter into async mode, and return (nil, error);
 		else this function work in sync mode, and return (uids []int64, err error)
 */
-func (client *RTMServerClient) GetFriends(uid int64, rest ... interface{}) ([]int64, error) {
+func (client *RTMServerClient) GetFriends(uid int64, rest ...interface{}) ([]int64, error) {
 
 	var timeout time.Duration
-	var callback func ([]int64, int, string)
+	var callback func([]int64, int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case time.Duration:
-				timeout = value
-			case func ([]int64, int, string):
-				callback = value
-			default:
-				panic("Invaild params when call RTMServerClient.GetFriends() function.")
+		case time.Duration:
+			timeout = value
+		case func([]int64, int, string):
+			callback = value
+		default:
+			return nil, errors.New("Invaild params when call RTMServerClient.GetFriends() function.")
 		}
 	}
 
@@ -109,19 +110,19 @@ func (client *RTMServerClient) GetFriends(uid int64, rest ... interface{}) ([]in
 		If include func param, this function will enter into async mode, and return (true, error);
 		else this function work in sync mode, and return (ok bool, err error)
 */
-func (client *RTMServerClient) IsFriend(uid int64, peerUid int64, rest ... interface{}) (bool, error) {
+func (client *RTMServerClient) IsFriend(uid int64, peerUid int64, rest ...interface{}) (bool, error) {
 
 	var timeout time.Duration
-	var callback func (bool, int, string)
+	var callback func(bool, int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case time.Duration:
-				timeout = value
-			case func (bool, int, string):
-				callback = value
-			default:
-				panic("Invaild params when call RTMServerClient.IsFriend() function.")
+		case time.Duration:
+			timeout = value
+		case func(bool, int, string):
+			callback = value
+		default:
+			return false, errors.New("Invaild params when call RTMServerClient.IsFriend() function.")
 		}
 	}
 
@@ -141,19 +142,19 @@ func (client *RTMServerClient) IsFriend(uid int64, peerUid int64, rest ... inter
 		If include func param, this function will enter into async mode, and return (nil, error);
 		else this function work in sync mode, and return (firendUids []int64, err error)
 */
-func (client *RTMServerClient) IsFriends(uid int64, uids []int64, rest ... interface{}) ([]int64, error) {
+func (client *RTMServerClient) IsFriends(uid int64, uids []int64, rest ...interface{}) ([]int64, error) {
 
 	var timeout time.Duration
-	var callback func ([]int64, int, string)
+	var callback func([]int64, int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case time.Duration:
-				timeout = value
-			case func ([]int64, int, string):
-				callback = value
-			default:
-				panic("Invaild params when call RTMServerClient.IsFriends() function.")
+		case time.Duration:
+			timeout = value
+		case func([]int64, int, string):
+			callback = value
+		default:
+			return nil, errors.New("Invaild params when call RTMServerClient.IsFriends() function.")
 		}
 	}
 

@@ -2,6 +2,7 @@ package rtm
 
 import (
 	"crypto/md5"
+	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -14,13 +15,14 @@ import (
 )
 
 const (
-	SDKVersion = "0.3.1"
+	SDKVersion = "0.4.0"
 )
 
 const (
-	APIVersion = "2.1.0"
+	APIVersion = "2.2.0"
 )
 
+// for compatible before v0.3.1(include) , please use new serverPush interface IRTMServerMonitor
 type RTMServerMonitor interface {
 	P2PMessage(fromUid int64, toUid int64, mtype int8, mid int64, message string, attrs string, mtime int64)
 	GroupMessage(fromUid int64, groupId int64, mtype int8, mid int64, message string, attrs string, mtime int64)
@@ -38,6 +40,31 @@ type RTMServerMonitor interface {
 	P2PFile(fromUid int64, toUid int64, mtype int8, mid int64, message string, attrs string, mtime int64)
 	GroupFile(fromUid int64, groupId int64, mtype int8, mid int64, message string, attrs string, mtime int64)
 	RoomFile(fromUid int64, roomId int64, mtype int8, mid int64, message string, attrs string, mtime int64)
+}
+
+// new serverpush version first use please use this interface
+type IRTMServerMonitor interface {
+	P2PMessage(messageInfo *RTMMessage)
+	GroupMessage(messageInfo *RTMMessage)
+	RoomMessage(messageInfo *RTMMessage)
+
+	P2PChat(messageInfo *RTMMessage)
+	GroupChat(messageInfo *RTMMessage)
+	RoomChat(messageInfo *RTMMessage)
+
+	P2PAudio(messageInfo *RTMMessage)
+	GroupAudio(messageInfo *RTMMessage)
+	RoomAudio(messageInfo *RTMMessage)
+
+	P2PCmd(messageInfo *RTMMessage)
+	GroupCmd(messageInfo *RTMMessage)
+	RoomCmd(messageInfo *RTMMessage)
+
+	P2PFile(messageInfo *RTMMessage)
+	GroupFile(messageInfo *RTMMessage)
+	RoomFile(messageInfo *RTMMessage)
+
+	Event(pid int32, event string, uid int64, time int32, endpoint string, data string)
 }
 
 //------------------------------[ RTM Server Client ]---------------------------------------//
@@ -62,14 +89,33 @@ func (gen *midGenerator) genMid() int64 {
 	return mid*1000 + int64(gen.idBase)
 }
 
-type RTMServerClient struct {
-	client    *fpnn.TCPClient
-	processor *rtmServerQuestProcessor
-	logger    *log.Logger
-	idGen     *midGenerator
-	pid       int32
-	secretKey string
+type RtmRegressiveState struct {
+	CurrentFailedCount       int
+	ConnectStartMilliseconds int64
 }
+
+type RTMClientConnectEventUserCallback func(connId uint64, endpoint string, connected bool, autoReconnect bool, connectState *RtmRegressiveState)
+type RTMClientCloseEventUserCallback func(connId uint64, endpoint string, autoReconnect bool, connectState *RtmRegressiveState)
+
+type RTMServerClient struct {
+	client                    *fpnn.TCPClient
+	processor                 *rtmServerQuestProcessor
+	logger                    *log.Logger
+	idGen                     *midGenerator
+	pid                       int32
+	secretKey                 string
+	regressiveState           *RtmRegressiveState
+	isClose                   bool
+	defaultRegressiveStrategy *RTMRegressiveConnectStrategy
+	regressiveConnectStrategy *RTMRegressiveConnectStrategy
+	mutex                     sync.Mutex
+	listenCache               *rtmListenCache
+}
+
+const (
+	rtmServerConnectTimeout = 30 * time.Second
+	rtmServerQuestTimeout   = 30 * time.Second
+)
 
 func NewRTMServerClient(pid int32, secretKey string, endpoint string) *RTMServerClient {
 
@@ -80,17 +126,29 @@ func NewRTMServerClient(pid int32, secretKey string, endpoint string) *RTMServer
 	client.idGen = &midGenerator{}
 	client.secretKey = secretKey
 	client.pid = pid
+	client.regressiveState = &RtmRegressiveState{0, 0}
+	client.isClose = false
+	client.regressiveConnectStrategy = DefaultRegressiveStrategy
+	client.listenCache = newRtmListenCache()
 
 	client.client.SetQuestProcessor(client.processor)
 	client.SetLogger(log.New(os.Stdout, "[RTM Go SDK] ", log.LstdFlags))
-
+	client.SetConnectTimeOut(rtmServerConnectTimeout)
+	client.SetQuestTimeOut(rtmServerQuestTimeout)
+	client.SetOnConnectedCallback(nil)
+	client.SetOnClosedCallback(nil)
 	return client
 }
 
 //------------------------------[ RTM Server Client Config Interfaces ]---------------------------------------//
-
+// for compatible before v0.3.1(include), please use new set serverpush interface SetServerPushMonitor
 func (client *RTMServerClient) SetMonitor(monitor RTMServerMonitor) {
 	client.processor.monitor = monitor
+}
+
+// new set serverpush api version first use please use this
+func (client *RTMServerClient) SetServerPushMonitor(monitor IRTMServerMonitor) {
+	client.processor.newMonitor = monitor
 }
 
 func (client *RTMServerClient) SetAutoReconnect(autoReconnect bool) {
@@ -105,12 +163,40 @@ func (client *RTMServerClient) SetQuestTimeOut(timeout time.Duration) {
 	client.client.SetQuestTimeOut(timeout)
 }
 
-func (client *RTMServerClient) SetOnConnectedCallback(onConnected func(connId uint64)) {
-	client.client.SetOnConnectedCallback(onConnected)
+func (client *RTMServerClient) SetOnConnectedCallback(onConnect RTMClientConnectEventUserCallback) {
+	client.client.SetOnConnectedCallback(func(connId uint64, endpoint string, connected bool) {
+		if onConnect != nil {
+			var state = &RtmRegressiveState{}
+			state.ConnectStartMilliseconds = client.regressiveState.ConnectStartMilliseconds
+			state.CurrentFailedCount = client.regressiveState.CurrentFailedCount
+			onConnect(connId, endpoint, connected, client.canReconnect(), state)
+		}
+		//
+		if connected {
+			client.regressiveState.CurrentFailedCount = 0
+			client.sendListenCache()
+			return
+		}
+
+		if !connected && client.canReconnect() {
+			go client.regressiveReconnection()
+		}
+	})
 }
 
-func (client *RTMServerClient) SetOnClosedCallback(onClosed func(connId uint64)) {
-	client.client.SetOnClosedCallback(onClosed)
+func (client *RTMServerClient) SetOnClosedCallback(onClosed RTMClientCloseEventUserCallback) {
+	client.client.SetOnClosedCallback(func(connId uint64, endpoint string) {
+		if onClosed != nil {
+			var state = &RtmRegressiveState{}
+			state.ConnectStartMilliseconds = client.regressiveState.ConnectStartMilliseconds
+			state.CurrentFailedCount = client.regressiveState.CurrentFailedCount
+			onClosed(connId, endpoint, client.canReconnect(), state)
+		}
+		//
+		if client.canReconnect() {
+			go client.regressiveReconnection()
+		}
+	})
 }
 
 func (client *RTMServerClient) SetLogger(logger *log.Logger) {
@@ -124,6 +210,8 @@ func (client *RTMServerClient) Endpoint() string {
 }
 
 func (client *RTMServerClient) Connect() bool {
+	client.isClose = false
+	client.regressiveState.ConnectStartMilliseconds = time.Now().UnixNano() / 1e6
 	return client.client.Connect()
 }
 
@@ -133,6 +221,21 @@ func (client *RTMServerClient) Dial() bool {
 
 func (client *RTMServerClient) IsConnected() bool {
 	return client.client.IsConnected()
+}
+
+func (client *RTMServerClient) SetDefaultRegressiveConnectStrategy(strategy *RTMRegressiveConnectStrategy) {
+	if strategy == nil {
+		return
+	}
+	if client.defaultRegressiveStrategy == nil {
+		client.defaultRegressiveStrategy = strategy
+		client.regressiveConnectStrategy = strategy
+	}
+}
+
+func (client *RTMServerClient) Close() {
+	client.isClose = true
+	client.client.Close()
 }
 
 /*
@@ -171,7 +274,7 @@ func (client *RTMServerClient) makeSignAndSalt() (string, int64) {
 func (client *RTMServerClient) genServerQuest(cmd string) *fpnn.Quest {
 
 	now := time.Now()
-	salt := now.UnixNano()
+	salt := client.idGen.genMid()
 	ts := int32(now.Unix())
 
 	pidStr := strconv.FormatInt(int64(client.pid), 10)
@@ -201,7 +304,7 @@ func (client *RTMServerClient) genServerQuest(cmd string) *fpnn.Quest {
 }
 
 //------------------------------[ Utilities Functions ]---------------------------------------//
-func convertToInt64(value interface{}) int64 {
+func (client *RTMServerClient) convertToInt64(value interface{}) int64 {
 	switch value.(type) {
 	case int64:
 		return int64(value.(int64))
@@ -231,11 +334,12 @@ func convertToInt64(value interface{}) int64 {
 		return int64(value.(float64))
 
 	default:
-		panic("Type convert failed.")
+		client.logger.Println("Type convert failed.")
+		return 0
 	}
 }
 
-func convertToString(value interface{}) string {
+func (client *RTMServerClient) convertToString(value interface{}) string {
 	switch value.(type) {
 	case string:
 		return value.(string)
@@ -244,8 +348,174 @@ func convertToString(value interface{}) string {
 	case []rune:
 		return string(value.([]rune))
 	default:
-		panic("Type convert failed.")
+		client.logger.Println("Type convert failed.")
+		return ""
 	}
+}
+
+func (client *RTMServerClient) canReconnect() bool {
+	if !client.client.GetAutoReconnect() {
+		return false
+	}
+
+	if client.isClose {
+		return false
+	}
+
+	return true
+}
+
+func (client *RTMServerClient) reconnect() {
+	if client.IsConnected() {
+		client.client.Close()
+	}
+	if client.canReconnect() {
+		client.Connect()
+	}
+}
+
+func (client *RTMServerClient) regressiveReconnection() {
+	current := int64(time.Now().UnixNano() / 1e6)
+	strategy := client.regressiveConnectStrategy
+	internval := current - int64(client.regressiveState.ConnectStartMilliseconds)
+	if internval > int64(strategy.connectFailedMaxIntervalMilliseconds) {
+		client.regressiveState.CurrentFailedCount = 0
+		client.reconnect()
+		return
+	}
+	client.regressiveState.CurrentFailedCount++
+	if client.regressiveState.CurrentFailedCount <= strategy.startConnectFailedCount {
+		client.reconnect()
+		return
+	}
+
+	idleSeconds := strategy.maxIntervalSeconds - strategy.firstIntervalSeconds
+	perIdleMillisecond := idleSeconds * 1000 / strategy.linearRegressiveCount
+	currIdleMilliseconds := (client.regressiveState.CurrentFailedCount-strategy.startConnectFailedCount)*perIdleMillisecond + strategy.firstIntervalSeconds*1000
+	if currIdleMilliseconds > strategy.maxIntervalSeconds*1000 {
+		currIdleMilliseconds = strategy.maxIntervalSeconds * 1000
+	}
+	time.Sleep(time.Duration(currIdleMilliseconds) * time.Millisecond)
+
+	client.reconnect()
+}
+
+func (client *RTMServerClient) addRTMListenCache(uids []int64, groupIds []int64, roomIds []int64, events []string) {
+	client.mutex.Lock()
+	defer client.mutex.Unlock()
+
+	if uids != nil && len(uids) > 0 {
+		client.listenCache.addUids(uids)
+	}
+	if groupIds != nil && len(groupIds) > 0 {
+		client.listenCache.addGroupIds(groupIds)
+	}
+	if roomIds != nil && len(roomIds) > 0 {
+		client.listenCache.addRoomIds(roomIds)
+	}
+	if events != nil && len(events) > 0 {
+		client.listenCache.addEvents(events)
+	}
+}
+
+func (client *RTMServerClient) removeRTMListenCache(uids []int64, groupIds []int64, roomIds []int64, events []string) {
+	client.mutex.Lock()
+	defer client.mutex.Unlock()
+
+	if uids != nil && len(uids) > 0 {
+		client.listenCache.removeUids(uids)
+	}
+	if groupIds != nil && len(groupIds) > 0 {
+		client.listenCache.removeGroupIds(groupIds)
+	}
+	if roomIds != nil && len(roomIds) > 0 {
+		client.listenCache.removeRoomIds(roomIds)
+	}
+	if events != nil && len(events) > 0 {
+		client.listenCache.removeEvents(events)
+	}
+}
+
+func (client *RTMServerClient) setRTMListenCache(uids []int64, groupIds []int64, roomIds []int64, events []string) {
+	client.mutex.Lock()
+	defer client.mutex.Unlock()
+
+	if uids != nil && len(uids) > 0 {
+		client.listenCache.setUids(uids)
+	}
+	if groupIds != nil && len(groupIds) > 0 {
+		client.listenCache.setGroupIds(groupIds)
+	}
+	if roomIds != nil && len(roomIds) > 0 {
+		client.listenCache.setRoomIds(roomIds)
+	}
+	if events != nil && len(events) > 0 {
+		client.listenCache.setEvents(events)
+	}
+}
+
+func (client *RTMServerClient) setRTMListenStateCache(allP2p bool, allGroup bool, allRoom bool, allEvent bool) {
+	client.mutex.Lock()
+	defer client.mutex.Unlock()
+
+	client.listenCache.setAllUid(allP2p)
+	client.listenCache.setAllGroup(allGroup)
+	client.listenCache.setAllRoom(allRoom)
+	client.listenCache.setAllEvent(allEvent)
+}
+
+func (client *RTMServerClient) sendListenCache() {
+	client.mutex.Lock()
+	defer client.mutex.Unlock()
+
+	var sendData = false
+	if !client.listenCache.empty() {
+		quest := client.genServerQuest("addlisten")
+
+		if len(client.listenCache.listenUids) > 0 {
+			quest.Param("uids", client.listenCache.listenUids)
+		}
+		if len(client.listenCache.listenRoomIds) > 0 {
+			quest.Param("rids", client.listenCache.listenRoomIds)
+		}
+		if len(client.listenCache.listenGroupIds) > 0 {
+			quest.Param("gids", client.listenCache.listenGroupIds)
+		}
+		if len(client.listenCache.listenEvents) > 0 {
+			quest.Param("events", client.listenCache.listenEvents)
+		}
+		sendData = true
+		err := client.sendSilentQuest(quest, 0, func(errorCode int, errInfo string) {
+			if errorCode != fpnn.FPNN_EC_OK {
+				client.logger.Printf("connected send add listencache error, errorCode:= %d, errorInfo:= %s.\n", errorCode, errInfo)
+			}
+		})
+		if err != nil {
+			client.logger.Printf("connected send add listencache error in async mode, err: %v.\n", err)
+		}
+	}
+
+	if !client.listenCache.isAllFalse() {
+		quest := client.genServerQuest("setlisten")
+		quest.Param("group", client.listenCache.allGroup)
+		quest.Param("room", client.listenCache.allRoom)
+		quest.Param("p2p", client.listenCache.allP2P)
+		quest.Param("ev", client.listenCache.allEvent)
+		sendData = true
+		err := client.sendSilentQuest(quest, 0, func(errorCode int, errInfo string) {
+			if errorCode != fpnn.FPNN_EC_OK {
+				client.logger.Printf("connected send set listencache error, errorCode:= %d, errorInfo:= %s.\n", errorCode, errInfo)
+			}
+		})
+		if err != nil {
+			client.logger.Printf("connected send set listencache error in async mode, err: %v.\n", err)
+		}
+	}
+
+	if sendData {
+		client.listenCache.clear()
+	}
+
 }
 
 //------------------------------[ RTM Server Client Interfaces ]---------------------------------------//
@@ -295,14 +565,14 @@ func (client *RTMServerClient) sendOkQuest(quest *fpnn.Quest, timeout time.Durat
 	}
 }
 
-func convertSliceToInt64Slice(slice []interface{}) []int64 {
+func (client *RTMServerClient) convertSliceToInt64Slice(slice []interface{}) []int64 {
 	if slice == nil || len(slice) == 0 {
 		return make([]int64, 0, 1)
 	}
 
 	rev := make([]int64, 0, len(slice))
 	for _, elem := range slice {
-		val := convertToInt64(elem)
+		val := client.convertToInt64(elem)
 		rev = append(rev, val)
 	}
 	return rev
@@ -314,7 +584,7 @@ func (client *RTMServerClient) sendSliceQuest(quest *fpnn.Quest, timeout time.Du
 	if callback != nil {
 		callbackFunc := func(answer *fpnn.Answer, errorCode int) {
 			if errorCode == fpnn.FPNN_EC_OK {
-				callback(convertSliceToInt64Slice(answer.WantSlice(sliceKey)), fpnn.FPNN_EC_OK, "")
+				callback(client.convertSliceToInt64Slice(answer.WantSlice(sliceKey)), fpnn.FPNN_EC_OK, "")
 			} else if answer == nil {
 				callback(nil, errorCode, "")
 			} else {
@@ -330,7 +600,7 @@ func (client *RTMServerClient) sendSliceQuest(quest *fpnn.Quest, timeout time.Du
 	if err != nil {
 		return nil, err
 	} else if !answer.IsException() {
-		slice := convertSliceToInt64Slice(answer.WantSlice(sliceKey))
+		slice := client.convertSliceToInt64Slice(answer.WantSlice(sliceKey))
 		return slice, nil
 	} else {
 		return nil, fmt.Errorf("[Exception] code: %d, ex: %s", answer.WantInt("code"), answer.WantString("ex"))
@@ -421,14 +691,14 @@ func (client *RTMServerClient) sendTranscribeQuest(quest *fpnn.Quest, timeout ti
 	}
 }
 
-func convertSliceToStringSlice(slice []interface{}) []string {
+func (client *RTMServerClient) convertSliceToStringSlice(slice []interface{}) []string {
 	if slice == nil || len(slice) == 0 {
 		return make([]string, 0, 1)
 	}
 
 	rev := make([]string, 0, len(slice))
 	for _, elem := range slice {
-		val := convertToString(elem)
+		val := client.convertToString(elem)
 		rev = append(rev, val)
 	}
 	return rev
@@ -442,7 +712,7 @@ func (client *RTMServerClient) sendProfanityQuest(quest *fpnn.Quest, timeout tim
 			if errorCode == fpnn.FPNN_EC_OK {
 				text := answer.WantString("text")
 				slice, _ := answer.GetSlice("classification")
-				classification := convertSliceToStringSlice(slice)
+				classification := client.convertSliceToStringSlice(slice)
 				callback(text, classification, fpnn.FPNN_EC_OK, "")
 			} else if answer == nil {
 				callback("", make([]string, 0, 1), errorCode, "")
@@ -461,7 +731,7 @@ func (client *RTMServerClient) sendProfanityQuest(quest *fpnn.Quest, timeout tim
 	} else if !answer.IsException() {
 		text := answer.WantString("text")
 		slice, _ := answer.GetSlice("classification")
-		classification := convertSliceToStringSlice(slice)
+		classification := client.convertSliceToStringSlice(slice)
 		return text, classification, nil
 	} else {
 		return "", make([]string, 0, 1), fmt.Errorf("[Exception] code: %d, ex: %s", answer.WantInt("code"), answer.WantString("ex"))
@@ -496,31 +766,57 @@ func (client *RTMServerClient) sendGetObjectInfoQuest(quest *fpnn.Quest, timeout
 	}
 }
 
+func (client *RTMServerClient) getMsgInfo(answer *fpnn.Answer) (res *HistoryMessageUnit, err error) {
+
+	defer func() {
+		if r := recover(); r != nil {
+			err = fmt.Errorf("[ERROR] Process MsgInfo exception. Panic: %v.", r)
+		}
+	}()
+
+	result := &HistoryMessageUnit{}
+	result.CursorId = answer.WantInt64("id")
+	result.MessageType = answer.WantInt8("mtype")
+	result.Message = answer.WantString("msg")
+	result.Attrs = answer.WantString("attrs")
+	result.ModifiedTime = answer.WantInt64("mtime")
+
+	return result, err
+}
+
 func (client *RTMServerClient) sendGetMsgInfoQuest(quest *fpnn.Quest, timeout time.Duration,
-	callback func(id int64, mtype int8, msg string, attr string, mtime int64, errorCode int, errInfo string)) (int64, int8, string, string, int64, error) {
+	callback func(result *HistoryMessageUnit, errorCode int, errInfo string)) (*HistoryMessageUnit, error) {
 
 	if callback != nil {
 		callbackFunc := func(answer *fpnn.Answer, errorCode int) {
 			if errorCode == fpnn.FPNN_EC_OK {
-				callback(answer.WantInt64("id"), answer.WantInt8("mtype"), answer.WantString("msg"), answer.WantString("attr"), answer.WantInt64("mtime"), fpnn.FPNN_EC_OK, "")
+				if result, err := client.getMsgInfo(answer); err == nil {
+					callback(result, fpnn.FPNN_EC_OK, "")
+				} else {
+					callback(result, fpnn.FPNN_EC_CORE_UNKNOWN_ERROR, fmt.Sprintf("%v", err))
+				}
 			} else if answer == nil {
-				callback(0, 0, "", "", 0, errorCode, "")
+				callback(nil, errorCode, "")
 			} else {
-				callback(0, 0, "", "", 0, answer.WantInt("code"), answer.WantString("ex"))
+				callback(nil, answer.WantInt("code"), answer.WantString("ex"))
 			}
 		}
 
 		_, err := client.sendQuest(quest, timeout, callbackFunc)
-		return 0, 0, "", "", 0, err
+		return nil, err
 	}
 
 	answer, err := client.sendQuest(quest, timeout, nil)
 	if err != nil {
-		return 0, 0, "", "", 0, err
+		return nil, err
 	} else if !answer.IsException() {
-		return answer.WantInt64("id"), answer.WantInt8("mtype"), answer.WantString("msg"), answer.WantString("attr"), answer.WantInt64("mtime"), nil
+		if result, err := client.getMsgInfo(answer); err == nil {
+			return result, nil
+		} else {
+			return nil, err
+		}
 	} else {
-		return 0, 0, "", "", 0, fmt.Errorf("[Exception] code: %d, ex: %s", answer.WantInt("code"), answer.WantString("ex"))
+		return nil, fmt.Errorf("[Exception] code: %d, ex: %s", answer.WantInt("code"), answer.WantString("ex"))
 	}
 }
 
@@ -551,7 +847,7 @@ func (client *RTMServerClient) Kickout(uid int64, rest ...interface{}) error {
 		case func(int, string):
 			callback = value
 		default:
-			panic("Invaild params when call RTMServerClient.Kickout() function.")
+			return errors.New("Invaild params when call RTMServerClient.Kickout() function.")
 		}
 	}
 
@@ -613,7 +909,7 @@ func (client *RTMServerClient) GetToken(uid int64, rest ...interface{}) (string,
 		case func(string, int, string):
 			callback = value
 		default:
-			panic("Invaild params when call RTMServerClient.GetToken() function.")
+			return "", errors.New("Invaild params when call RTMServerClient.GetToken() function.")
 		}
 	}
 
@@ -644,7 +940,7 @@ func (client *RTMServerClient) RemoveToken(uid int64, rest ...interface{}) error
 		case func(int, string):
 			callback = value
 		default:
-			panic("Invaild params when call RTMServerClient.RemoveToken() function.")
+			return errors.New("Invaild params when call RTMServerClient.RemoveToken() function.")
 		}
 	}
 
@@ -675,7 +971,7 @@ func (client *RTMServerClient) AddDevice(uid int64, appType string, deviceToken 
 		case func(int, string):
 			callback = value
 		default:
-			panic("Invaild params when call RTMServerClient.AddDevice() function.")
+			return errors.New("Invaild params when call RTMServerClient.AddDevice() function.")
 		}
 	}
 
@@ -708,7 +1004,7 @@ func (client *RTMServerClient) RemoveDevice(uid int64, deviceToken string, rest 
 		case func(int, string):
 			callback = value
 		default:
-			panic("Invaild params when call RTMServerClient.RemoveDevice() function.")
+			return errors.New("Invaild params when call RTMServerClient.RemoveDevice() function.")
 		}
 	}
 

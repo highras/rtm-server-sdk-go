@@ -1,12 +1,14 @@
 package rtm
 
 import (
-	"io"
-	"fmt"
-	"time"
-	"strings"
 	"crypto/md5"
 	"encoding/json"
+	"errors"
+	"fmt"
+	"io"
+	"strings"
+	"time"
+
 	"github.com/highras/fpnn-sdk-go/src/fpnn"
 )
 
@@ -41,10 +43,10 @@ func (client *RTMServerClient) sendFileTokenQuest(quest *fpnn.Quest, timeout tim
 }
 
 type fileTokenInfo struct {
-	toUid int64
-	toUids []int64
+	toUid   int64
+	toUids  []int64
 	groupId int64
-	roomId int64
+	roomId  int64
 }
 
 /*
@@ -56,19 +58,19 @@ type fileTokenInfo struct {
 		If include func param, this function will enter into async mode, and return (error);
 		else this function work in sync mode, and return (err error)
 */
-func (client *RTMServerClient) fileToken(fromUid int64, cmd string, info *fileTokenInfo, rest ... interface{}) (string, string, error) {
+func (client *RTMServerClient) fileToken(fromUid int64, cmd string, info *fileTokenInfo, rest ...interface{}) (string, string, error) {
 
 	var timeout time.Duration
-	var callback func (string, string, int, string)
+	var callback func(string, string, int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case time.Duration:
-				timeout = value
-			case func (string, string, int, string):
-				callback = value
-			default:
-				panic("Invaild params when call RTMServerClient.fileToken() function.")
+		case time.Duration:
+			timeout = value
+		case func(string, string, int, string):
+			callback = value
+		default:
+			return "", "", errors.New("Invaild params when call RTMServerClient.fileToken() function.")
 		}
 	}
 
@@ -87,7 +89,7 @@ func (client *RTMServerClient) fileToken(fromUid int64, cmd string, info *fileTo
 		quest.Param("gid", info.groupId)
 	case "broadcastfile":
 	default:
-		panic("Invaild 'cmd' value for RTMServerClient.fileToken() function.")
+		return "", "", errors.New("Invaild 'cmd' value for RTMServerClient.fileToken() function.")
 	}
 
 	return client.sendFileTokenQuest(quest, timeout, callback)
@@ -98,7 +100,7 @@ func calculateFileSign(token string, fileContent []byte) string {
 	//-- tolower(md5(tolower(toString(md5(filecontent))) + ":" + token))
 
 	fileMd5 := md5.Sum(fileContent)
-    fileMd5Str := fmt.Sprintf("%x", fileMd5)
+	fileMd5Str := fmt.Sprintf("%x", fileMd5)
 
 	ctx := md5.New()
 	io.WriteString(ctx, fileMd5Str)
@@ -122,19 +124,19 @@ func genFileAttrs(token string, fileContent []byte, filename string, extension s
 			attrsMap["filename"] = filename
 		} else {
 			pos := strings.LastIndex(filename, ".")
-			if pos > 0 && pos < len(filename) - 1 {
+			if pos > 0 && pos < len(filename)-1 {
 				attrsMap["filename"] = filename[:pos]
-				attrsMap["exit"] = filename[(pos+1):]
+				attrsMap["exit"] = filename[(pos + 1):]
 			} else {
 				attrsMap["filename"] = filename
 			}
 		}
-		
+
 	}
 	if len(extension) > 0 {
 		attrsMap["ext"] = extension
 	}
-	
+
 	bytes, err := json.Marshal(attrsMap)
 
 	return string(bytes), err
@@ -151,27 +153,27 @@ func genFileAttrs(token string, fileContent []byte, filename string, extension s
 		If include func param, this function will enter into async mode, and return (0, error);
 		else this function work in sync mode, and return (mtime int64, err error)
 */
-func (client *RTMServerClient) SendFile(fromUid int64, toUid int64, fileContent []byte, filename string, rest ... interface{}) (int64, error) {
+func (client *RTMServerClient) SendFile(fromUid int64, toUid int64, fileContent []byte, filename string, rest ...interface{}) (int64, error) {
 
 	var mtype int8 = 50
 	var extension string
 	var timeout time.Duration
-	var callback func (int64, int, string)
+	var callback func(int64, int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case int8:
-				mtype = value
-			case int:
-				mtype = int8(value)
-			case string:
-				extension = value
-			case time.Duration:
-				timeout = value
-			case func (int64, int, string):
-				callback = value
-			default:
-				panic("Invaild params when call RTMServerClient.SendFile() function.")
+		case int8:
+			mtype = value
+		case int:
+			mtype = int8(value)
+		case string:
+			extension = value
+		case time.Duration:
+			timeout = value
+		case func(int64, int, string):
+			callback = value
+		default:
+			return 0, errors.New("Invaild params when call RTMServerClient.SendFile() function.")
 		}
 	}
 
@@ -213,8 +215,8 @@ func (client *RTMServerClient) SendFile(fromUid int64, toUid int64, fileContent 
 
 	} else {
 
-		realCallback := func (token string, endpoint string, errorCode int, errInfo string) {
-			
+		realCallback := func(token string, endpoint string, errorCode int, errInfo string) {
+
 			attrs, err := genFileAttrs(token, fileContent, filename, extension)
 			if err != nil {
 				callback(0, fpnn.FPNN_EC_CORE_UNKNOWN_ERROR, fmt.Sprintf("[Exception] Exception when building file attrs, error: %v", err))
@@ -268,27 +270,27 @@ func (client *RTMServerClient) SendFile(fromUid int64, toUid int64, fileContent 
 		If include func param, this function will enter into async mode, and return (0, error);
 		else this function work in sync mode, and return (mtime int64, err error)
 */
-func (client *RTMServerClient) SendFiles(fromUid int64, toUids []int64, fileContent []byte, filename string, rest ... interface{}) (int64, error) {
+func (client *RTMServerClient) SendFiles(fromUid int64, toUids []int64, fileContent []byte, filename string, rest ...interface{}) (int64, error) {
 
 	var mtype int8 = 50
 	var extension string
 	var timeout time.Duration
-	var callback func (int64, int, string)
+	var callback func(int64, int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case int8:
-				mtype = value
-			case int:
-				mtype = int8(value)
-			case string:
-				extension = value
-			case time.Duration:
-				timeout = value
-			case func (int64, int, string):
-				callback = value
-			default:
-				panic("Invaild params when call RTMServerClient.SendFiles() function.")
+		case int8:
+			mtype = value
+		case int:
+			mtype = int8(value)
+		case string:
+			extension = value
+		case time.Duration:
+			timeout = value
+		case func(int64, int, string):
+			callback = value
+		default:
+			return 0, errors.New("Invaild params when call RTMServerClient.SendFiles() function.")
 		}
 	}
 
@@ -330,8 +332,8 @@ func (client *RTMServerClient) SendFiles(fromUid int64, toUids []int64, fileCont
 
 	} else {
 
-		realCallback := func (token string, endpoint string, errorCode int, errInfo string) {
-			
+		realCallback := func(token string, endpoint string, errorCode int, errInfo string) {
+
 			attrs, err := genFileAttrs(token, fileContent, filename, extension)
 			if err != nil {
 				callback(0, fpnn.FPNN_EC_CORE_UNKNOWN_ERROR, fmt.Sprintf("[Exception] Exception when building file attrs, error: %v", err))
@@ -385,27 +387,27 @@ func (client *RTMServerClient) SendFiles(fromUid int64, toUids []int64, fileCont
 		If include func param, this function will enter into async mode, and return (0, error);
 		else this function work in sync mode, and return (mtime int64, err error)
 */
-func (client *RTMServerClient) SendGroupFile(fromUid int64, groupId int64, fileContent []byte, filename string, rest ... interface{}) (int64, error) {
+func (client *RTMServerClient) SendGroupFile(fromUid int64, groupId int64, fileContent []byte, filename string, rest ...interface{}) (int64, error) {
 
 	var mtype int8 = 50
 	var extension string
 	var timeout time.Duration
-	var callback func (int64, int, string)
+	var callback func(int64, int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case int8:
-				mtype = value
-			case int:
-				mtype = int8(value)
-			case string:
-				extension = value
-			case time.Duration:
-				timeout = value
-			case func (int64, int, string):
-				callback = value
-			default:
-				panic("Invaild params when call RTMServerClient.SendGroupFile() function.")
+		case int8:
+			mtype = value
+		case int:
+			mtype = int8(value)
+		case string:
+			extension = value
+		case time.Duration:
+			timeout = value
+		case func(int64, int, string):
+			callback = value
+		default:
+			return 0, errors.New("Invaild params when call RTMServerClient.SendGroupFile() function.")
 		}
 	}
 
@@ -447,8 +449,8 @@ func (client *RTMServerClient) SendGroupFile(fromUid int64, groupId int64, fileC
 
 	} else {
 
-		realCallback := func (token string, endpoint string, errorCode int, errInfo string) {
-			
+		realCallback := func(token string, endpoint string, errorCode int, errInfo string) {
+
 			attrs, err := genFileAttrs(token, fileContent, filename, extension)
 			if err != nil {
 				callback(0, fpnn.FPNN_EC_CORE_UNKNOWN_ERROR, fmt.Sprintf("[Exception] Exception when building file attrs, error: %v", err))
@@ -502,27 +504,27 @@ func (client *RTMServerClient) SendGroupFile(fromUid int64, groupId int64, fileC
 		If include func param, this function will enter into async mode, and return (0, error);
 		else this function work in sync mode, and return (mtime int64, err error)
 */
-func (client *RTMServerClient) SendRoomFile(fromUid int64, roomId int64, fileContent []byte, filename string, rest ... interface{}) (int64, error) {
+func (client *RTMServerClient) SendRoomFile(fromUid int64, roomId int64, fileContent []byte, filename string, rest ...interface{}) (int64, error) {
 
 	var mtype int8 = 50
 	var extension string
 	var timeout time.Duration
-	var callback func (int64, int, string)
+	var callback func(int64, int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case int8:
-				mtype = value
-			case int:
-				mtype = int8(value)
-			case string:
-				extension = value
-			case time.Duration:
-				timeout = value
-			case func (int64, int, string):
-				callback = value
-			default:
-				panic("Invaild params when call RTMServerClient.SendRoomFile() function.")
+		case int8:
+			mtype = value
+		case int:
+			mtype = int8(value)
+		case string:
+			extension = value
+		case time.Duration:
+			timeout = value
+		case func(int64, int, string):
+			callback = value
+		default:
+			return 0, errors.New("Invaild params when call RTMServerClient.SendRoomFile() function.")
 		}
 	}
 
@@ -564,8 +566,8 @@ func (client *RTMServerClient) SendRoomFile(fromUid int64, roomId int64, fileCon
 
 	} else {
 
-		realCallback := func (token string, endpoint string, errorCode int, errInfo string) {
-			
+		realCallback := func(token string, endpoint string, errorCode int, errInfo string) {
+
 			attrs, err := genFileAttrs(token, fileContent, filename, extension)
 			if err != nil {
 				callback(0, fpnn.FPNN_EC_CORE_UNKNOWN_ERROR, fmt.Sprintf("[Exception] Exception when building file attrs, error: %v", err))
@@ -619,27 +621,27 @@ func (client *RTMServerClient) SendRoomFile(fromUid int64, roomId int64, fileCon
 		If include func param, this function will enter into async mode, and return (0, error);
 		else this function work in sync mode, and return (mtime int64, err error)
 */
-func (client *RTMServerClient) SendBroadcastFile(fromUid int64, fileContent []byte, filename string, rest ... interface{}) (int64, error) {
+func (client *RTMServerClient) SendBroadcastFile(fromUid int64, fileContent []byte, filename string, rest ...interface{}) (int64, error) {
 
 	var mtype int8 = 50
 	var extension string
 	var timeout time.Duration
-	var callback func (int64, int, string)
+	var callback func(int64, int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case int8:
-				mtype = value
-			case int:
-				mtype = int8(value)
-			case string:
-				extension = value
-			case time.Duration:
-				timeout = value
-			case func (int64, int, string):
-				callback = value
-			default:
-				panic("Invaild params when call RTMServerClient.SendBroadcastFile() function.")
+		case int8:
+			mtype = value
+		case int:
+			mtype = int8(value)
+		case string:
+			extension = value
+		case time.Duration:
+			timeout = value
+		case func(int64, int, string):
+			callback = value
+		default:
+			return 0, errors.New("Invaild params when call RTMServerClient.SendBroadcastFile() function.")
 		}
 	}
 
@@ -677,8 +679,8 @@ func (client *RTMServerClient) SendBroadcastFile(fromUid int64, fileContent []by
 
 	} else {
 
-		realCallback := func (token string, endpoint string, errorCode int, errInfo string) {
-			
+		realCallback := func(token string, endpoint string, errorCode int, errInfo string) {
+
 			attrs, err := genFileAttrs(token, fileContent, filename, extension)
 			if err != nil {
 				callback(0, fpnn.FPNN_EC_CORE_UNKNOWN_ERROR, fmt.Sprintf("[Exception] Exception when building file attrs, error: %v", err))

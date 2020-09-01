@@ -4,25 +4,30 @@
 
 [TOC]
 
-## type RTMServerMonitor
+## type IRTMServerMonitor
 
-	type RTMServerMonitor interface {
-		P2PMessage(fromUid int64, toUid int64, mtype int8, mid int64, message string, attrs string, mtime int64)
-		GroupMessage(fromUid int64, groupId int64, mtype int8, mid int64, message string, attrs string, mtime int64)
-		RoomMessage(fromUid int64, roomIid int64, mtype int8, mid int64, message string, attrs string, mtime int64)
+	type IRTMServerMonitor interface {
+		P2PMessage(messageInfo *RTMMessage)
+		GroupMessage(messageInfo *RTMMessage)
+		RoomMessage(messageInfo *RTMMessage)
+
+		P2PChat(messageInfo *RTMMessage)
+		GroupChat(messageInfo *RTMMessage)
+		RoomChat(messageInfo *RTMMessage)
+
+		P2PAudio(messageInfo *RTMMessage)
+		GroupAudio(messageInfo *RTMMessage)
+		RoomAudio(messageInfo *RTMMessage)
+
+		P2PCmd(messageInfo *RTMMessage)
+		GroupCmd(messageInfo *RTMMessage)
+		RoomCmd(messageInfo *RTMMessage)
+
+		P2PFile(messageInfo *RTMMessage)
+		GroupFile(messageInfo *RTMMessage)
+		RoomFile(messageInfo *RTMMessage)
+
 		Event(pid int32, event string, uid int64, time int32, endpoint string, data string)
-		P2PChat(fromUid int64, toUid int64, mid int64, message string, attrs string, mtime int64)
-		GroupChat(fromUid int64, groupId int64, mid int64, message string, attrs string, mtime int64)
-		RoomChat(fromUid int64, roomIid int64, mid int64, message string, attrs string, mtime int64)
-		P2PAudio(fromUid int64, toUid int64, mid int64, message []byte, attrs string, mtime int64)
-	    GroupAudio(fromUid int64, groupId int64, mid int64, message []byte, attrs string, mtime int64)
-	    RoomAudio(fromUid int64, roomIid int64, mid int64, message []byte, attrs string, mtime int64)
-	    P2PCmd(fromUid int64, toUid int64, mid int64, message string, attrs string, mtime int64)
-	    GroupCmd(fromUid int64, groupId int64, mid int64, message string, attrs string, mtime int64)
-	    RoomCmd(fromUid int64, roomIid int64, mid int64, message string, attrs string, mtime int64)
-		P2PFile(fromUid int64, toUid int64, mtype int8, mid int64, message string, attrs string, mtime int64)
-		GroupFile(fromUid int64, groupId int64, mtype int8, mid int64, message string, attrs string, mtime int64)
-		RoomFile(fromUid int64, roomId int64, mtype int8, mid int64, message string, attrs string, mtime int64)
 	}
 
 消息监听接口。
@@ -30,12 +35,12 @@
 请通过 RTM Console 进行配置设置，并在建立连接后，调用 `func AddListen(...)` 或 `func SetListen(...)` 进行代码设置。
 
 
-### func (client *RTMServerClient) SetMonitor(monitor RTMServerMonitor)
+### func (client *RTMServerClient) SetServerPushMonitor(monitor IRTMServerMonitor)
 
-	func (client *RTMServerClient) SetMonitor(monitor RTMServerMonitor)
+	func (client *RTMServerClient) SetServerPushMonitor(monitor IRTMServerMonitor)
 
 配置消息监听接口。
-具体参考：[RTMServerMonitor](#type-RTMServerMonitor)
+具体参考：[IRTMServerMonitor](#type-IRTMServerMonitor)
 
 
 ### func (client *RTMServerClient) AddListen(groupIds []int64, roomIds []int64, uids []int64, events []string, rest ... interface{}) error

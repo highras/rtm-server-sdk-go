@@ -1,6 +1,7 @@
 package rtm
 
 import (
+	"errors"
 	"time"
 )
 
@@ -25,7 +26,7 @@ func (client *RTMServerClient) AddListen(groupIds []int64, roomIds []int64, uids
 		case func(int, string):
 			callback = value
 		default:
-			panic("Invaild params when call RTMServerClient.AddListen() function.")
+			return errors.New("Invaild params when call RTMServerClient.AddListen() function.")
 		}
 	}
 
@@ -43,7 +44,7 @@ func (client *RTMServerClient) AddListen(groupIds []int64, roomIds []int64, uids
 	if events != nil && len(events) > 0 {
 		quest.Param("events", events)
 	}
-
+	client.addRTMListenCache(uids, groupIds, roomIds, events)
 	return client.sendSilentQuest(quest, timeout, callback)
 }
 
@@ -68,7 +69,7 @@ func (client *RTMServerClient) RemoveListen(groupIds []int64, roomIds []int64, u
 		case func(int, string):
 			callback = value
 		default:
-			panic("Invaild params when call RTMServerClient.RemoveListen() function.")
+			return errors.New("Invaild params when call RTMServerClient.RemoveListen() function.")
 		}
 	}
 
@@ -86,7 +87,7 @@ func (client *RTMServerClient) RemoveListen(groupIds []int64, roomIds []int64, u
 	if events != nil && len(events) > 0 {
 		quest.Param("events", events)
 	}
-
+	client.removeRTMListenCache(uids, groupIds, roomIds, events)
 	return client.sendSilentQuest(quest, timeout, callback)
 }
 
@@ -111,7 +112,7 @@ func (client *RTMServerClient) SetListen(groupIds []int64, roomIds []int64, uids
 		case func(int, string):
 			callback = value
 		default:
-			panic("Invaild params when call RTMServerClient.SetListen() function.")
+			return errors.New("Invaild params when call RTMServerClient.SetListen() function.")
 		}
 	}
 
@@ -128,7 +129,7 @@ func (client *RTMServerClient) SetListen(groupIds []int64, roomIds []int64, uids
 	if events != nil {
 		quest.Param("events", events)
 	}
-
+	client.setRTMListenCache(uids, groupIds, roomIds, events)
 	return client.sendSilentQuest(quest, timeout, callback)
 }
 
@@ -141,7 +142,7 @@ func (client *RTMServerClient) SetListen(groupIds []int64, roomIds []int64, uids
 		If include func param, this function will enter into async mode, and return (error);
 		else this function work in sync mode, and return (err error)
 */
-func (client *RTMServerClient) SetListenStatus(allGroups bool, allRrooms bool, allP2P bool, allEvents bool, rest ...interface{}) error {
+func (client *RTMServerClient) SetListenStatus(allGroups bool, allRooms bool, allP2P bool, allEvents bool, rest ...interface{}) error {
 
 	var timeout time.Duration
 	var callback func(int, string)
@@ -153,15 +154,15 @@ func (client *RTMServerClient) SetListenStatus(allGroups bool, allRrooms bool, a
 		case func(int, string):
 			callback = value
 		default:
-			panic("Invaild params when call RTMServerClient.SetListen() function.")
+			return errors.New("Invaild params when call RTMServerClient.SetListen() function.")
 		}
 	}
 
 	quest := client.genServerQuest("setlisten")
 	quest.Param("group", allGroups)
-	quest.Param("room", allRrooms)
+	quest.Param("room", allRooms)
 	quest.Param("p2p", allP2P)
 	quest.Param("ev", allEvents)
-
+	client.setRTMListenStateCache(allP2P, allGroups, allRooms, allEvents)
 	return client.sendSilentQuest(quest, timeout, callback)
 }

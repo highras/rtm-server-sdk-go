@@ -384,17 +384,24 @@
 
 ### -----------------------[ 获取聊天历史记录 ]-----------------------------
 
+### type RTMMessage
+
+	type RTMMessage struct {
+		FromUid			int64
+		ToId        	int64
+		MessageType 	int8
+		MessageId   	int64
+		Message     	string
+		Attrs       	string
+		ModifiedTime	int64
+		Audio        	*AudioInfo
+	}
+
 ### type HistoryMessageUnit
 
 	type HistoryMessageUnit struct {
-		Id			int64
-		FromUid		int64
-		MType		int8
-		Mid			int64
-		Deleted		bool						//-- 是否已被删除/撤销
-		Message		string
-		Attrs		string
-		MTime		int64
+		CursorId int64
+		RTMMessage
 	}
 
 聊天历史数据单元。
@@ -402,11 +409,11 @@
 ### type HistoryMessageResult
 
 	type HistoryMessageResult struct {
-		Num			int16						//-- 实际返回的条目数量
-		LastId		int64						//-- 继续轮询时，下次调用使用的 lastid 参数的值
-		Begin		int64						//-- 继续轮询时，下次调用使用的 begin 参数的值
-		End			int64						//-- 继续轮询时，下次调用使用的 end 参数的值
-		Messages	[]*HistoryMessageUnit
+		Num				int16						//-- 实际返回的条目数量
+		LastCursorId	nt64						//-- 继续轮询时，下次调用使用的 lastid 参数的值
+		Begin			int64						//-- 继续轮询时，下次调用使用的 begin 参数的值
+		End				int64						//-- 继续轮询时，下次调用使用的 end 参数的值
+		Messages		[]*HistoryMessageUnit
 	}
 
 聊天历史返回结果。
@@ -827,6 +834,53 @@
 + `uid int64`
 
 	用户id
+
++ `profanityFilter bool`
+
+	是否过滤
+
+可接受的参数为：
+
++ `timeout time.Duration`
+
+	请求超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+
++ `callback func (text string, lang string, errorCode int, errInfo string)`
+
+	异步回调函数。  
+
+如果 **callback** 参数**不存在**，则为**同步**请求，返回 过滤后的文本及lang及 error 信息。  
+如果 **callback** 参数**存在**，则为**异步**请求，返回 "" "" 及 error 信息。真实的 过滤后文本，将通过 callback 传递。
+
+
+### -----------------------[ 语音识别 ]-----------------------------
+	此接口只支持通过rtm发送的语音消息，无需把原始语音再一次发送，节省流量
+
+### func (client *RTMServerClient) Stranscribe(from int64, messageId int64, xid int64, messageType MessageType, profanityFilter bool, rest ... interface{}) (string, string, error)
+
+	func (client *RTMServerClient) Stranscribe(from int64, messageId int64, xid int64, messageType MessageType, profanityFilter bool, rest ... interface{}) (string, string, error)
+
+语音识别。
+
+必选参数：
+
++ `from int64`
+
+	来源的用户uid
+
++ `messageId int64`
+
+	消息的id
+
++ `xid int64`
+  
+  目标id toUid/groupid/roomid/0
+
++ `messageType MessageType`
+  
+  消息类型 p2p/group/room/broadcast
 
 + `profanityFilter bool`
 

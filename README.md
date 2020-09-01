@@ -46,12 +46,12 @@ Please get your project params from RTM Console.
 
 * Set message monitor
 
-		client.SetMonitor(monitor RTMServerMonitor)
+		client.SetServerPushMonitor(monitor IRTMServerMonitor)
 
 * Set connection events' callbacks
 
-		client.SetOnConnectedCallback(onConnected func(connId uint64))
-		client.SetOnClosedCallback(onClosed func(connId uint64))
+		client.SetOnConnectedCallback(onConnected func(connId uint64, endpoint string, connected bool, autoReconnect bool, connectState *rtm.RtmRegressiveState))
+		client.SetOnClosedCallback(onClosed func(connId uint64, endpoint string, autoReconnect bool, connectState *rtm.RtmRegressiveState))
 
 * Config encrypted connection
 	

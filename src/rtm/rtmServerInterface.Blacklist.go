@@ -1,6 +1,7 @@
 package rtm
 
-import(
+import (
+	"errors"
 	"time"
 )
 
@@ -11,22 +12,22 @@ import(
 		rest: can be include following params:
 			timeout time.Duration
 			func(errorCode int, errorInfo string)
-			
+
 		If include func param, this function will enter into async mode, and return(error),
-		else this function work in sync mode, and return(err error)			
+		else this function work in sync mode, and return(err error)
 */
 func (client *RTMServerClient) AddBlacks(uid int64, blacks []int64, rest ...interface{}) error {
 	var timeout time.Duration
-	var callback func (int, string)
+	var callback func(int, string)
 
-	for _, value := range rest{
+	for _, value := range rest {
 		switch value := value.(type) {
-			case time.Duration:
-				timeout = value
-			case func (int, string):
-				callback = value
-			default:
-				panic("Invalid params when call RTMServerClient.AddBlacks() function.")
+		case time.Duration:
+			timeout = value
+		case func(int, string):
+			callback = value
+		default:
+			return errors.New("Invalid params when call RTMServerClient.AddBlacks() function.")
 		}
 	}
 
@@ -41,22 +42,22 @@ func (client *RTMServerClient) AddBlacks(uid int64, blacks []int64, rest ...inte
 		rest: can be include following params:
 			timeout time.Duration
 			func(errorCode int, errorInfo string)
-			
+
 		If include func param, this function will enter into async mode, and return(error),
-		else this function work in sync mode, and return(err error)			
+		else this function work in sync mode, and return(err error)
 */
 func (client *RTMServerClient) DelBlacks(uid int64, blacks []int64, rest ...interface{}) error {
 	var timeout time.Duration
-	var callback func (int, string)
+	var callback func(int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case time.Duration:
-				timeout = value
-			case func (int, string):
-				callback = value
-			default:
-				panic("Invalid params when call RTMServerClient.DelBlacks() function.")
+		case time.Duration:
+			timeout = value
+		case func(int, string):
+			callback = value
+		default:
+			return errors.New("Invalid params when call RTMServerClient.DelBlacks() function.")
 		}
 	}
 
@@ -71,22 +72,22 @@ func (client *RTMServerClient) DelBlacks(uid int64, blacks []int64, rest ...inte
 		rest: can be include following params:
 			timeout time.Duration
 			func(buids []int64, errorCode int, errorInfo string)
-			
+
 		If include func param, this function will enter into async mode, and return(error),
-		else this function work in sync mode, and return(buids []int64, err error)			
+		else this function work in sync mode, and return(buids []int64, err error)
 */
-func (client * RTMServerClient) GetBlacks(uid int64, rest ...interface{}) ([]int64, error) {
+func (client *RTMServerClient) GetBlacks(uid int64, rest ...interface{}) ([]int64, error) {
 	var timeout time.Duration
-	var callback func ([]int64, int, string)
+	var callback func([]int64, int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case time.Duration:
-				timeout = value
-			case func ([]int64, int, string):
-				callback = value
-			default:
-				panic("Invalid params when call RTMServerClient.GetBlacks() function.")
+		case time.Duration:
+			timeout = value
+		case func([]int64, int, string):
+			callback = value
+		default:
+			return nil, errors.New("Invalid params when call RTMServerClient.GetBlacks() function.")
 		}
 	}
 
@@ -100,22 +101,22 @@ func (client * RTMServerClient) GetBlacks(uid int64, rest ...interface{}) ([]int
 		rest: can be include following params:
 			timeout time.Duration
 			func(ok bool, errorCode int, errorInfo string)
-			
+
 		If include func param, this function will enter into async mode, and return(error),
-		else this function work in sync mode, and return(ok bool, err error)			
+		else this function work in sync mode, and return(ok bool, err error)
 */
 func (client *RTMServerClient) IsBlack(uid, buid int64, rest ...interface{}) (bool, error) {
 	var timeout time.Duration
-	var callback func (bool, int, string)
+	var callback func(bool, int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case time.Duration:
-				timeout = value
-			case func (bool, int, string):
-				callback = value
-			default:
-				panic("Invalid params when call RTMServerClient.IsBlack() function.")
+		case time.Duration:
+			timeout = value
+		case func(bool, int, string):
+			callback = value
+		default:
+			return false, errors.New("Invalid params when call RTMServerClient.IsBlack() function.")
 		}
 	}
 
@@ -130,22 +131,22 @@ func (client *RTMServerClient) IsBlack(uid, buid int64, rest ...interface{}) (bo
 		rest: can be include following params:
 			timeout time.Duration
 			func(buids []int64, errorCode int, errorInfo string)
-			
+
 		If include func param, this function will enter into async mode, and return(error),
-		else this function work in sync mode, and return(buids []int64, err error)			
+		else this function work in sync mode, and return(buids []int64, err error)
 */
 func (client *RTMServerClient) IsBlacks(uid int64, buids []int64, rest ...interface{}) ([]int64, error) {
 	var timeout time.Duration
-	var callback func ([]int64, int, string)
+	var callback func([]int64, int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-			case time.Duration:
-				timeout = value
-			case func ([]int64, int, string):
-				callback = value
-			default:
-				panic("Invalid params when call RTMServerClient.IsBlacks() function.")
+		case time.Duration:
+			timeout = value
+		case func([]int64, int, string):
+			callback = value
+		default:
+			return nil, errors.New("Invalid params when call RTMServerClient.IsBlacks() function.")
 		}
 	}
 
