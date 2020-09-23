@@ -179,7 +179,7 @@ func (processor *rtmServerQuestProcessor) parseAudioJson(msg string) (*AudioInfo
 	audio := &AudioInfo{}
 	err := json.Unmarshal(msgByte, audio)
 	if err != nil {
-		processor.logger.Printf("parse json error for push audio, audio msg := %s, err := %v.\n", msg, err)
+		processor.logger.Printf("[ERROR] parse json error for push audio, audio msg := %s, err := %v.\n", msg, err)
 		return nil, err
 	}
 	return audio, nil

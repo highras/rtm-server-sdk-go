@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	SDKVersion = "0.4.0"
+	SDKVersion = "0.4.1"
 )
 
 const (
@@ -334,7 +334,7 @@ func (client *RTMServerClient) convertToInt64(value interface{}) int64 {
 		return int64(value.(float64))
 
 	default:
-		client.logger.Println("Type convert failed.")
+		client.logger.Println("[ERROR] Type convert failed.")
 		return 0
 	}
 }
@@ -348,7 +348,7 @@ func (client *RTMServerClient) convertToString(value interface{}) string {
 	case []rune:
 		return string(value.([]rune))
 	default:
-		client.logger.Println("Type convert failed.")
+		client.logger.Println("[ERROR] Type convert failed.")
 		return ""
 	}
 }
@@ -367,7 +367,7 @@ func (client *RTMServerClient) canReconnect() bool {
 
 func (client *RTMServerClient) reconnect() {
 	if client.IsConnected() {
-		client.client.Close()
+		return
 	}
 	if client.canReconnect() {
 		client.Connect()
@@ -487,11 +487,11 @@ func (client *RTMServerClient) sendListenCache() {
 		sendData = true
 		err := client.sendSilentQuest(quest, 0, func(errorCode int, errInfo string) {
 			if errorCode != fpnn.FPNN_EC_OK {
-				client.logger.Printf("connected send add listencache error, errorCode:= %d, errorInfo:= %s.\n", errorCode, errInfo)
+				client.logger.Printf("[ERROR] connected send add listencache error, errorCode:= %d, errorInfo:= %s.\n", errorCode, errInfo)
 			}
 		})
 		if err != nil {
-			client.logger.Printf("connected send add listencache error in async mode, err: %v.\n", err)
+			client.logger.Printf("[ERROR] connected send add listencache error in async mode, err: %v.\n", err)
 		}
 	}
 
@@ -504,11 +504,11 @@ func (client *RTMServerClient) sendListenCache() {
 		sendData = true
 		err := client.sendSilentQuest(quest, 0, func(errorCode int, errInfo string) {
 			if errorCode != fpnn.FPNN_EC_OK {
-				client.logger.Printf("connected send set listencache error, errorCode:= %d, errorInfo:= %s.\n", errorCode, errInfo)
+				client.logger.Printf("[ERROR] connected send set listencache error, errorCode:= %d, errorInfo:= %s.\n", errorCode, errInfo)
 			}
 		})
 		if err != nil {
-			client.logger.Printf("connected send set listencache error in async mode, err: %v.\n", err)
+			client.logger.Printf("[ERROR] connected send set listencache error in async mode, err: %v.\n", err)
 		}
 	}
 
@@ -522,17 +522,50 @@ func (client *RTMServerClient) sendListenCache() {
 func (client *RTMServerClient) sendQuest(quest *fpnn.Quest, timeout time.Duration, callback func(answer *fpnn.Answer, errorCode int)) (*fpnn.Answer, error) {
 
 	if callback == nil {
+		var answer *fpnn.Answer
+		var err error
 		if timeout == 0 {
-			return client.client.SendQuest(quest)
+			answer, err = client.client.SendQuest(quest)
 		} else {
-			return client.client.SendQuest(quest, timeout)
+			answer, err = client.client.SendQuest(quest, timeout)
 		}
+		if err != nil {
+			return answer, err
+		} else if answer.IsException() {
+			code, _ := answer.GetInt("code")
+			if code == fpnn.FPNN_EC_CORE_CONNECTION_CLOSED || code == fpnn.FPNN_EC_CORE_INVALID_CONNECTION {
+				if timeout == 0 {
+					return client.client.SendQuest(quest)
+				} else {
+					return client.client.SendQuest(quest, timeout)
+				}
+			}
+		}
+		return answer, err
 
 	} else {
 		if timeout == 0 {
-			return nil, client.client.SendQuestWithLambda(quest, callback)
+			return nil, client.client.SendQuestWithLambda(quest, func(answer *fpnn.Answer, errorCode int) {
+				if errorCode == fpnn.FPNN_EC_CORE_CONNECTION_CLOSED || errorCode == fpnn.FPNN_EC_CORE_INVALID_CONNECTION {
+					err := client.client.SendQuestWithLambda(quest, callback)
+					if err != nil {
+						client.logger.Println("[ERROR] send async quest failed, err: ", err)
+					}
+					return
+				}
+				callback(answer, errorCode)
+			})
 		} else {
-			return nil, client.client.SendQuestWithLambda(quest, callback, timeout)
+			return nil, client.client.SendQuestWithLambda(quest, func(answer *fpnn.Answer, errorCode int) {
+				if errorCode == fpnn.FPNN_EC_CORE_CONNECTION_CLOSED || errorCode == fpnn.FPNN_EC_CORE_INVALID_CONNECTION {
+					err := client.client.SendQuestWithLambda(quest, callback, timeout)
+					if err != nil {
+						client.logger.Println("[ERROR] send async quest failed, err: ", err)
+					}
+					return
+				}
+				callback(answer, errorCode)
+			}, timeout)
 		}
 	}
 }
