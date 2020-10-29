@@ -177,144 +177,6 @@ func demoSendChat(client *rtm.RTMServerClient) {
 	}
 }
 
-func demoSendAudio(client *rtm.RTMServerClient) {
-	//-- sync send P2P audio
-	mtime, err := client.SendAudio(fromUid, toUid, []byte("test sync P2P audio"))
-	locker.print(func() {
-		if err == nil {
-			fmt.Printf("[P2P Audio] %d send to %d in sync mode, return mtime: %d\n", fromUid, toUid, mtime)
-		} else {
-			fmt.Printf("[P2P Audio] %d send to %d in sync mode, err: %v\n", fromUid, toUid, err)
-		}
-	})
-
-	//-- async send P2P audio
-	_, err = client.SendAudio(fromUid, toUid, []byte("test async P2P audio"), func(mtime int64, errorCode int, errInfo string) {
-		locker.print(func() {
-			if errorCode == fpnn.FPNN_EC_OK {
-				fmt.Printf("[P2P Audio] %d send to %d in async mode, mtime:%d\n", fromUid, toUid, mtime)
-			} else {
-				fmt.Printf("[P2P Audio] %d send to %d in async mode, error code: %d, error info:%s\n",
-					fromUid, toUid, errorCode, errInfo)
-			}
-		})
-	})
-
-	if err != nil {
-		locker.print(func() {
-			fmt.Printf("[P2P Audio] %d send to %d in async mode, err: %v\n", fromUid, toUid, err)
-		})
-	}
-
-	//-- sync send multiple P2P chat
-	mtime, err = client.SendAudios(fromUid, toUids, []byte("test sync multiple P2P audio"))
-	locker.print(func() {
-		if err == nil {
-			fmt.Printf("[Multiple P2P Audio] %d send to {%v} in sync mode, return mtime: %d\n", fromUid, toUids, mtime)
-		} else {
-			fmt.Printf("[Multiple P2P Audio] %d send to {%v} in sync mode, err: %v\n", fromUid, toUids, err)
-		}
-	})
-
-	//-- async send multiple P2P chat
-	_, err = client.SendAudios(fromUid, toUids, []byte("test async multiple P2P audio"), func(mtime int64, errorCode int, errInfo string) {
-		locker.print(func() {
-			if errorCode == fpnn.FPNN_EC_OK {
-				fmt.Printf("[Multiple P2P Audio] %d send to {%v} in async mode, mtime:%d\n", fromUid, toUids, mtime)
-			} else {
-				fmt.Printf("[Multiple P2P Audio] %d send to {%v} in async mode, error code: %d, error info:%s\n",
-					fromUid, toUids, errorCode, errInfo)
-			}
-		})
-	})
-	if err != nil {
-		locker.print(func() {
-			fmt.Printf("[Multiple P2P Audio] %d send to {%v} in async mode, err: %v\n", fromUid, toUids, err)
-		})
-	}
-
-	//-- sync send group chat
-	mtime, err = client.SendGroupAudio(fromUid, groupId, []byte("test sync group audio"))
-	locker.print(func() {
-		if err == nil {
-			fmt.Printf("[Group Audio] %d send to group %d in sync mode, return mtime: %d\n", fromUid, groupId, mtime)
-		} else {
-			fmt.Printf("[Group Audio] %d send to group %d in sync mode, err: %v\n", fromUid, groupId, err)
-		}
-	})
-
-	//-- async send group chat
-	_, err = client.SendGroupAudio(fromUid, groupId, []byte("test async group audio"), func(mtime int64, errorCode int, errInfo string) {
-		locker.print(func() {
-			if errorCode == fpnn.FPNN_EC_OK {
-				fmt.Printf("[Group Audio] %d send to group %d in async mode, mtime:%d\n", fromUid, groupId, mtime)
-			} else {
-				fmt.Printf("[Group Audio] %d send to group %d in async mode, error code: %d, error info:%s\n",
-					fromUid, groupId, errorCode, errInfo)
-			}
-		})
-	})
-	if err != nil {
-		locker.print(func() {
-			fmt.Printf("[Group Audio] %d send to group %d in async mode, err: %v\n", fromUid, groupId, err)
-		})
-	}
-
-	//-- sync send room chat
-	mtime, err = client.SendRoomAudio(fromUid, roomId, []byte("test sync room audio"))
-	locker.print(func() {
-		if err == nil {
-			fmt.Printf("[Room Audio] %d send to room %d in sync mode, return mtime: %d\n", fromUid, roomId, mtime)
-		} else {
-			fmt.Printf("[Room Audio] %d send to room %d in sync mode, err: %v\n", fromUid, roomId, err)
-		}
-	})
-
-	//-- async send room chat
-	_, err = client.SendRoomAudio(fromUid, roomId, []byte("test async room audio"), func(mtime int64, errorCode int, errInfo string) {
-		locker.print(func() {
-			if errorCode == fpnn.FPNN_EC_OK {
-				fmt.Printf("[Room Audio] %d send to room %d in async mode, mtime:%d\n", fromUid, roomId, mtime)
-			} else {
-				fmt.Printf("[Room Audio] %d send to room %d in async mode, error code: %d, error info:%s\n",
-					fromUid, roomId, errorCode, errInfo)
-			}
-		})
-	})
-	if err != nil {
-		locker.print(func() {
-			fmt.Printf("[Room Audio] %d send to room %d in async mode, err: %v\n", fromUid, roomId, err)
-		})
-	}
-
-	//-- sync send boardcast chat
-	mtime, err = client.SendBroadcastAudio(adminUid, []byte("test sync boardcast audio"))
-	locker.print(func() {
-		if err == nil {
-			fmt.Printf("[Boardcast Audio] %d send boardcast chat in sync mode, return mtime: %d\n", adminUid, mtime)
-		} else {
-			fmt.Printf("[Boardcast Audio] %d send boardcast chat in sync mode, err: %v\n", adminUid, err)
-		}
-	})
-
-	//-- async send boardcast chat
-	_, err = client.SendBroadcastAudio(adminUid, []byte("test async boardcast audio"), func(mtime int64, errorCode int, errInfo string) {
-		locker.print(func() {
-			if errorCode == fpnn.FPNN_EC_OK {
-				fmt.Printf("[Boardcast Audio] %d send boardcast chat in async mode, mtime:%d\n", adminUid, mtime)
-			} else {
-				fmt.Printf("[Boardcast Audio] %d send boardcast chat in async mode, error code: %d, error info:%s\n",
-					adminUid, errorCode, errInfo)
-			}
-		})
-	})
-	if err != nil {
-		locker.print(func() {
-			fmt.Printf("[Boardcast Audio] %d send boardcast chat in async mode, err: %v\n", adminUid, err)
-		})
-	}
-}
-
 func demoSendCmd(client *rtm.RTMServerClient) {
 
 	//-- sync send P2P audio
@@ -519,27 +381,27 @@ func demoTranslate(client *rtm.RTMServerClient) {
 	}
 }
 
-func demoTranscribe(client *rtm.RTMServerClient) {
+func demoSpeech2Text(client *rtm.RTMServerClient) {
 
-	audio := "test aaaaa"
+	audio := "test aaaaa"  // 格式可能错误，此处只是展示api使用，具体格式请咨询client sdk人员
 
-	//-- sync transcribe
-	text, lang, err := client.Transcribe([]byte(audio), 0)
+	//-- sync Speech2Text
+	text, lang, err := client.Speech2Text(audio, 2, rtm.EN, "", 0, 0)
 	locker.print(func() {
 		if err == nil {
-			fmt.Printf("[Transcribe] Transcribe text: %s, lang: %s\n", text, lang)
+			fmt.Printf("[Speech2Text] Speech2Text text: %s, lang: %s\n", text, lang)
 		} else {
-			fmt.Printf("[Transcribe] Transcribe err: %v\n", err)
+			fmt.Printf("[Speech2Text] Speech2Text err: %v\n", err)
 		}
 	})
 
-	//-- async transcribe
-	_, _, err = client.Transcribe([]byte(audio), 0, func(text string, lang string, errorCode int, errInfo string) {
+	//-- async Speech2Text
+	_, _, err = client.Speech2Text(audio, 2, rtm.EN, "", 0, 0, func(text string, lang string, errorCode int, errInfo string) {
 		locker.print(func() {
 			if errorCode == fpnn.FPNN_EC_OK {
-				fmt.Printf("[Transcribe] Transcribe text: %s, lang: %s\n", text, lang)
+				fmt.Printf("[Speech2Text] Speech2Text text: %s, lang: %s\n", text, lang)
 			} else {
-				fmt.Printf("[Transcribe] Transcribe error code: %d, error info:%s\n",
+				fmt.Printf("[Speech2Text] Speech2Text error code: %d, error info:%s\n",
 					errorCode, errInfo)
 			}
 		})
@@ -547,7 +409,40 @@ func demoTranscribe(client *rtm.RTMServerClient) {
 
 	if err != nil {
 		locker.print(func() {
-			fmt.Printf("[Transcribe] Transcribe err: %v\n", err)
+			fmt.Printf("[Speech2Text] Speech2Text err: %v\n", err)
+		})
+	}
+}
+
+func demoTextCheck(client *rtm.RTMServerClient) {
+
+	message := "test aaaaa"
+
+	//-- sync TextCheck
+	result, text, tags, wlist, err := client.TextCheck(message,  0)
+	locker.print(func() {
+		if err == nil {
+			fmt.Printf("[TextCheck] TextCheck result: %d, text: %s, tags: %v, wlist: %v\n", result, text, tags, wlist)
+		} else {
+			fmt.Printf("[TextCheck] TextCheck err: %v\n", err)
+		}
+	})
+
+	//-- async TextCheck
+	_, _,_,_, err = client.TextCheck(message, 0, func(result int32, text string , tags []int32, wlist []string, errorCode int, errInfo string) {
+		locker.print(func() {
+			if errorCode == fpnn.FPNN_EC_OK {
+				fmt.Printf("[TextCheck] TextCheck result: %d, text: %s, tags: %v, wlist: %v\n", result, text, tags, wlist)
+			} else {
+				fmt.Printf("[TextCheck] TextCheck error code: %d, error info:%s\n",
+					errorCode, errInfo)
+			}
+		})
+	})
+
+	if err != nil {
+		locker.print(func() {
+			fmt.Printf("[TextCheck] TextCheck err: %v\n", err)
 		})
 	}
 }
@@ -569,8 +464,9 @@ func main() {
 	client := rtm.NewRTMServerClient(int32(pid), os.Args[3], os.Args[1])
 
 	//demoSendChat(client)
-
-	demoSendAudio(client)
+	demoSpeech2Text(client)
+	demoTextCheck(client)
+	time.Sleep(time.Second * 150) //-- Waiting for the async callback printed.
 return
 	demoSendCmd(client)
 
@@ -578,11 +474,9 @@ return
 
 	demoTranslate(client)
 
-	demoTranscribe(client)
-
 	locker.print(func() {
 		fmt.Println("Wait 1 second for async callbacks are printed.")
 	})
 
-	time.Sleep(time.Second * 2) //-- Waiting for the async callback printed.
+	time.Sleep(time.Second * 150) //-- Waiting for the async callback printed.
 }

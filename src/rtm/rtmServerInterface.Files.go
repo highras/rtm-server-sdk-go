@@ -112,31 +112,40 @@ func calculateFileSign(token string, fileContent []byte) string {
 	return sign
 }
 
-func genFileAttrs(token string, fileContent []byte, filename string, extension string) (string, error) {
+func genFileAttrs(token string, fileContent []byte, filename string, extension string, customAttr string) (string, error) {
 
 	sgin := calculateFileSign(token, fileContent)
-	attrsMap := make(map[string]string)
-
-	attrsMap["sign"] = sgin
+	attrsMap := make(map[string]map[string]string)
+	rtmMap := make(map[string]string)
+	rtmMap["sign"] = sgin
 
 	if len(filename) > 0 {
 		if len(extension) > 0 {
-			attrsMap["filename"] = filename
+			rtmMap["filename"] = filename
 		} else {
 			pos := strings.LastIndex(filename, ".")
 			if pos > 0 && pos < len(filename)-1 {
-				attrsMap["filename"] = filename[:pos]
-				attrsMap["exit"] = filename[(pos + 1):]
+				rtmMap["filename"] = filename[:pos]
+				rtmMap["ext"] = filename[(pos + 1):]
 			} else {
-				attrsMap["filename"] = filename
+				rtmMap["filename"] = filename
 			}
 		}
 
 	}
 	if len(extension) > 0 {
-		attrsMap["ext"] = extension
+		rtmMap["ext"] = extension
 	}
+	attrsMap["rtm"] = rtmMap
 
+	customMap := make(map[string]string)
+	if len(customAttr) > 0 {
+		err := json.Unmarshal(([]byte)(customAttr), &customMap)
+		if err != nil {
+			return "", err
+		}
+	}
+	attrsMap["custom"] = customMap
 	bytes, err := json.Marshal(attrsMap)
 
 	return string(bytes), err
@@ -186,7 +195,7 @@ func (client *RTMServerClient) SendFile(fromUid int64, toUid int64, fileContent 
 			return 0, fmt.Errorf("[Exception] Exception when get file token, error: %v", err)
 		}
 
-		attrs, err := genFileAttrs(token, fileContent, filename, extension)
+		attrs, err := genFileAttrs(token, fileContent, filename, extension, "")
 		if err != nil {
 			return 0, fmt.Errorf("[Exception] Exception when building file attrs, error: %v", err)
 		}
@@ -217,7 +226,7 @@ func (client *RTMServerClient) SendFile(fromUid int64, toUid int64, fileContent 
 
 		realCallback := func(token string, endpoint string, errorCode int, errInfo string) {
 
-			attrs, err := genFileAttrs(token, fileContent, filename, extension)
+			attrs, err := genFileAttrs(token, fileContent, filename, extension, "")
 			if err != nil {
 				callback(0, fpnn.FPNN_EC_CORE_UNKNOWN_ERROR, fmt.Sprintf("[Exception] Exception when building file attrs, error: %v", err))
 			}
@@ -303,7 +312,7 @@ func (client *RTMServerClient) SendFiles(fromUid int64, toUids []int64, fileCont
 			return 0, fmt.Errorf("[Exception] Exception when get file token, error: %v", err)
 		}
 
-		attrs, err := genFileAttrs(token, fileContent, filename, extension)
+		attrs, err := genFileAttrs(token, fileContent, filename, extension, "")
 		if err != nil {
 			return 0, fmt.Errorf("[Exception] Exception when building file attrs, error: %v", err)
 		}
@@ -334,7 +343,7 @@ func (client *RTMServerClient) SendFiles(fromUid int64, toUids []int64, fileCont
 
 		realCallback := func(token string, endpoint string, errorCode int, errInfo string) {
 
-			attrs, err := genFileAttrs(token, fileContent, filename, extension)
+			attrs, err := genFileAttrs(token, fileContent, filename, extension, "")
 			if err != nil {
 				callback(0, fpnn.FPNN_EC_CORE_UNKNOWN_ERROR, fmt.Sprintf("[Exception] Exception when building file attrs, error: %v", err))
 			}
@@ -420,7 +429,7 @@ func (client *RTMServerClient) SendGroupFile(fromUid int64, groupId int64, fileC
 			return 0, fmt.Errorf("[Exception] Exception when get file token, error: %v", err)
 		}
 
-		attrs, err := genFileAttrs(token, fileContent, filename, extension)
+		attrs, err := genFileAttrs(token, fileContent, filename, extension, "")
 		if err != nil {
 			return 0, fmt.Errorf("[Exception] Exception when building file attrs, error: %v", err)
 		}
@@ -451,7 +460,7 @@ func (client *RTMServerClient) SendGroupFile(fromUid int64, groupId int64, fileC
 
 		realCallback := func(token string, endpoint string, errorCode int, errInfo string) {
 
-			attrs, err := genFileAttrs(token, fileContent, filename, extension)
+			attrs, err := genFileAttrs(token, fileContent, filename, extension, "")
 			if err != nil {
 				callback(0, fpnn.FPNN_EC_CORE_UNKNOWN_ERROR, fmt.Sprintf("[Exception] Exception when building file attrs, error: %v", err))
 			}
@@ -537,7 +546,7 @@ func (client *RTMServerClient) SendRoomFile(fromUid int64, roomId int64, fileCon
 			return 0, fmt.Errorf("[Exception] Exception when get file token, error: %v", err)
 		}
 
-		attrs, err := genFileAttrs(token, fileContent, filename, extension)
+		attrs, err := genFileAttrs(token, fileContent, filename, extension, "")
 		if err != nil {
 			return 0, fmt.Errorf("[Exception] Exception when building file attrs, error: %v", err)
 		}
@@ -568,7 +577,7 @@ func (client *RTMServerClient) SendRoomFile(fromUid int64, roomId int64, fileCon
 
 		realCallback := func(token string, endpoint string, errorCode int, errInfo string) {
 
-			attrs, err := genFileAttrs(token, fileContent, filename, extension)
+			attrs, err := genFileAttrs(token, fileContent, filename, extension, "")
 			if err != nil {
 				callback(0, fpnn.FPNN_EC_CORE_UNKNOWN_ERROR, fmt.Sprintf("[Exception] Exception when building file attrs, error: %v", err))
 			}
@@ -651,7 +660,7 @@ func (client *RTMServerClient) SendBroadcastFile(fromUid int64, fileContent []by
 			return 0, fmt.Errorf("[Exception] Exception when get file token, error: %v", err)
 		}
 
-		attrs, err := genFileAttrs(token, fileContent, filename, extension)
+		attrs, err := genFileAttrs(token, fileContent, filename, extension, "")
 		if err != nil {
 			return 0, fmt.Errorf("[Exception] Exception when building file attrs, error: %v", err)
 		}
@@ -681,7 +690,7 @@ func (client *RTMServerClient) SendBroadcastFile(fromUid int64, fileContent []by
 
 		realCallback := func(token string, endpoint string, errorCode int, errInfo string) {
 
-			attrs, err := genFileAttrs(token, fileContent, filename, extension)
+			attrs, err := genFileAttrs(token, fileContent, filename, extension, "")
 			if err != nil {
 				callback(0, fpnn.FPNN_EC_CORE_UNKNOWN_ERROR, fmt.Sprintf("[Exception] Exception when building file attrs, error: %v", err))
 			}

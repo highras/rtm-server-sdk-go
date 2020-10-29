@@ -15,10 +15,6 @@
 		GroupChat(messageInfo *RTMMessage)
 		RoomChat(messageInfo *RTMMessage)
 
-		P2PAudio(messageInfo *RTMMessage)
-		GroupAudio(messageInfo *RTMMessage)
-		RoomAudio(messageInfo *RTMMessage)
-
 		P2PCmd(messageInfo *RTMMessage)
 		GroupCmd(messageInfo *RTMMessage)
 		RoomCmd(messageInfo *RTMMessage)

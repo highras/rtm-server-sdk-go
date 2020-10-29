@@ -44,6 +44,7 @@ func printHistory(result *rtm.HistoryMessageResult) {
 		fmt.Printf(" -- id %d, sender %d, mtype %d, mid %d, mtime: %d\n", v.CursorId, v.FromUid, v.MessageType, v.MessageId, v.ModifiedTime)
 		fmt.Printf(" -- message: %s\n", v.Message)
 		fmt.Printf(" -- attrs: %s\n", v.Attrs)
+		fmt.Printf(" -- FileInfo: %+v\n", v.FileInfo)
 	}
 }
 

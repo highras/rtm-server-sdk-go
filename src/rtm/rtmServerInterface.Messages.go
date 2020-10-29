@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/highras/fpnn-sdk-go/src/fpnn"
@@ -284,11 +285,13 @@ func (client *RTMServerClient) SendBroadcastMessageByteArray(fromUid int64, mess
 // }
 
 // new version
-type AudioInfo struct {
-	SourceLanguage     string `json:"sl"` // json key
-	RecognizedLanguage string `json:"rl"`
-	RecognizedText     string `json:"rt"`
-	Duration           int    `json:"du"`
+type FileMsgInfo struct {
+	Url        string `json:"url"`
+	Duration   int32  // ms，如果是rtm语音会有此值
+	FileSize   int64  `json:"size"` // 字节大小
+	Lang       string // 如果是rtm语音会有此值
+	Surl       string `surl` // 缩略图的地址，如果是图片类型会有此值
+	IsRTMaudio bool   // 是否是rtm语音消息
 }
 
 type RTMMessage struct {
@@ -300,7 +303,7 @@ type RTMMessage struct {
 	Message      string
 	Attrs        string
 	ModifiedTime int64
-	Audio        *AudioInfo
+	FileInfo     *FileMsgInfo
 }
 
 type HistoryMessageUnit struct {
@@ -325,6 +328,61 @@ func checkIsBinaryType(value interface{}) bool {
 	default:
 		return false
 	}
+}
+
+func findMtypeInFileSlice(key int8) bool {
+	for _, value := range fileMtypes {
+		if value == key {
+			return true
+		}
+	}
+	return false
+}
+
+func processFileInfo(msg string, attrs string, mtype int8, logger *log.Logger) *FileMsgInfo {
+	fileInfo := &FileMsgInfo{}
+	err1 := json.Unmarshal(([]byte)(msg), fileInfo)
+	if err1 != nil {
+		logger.Printf("parse json error for get file msg, file msg := %s, err := %v.\n", msg, err1)
+		return fileInfo
+	}
+	if mtype == defaultMtype_Audio {
+		data := make(map[string]interface{})
+		if err2 := json.Unmarshal(([]byte)(attrs), &data); err2 != nil {
+			logger.Printf("parse json error for get file msg, attrs := %s, err := %v.\n", attrs, err2)
+			return fileInfo
+		}
+		value, ok := data["rtm"]
+		if !ok {
+			logger.Printf("parse json error for get file msg, attrs not have rtm key, attrs := %s.\n", attrs)
+			return fileInfo
+		}
+		rtmdata, ok1 := value.(map[string]interface{})
+		if !ok1 {
+			logger.Printf("parse json error for get file msg, attrs rtm key-value invalid, attrs := %s.\n", attrs)
+			return fileInfo
+		}
+
+		if typeValue, ok2 := rtmdata["type"]; ok2 {
+			if typeString, ok3 := typeValue.(string); ok3 {
+				if typeString == "audiomsg" {
+					if lang, ok4 := rtmdata["lang"]; ok4 {
+						if realLang, ok5 := lang.(string); ok5 {
+							fileInfo.Lang = realLang
+						}
+					}
+					if duration, ok6 := rtmdata["duration"]; ok6 {
+						if realDuration, ok7 := duration.(int32); ok7 {
+							fileInfo.Duration = realDuration
+						}
+					}
+					fileInfo.IsRTMaudio = true
+				}
+			}
+
+		}
+	}
+	return fileInfo
 }
 
 func (client *RTMServerClient) processHistoryAnswer(answer *fpnn.Answer, p2pInfo []int64) (res *HistoryMessageResult, err error) {
@@ -357,29 +415,16 @@ func (client *RTMServerClient) processHistoryAnswer(answer *fpnn.Answer, p2pInfo
 		msgUnit.FromUid = client.convertToInt64(elems[1])
 		msgUnit.MessageType = int8(client.convertToInt64(elems[2]))
 		msgUnit.MessageId = client.convertToInt64(elems[3])
-
+		msgUnit.Attrs = client.convertToString(elems[6])
 		//msgUnit.Deleted = elems[4].(bool)
-		if msgUnit.MessageType == defaultMtype_Audio {
-			if checkIsBinaryType(elems[5]) {
-				msgUnit.Message = client.convertToString(elems[5])
-			} else {
-				msg := client.convertToString(elems[5])
-				msgByte := []byte(msg)
-				audio := &AudioInfo{}
-				err = json.Unmarshal(msgByte, audio)
-				if err != nil {
-					client.logger.Printf("parse json error for get audio history, audio msg := %s, err := %v.\n", msg, err)
-					continue
-				}
-				msgUnit.Audio = audio
-				msgUnit.Message = audio.RecognizedText
-			}
+		if findMtypeInFileSlice(msgUnit.MessageType) {
+			msg := client.convertToString(elems[5])
+			fileInfo := processFileInfo(msg, msgUnit.Attrs, msgUnit.MessageType, client.logger)
+			msgUnit.FileInfo = fileInfo
 
 		} else {
 			msgUnit.Message = client.convertToString(elems[5])
 		}
-
-		msgUnit.Attrs = client.convertToString(elems[6])
 		msgUnit.ModifiedTime = client.convertToInt64(elems[7])
 
 		if p2pInfo != nil {

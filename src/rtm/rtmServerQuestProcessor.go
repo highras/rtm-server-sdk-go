@@ -1,7 +1,6 @@
 package rtm
 
 import (
-	"encoding/json"
 	"log"
 	"time"
 
@@ -174,17 +173,6 @@ func (processor *rtmServerQuestProcessor) Process(method string) func(*fpnn.Ques
 	}
 }
 
-func (processor *rtmServerQuestProcessor) parseAudioJson(msg string) (*AudioInfo, error) {
-	msgByte := []byte(msg)
-	audio := &AudioInfo{}
-	err := json.Unmarshal(msgByte, audio)
-	if err != nil {
-		processor.logger.Printf("[ERROR] parse json error for push audio, audio msg := %s, err := %v.\n", msg, err)
-		return nil, err
-	}
-	return audio, nil
-}
-
 func (processor *rtmServerQuestProcessor) processPushMessage(quest *fpnn.Quest) (*fpnn.Answer, error) {
 
 	rtmMessage := &RTMMessage{}
@@ -205,23 +193,6 @@ func (processor *rtmServerQuestProcessor) processPushMessage(quest *fpnn.Quest) 
 					rtmMessage.Message, rtmMessage.Attrs, rtmMessage.ModifiedTime)
 			} else if processor.newMonitor != nil {
 				go processor.newMonitor.P2PChat(rtmMessage)
-			}
-		} else if rtmMessage.MessageType == defaultMtype_Audio {
-			if value, ok := quest.Get("msg"); ok {
-				if checkIsBinaryType(value) {
-					rtmMessage.Message = message
-				} else {
-					if audio, err := processor.parseAudioJson(message); err == nil {
-						rtmMessage.Audio = audio
-						rtmMessage.Message = audio.RecognizedText
-					}
-				}
-				if processor.monitor != nil {
-					go processor.monitor.P2PAudio(rtmMessage.FromUid, rtmMessage.ToId, rtmMessage.MessageId,
-						[]byte(rtmMessage.Message), rtmMessage.Attrs, rtmMessage.ModifiedTime)
-				} else if processor.newMonitor != nil {
-					go processor.newMonitor.P2PAudio(rtmMessage)
-				}
 			}
 		} else if rtmMessage.MessageType == defaultMtype_Cmd {
 			rtmMessage.Message = message
@@ -265,23 +236,6 @@ func (processor *rtmServerQuestProcessor) processPushGroupMessage(quest *fpnn.Qu
 			} else if processor.newMonitor != nil {
 				go processor.newMonitor.GroupChat(rtmMessage)
 			}
-		} else if rtmMessage.MessageType == defaultMtype_Audio {
-			if value, ok := quest.Get("msg"); ok {
-				if checkIsBinaryType(value) {
-					rtmMessage.Message = message
-				} else {
-					if audio, err := processor.parseAudioJson(message); err == nil {
-						rtmMessage.Audio = audio
-						rtmMessage.Message = audio.RecognizedText
-					}
-				}
-				if processor.monitor != nil {
-					go processor.monitor.GroupAudio(rtmMessage.FromUid, rtmMessage.ToId, rtmMessage.MessageId,
-						[]byte(rtmMessage.Message), rtmMessage.Attrs, rtmMessage.ModifiedTime)
-				} else if processor.newMonitor != nil {
-					go processor.newMonitor.GroupAudio(rtmMessage)
-				}
-			}
 		} else if rtmMessage.MessageType == defaultMtype_Cmd {
 			rtmMessage.Message = message
 			if processor.monitor != nil {
@@ -323,23 +277,6 @@ func (processor *rtmServerQuestProcessor) processPushRoomMessage(quest *fpnn.Que
 					rtmMessage.Message, rtmMessage.Attrs, rtmMessage.ModifiedTime)
 			} else if processor.newMonitor != nil {
 				go processor.newMonitor.RoomChat(rtmMessage)
-			}
-		} else if rtmMessage.MessageType == defaultMtype_Audio {
-			if value, ok := quest.Get("msg"); ok {
-				if checkIsBinaryType(value) {
-					rtmMessage.Message = message
-				} else {
-					if audio, err := processor.parseAudioJson(message); err == nil {
-						rtmMessage.Audio = audio
-						rtmMessage.Message = audio.RecognizedText
-					}
-				}
-				if processor.monitor != nil {
-					go processor.monitor.RoomAudio(rtmMessage.FromUid, rtmMessage.ToId, rtmMessage.MessageId,
-						[]byte(rtmMessage.Message), rtmMessage.Attrs, rtmMessage.ModifiedTime)
-				} else if processor.newMonitor != nil {
-					go processor.newMonitor.RoomAudio(rtmMessage)
-				}
 			}
 		} else if rtmMessage.MessageType == defaultMtype_Cmd {
 			rtmMessage.Message = message
@@ -394,14 +331,16 @@ func (processor *rtmServerQuestProcessor) processPushFile(quest *fpnn.Quest) (*f
 	rtmMessage.MessageType = quest.WantInt8("mtype")
 
 	rtmMessage.MessageId = quest.WantInt64("mid")
-	rtmMessage.Message = quest.WantString("msg")
+	msg := quest.WantString("msg")
 	rtmMessage.Attrs = quest.WantString("attrs")
 	rtmMessage.ModifiedTime = quest.WantInt64("mtime")
 
 	if processor.monitor != nil {
 		go processor.monitor.P2PFile(rtmMessage.FromUid, rtmMessage.ToId, rtmMessage.MessageType, rtmMessage.MessageId,
-			rtmMessage.Message, rtmMessage.Attrs, rtmMessage.ModifiedTime)
+			msg, rtmMessage.Attrs, rtmMessage.ModifiedTime)
 	} else if processor.newMonitor != nil {
+		fileInfo := processFileInfo(msg, rtmMessage.Attrs, rtmMessage.MessageType, processor.logger)
+		rtmMessage.FileInfo = fileInfo
 		go processor.newMonitor.P2PFile(rtmMessage)
 	}
 
@@ -416,14 +355,16 @@ func (processor *rtmServerQuestProcessor) processPushGroupFile(quest *fpnn.Quest
 	rtmMessage.MessageType = quest.WantInt8("mtype")
 
 	rtmMessage.MessageId = quest.WantInt64("mid")
-	rtmMessage.Message = quest.WantString("msg")
+	msg := quest.WantString("msg")
 	rtmMessage.Attrs = quest.WantString("attrs")
 	rtmMessage.ModifiedTime = quest.WantInt64("mtime")
 
 	if processor.monitor != nil {
 		go processor.monitor.GroupFile(rtmMessage.FromUid, rtmMessage.ToId, rtmMessage.MessageType, rtmMessage.MessageId,
-			rtmMessage.Message, rtmMessage.Attrs, rtmMessage.ModifiedTime)
+			msg, rtmMessage.Attrs, rtmMessage.ModifiedTime)
 	} else if processor.newMonitor != nil {
+		fileInfo := processFileInfo(msg, rtmMessage.Attrs, rtmMessage.MessageType, processor.logger)
+		rtmMessage.FileInfo = fileInfo
 		go processor.newMonitor.GroupFile(rtmMessage)
 	}
 
@@ -438,14 +379,16 @@ func (processor *rtmServerQuestProcessor) processPushRoomFile(quest *fpnn.Quest)
 	rtmMessage.MessageType = quest.WantInt8("mtype")
 
 	rtmMessage.MessageId = quest.WantInt64("mid")
-	rtmMessage.Message = quest.WantString("msg")
+	msg := quest.WantString("msg")
 	rtmMessage.Attrs = quest.WantString("attrs")
 	rtmMessage.ModifiedTime = quest.WantInt64("mtime")
 
 	if processor.monitor != nil {
 		go processor.monitor.RoomFile(rtmMessage.FromUid, rtmMessage.ToId, rtmMessage.MessageType, rtmMessage.MessageId,
-			rtmMessage.Message, rtmMessage.Attrs, rtmMessage.ModifiedTime)
+			msg, rtmMessage.Attrs, rtmMessage.ModifiedTime)
 	} else if processor.newMonitor != nil {
+		fileInfo := processFileInfo(msg, rtmMessage.Attrs, rtmMessage.MessageType, processor.logger)
+		rtmMessage.FileInfo = fileInfo
 		go processor.newMonitor.RoomFile(rtmMessage)
 	}
 

@@ -31,31 +31,6 @@
 如果 **callback** 参数**不存在**，则为**同步**发送，返回 mtime 及 error 信息。  
 如果 **callback** 参数**存在**，则为**异步**发送，返回 0 及 error 信息。真实的 mtime，将通过 callback 传递。
 
-### func (client *RTMServerClient) SendAudio(fromUid int64, toUid int64, message []byte, rest ... interface{}) (int64, error)
-
-	func (client *RTMServerClient) SendAudio(fromUid int64, toUid int64, message []byte, rest ... interface{}) (int64, error)
-
-发送 P2P 语音消息。
-
-可接受的参数为：
-
-+ `attrs string`
-
-	消息的属性信息。默认为空字符串。
-
-+ `timeout time.Duration`
-
-	发送超时。  
-	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
-	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
-
-+ `callback func(mtime int64, errorCode int, errInfo string)`
-
-	异步回调函数。  
-
-如果 **callback** 参数**不存在**，则为**同步**发送，返回 mtime 及 error 信息。  
-如果 **callback** 参数**存在**，则为**异步**发送，返回 0 及 error 信息。真实的 mtime，将通过 callback 传递。
-
 ### func (client *RTMServerClient) SendCmd(fromUid int64, toUid int64, message string, rest ... interface{}) (int64, error)
 
 	func (client *RTMServerClient) SendCmd(fromUid int64, toUid int64, message string, rest ... interface{}) (int64, error)
@@ -86,31 +61,6 @@
 	func (client *RTMServerClient) SendChats(fromUid int64, toUids []int64, message string, rest ... interface{}) (int64, error)
 
 发送多人 P2P 聊天消息。
-
-可接受的参数为：
-
-+ `attrs string`
-
-	消息的属性信息。默认为空字符串。
-
-+ `timeout time.Duration`
-
-	发送超时。  
-	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
-	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
-
-+ `callback func(mtime int64, errorCode int, errInfo string)`
-
-	异步回调函数。  
-
-如果 **callback** 参数**不存在**，则为**同步**发送，返回 mtime 及 error 信息。  
-如果 **callback** 参数**存在**，则为**异步**发送，返回 0 及 error 信息。真实的 mtime，将通过 callback 传递。
-
-### func (client *RTMServerClient) SendAudios(fromUid int64, toUids []int64, message []byte, rest ... interface{}) (int64, error)
-
-	func (client *RTMServerClient) SendAudios(fromUid int64, toUids []int64, message []byte, rest ... interface{}) (int64, error)
-
-发送多人 P2P 语音消息。
 
 可接受的参数为：
 
@@ -181,31 +131,6 @@
 如果 **callback** 参数**不存在**，则为**同步**发送，返回 mtime 及 error 信息。  
 如果 **callback** 参数**存在**，则为**异步**发送，返回 0 及 error 信息。真实的 mtime，将通过 callback 传递。
 
-### func (client *RTMServerClient) SendGroupAudio(fromUid int64, groupId int64, message []byte, rest ... interface{}) (int64, error)
-
-	func (client *RTMServerClient) SendGroupAudio(fromUid int64, groupId int64, message []byte, rest ... interface{}) (int64, error)
-
-发送群组语音消息。
-
-可接受的参数为：
-
-+ `attrs string`
-
-	消息的属性信息。默认为空字符串。
-
-+ `timeout time.Duration`
-
-	发送超时。  
-	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
-	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
-
-+ `callback func(mtime int64, errorCode int, errInfo string)`
-
-	异步回调函数。  
-
-如果 **callback** 参数**不存在**，则为**同步**发送，返回 mtime 及 error 信息。  
-如果 **callback** 参数**存在**，则为**异步**发送，返回 0 及 error 信息。真实的 mtime，将通过 callback 传递。
-
 ### func (client *RTMServerClient) SendGroupCmd(fromUid int64, groupId int64, message string, rest ... interface{}) (int64, error)
 
 	func (client *RTMServerClient) SendGroupCmd(fromUid int64, groupId int64, message string, rest ... interface{}) (int64, error)
@@ -256,86 +181,11 @@
 如果 **callback** 参数**不存在**，则为**同步**发送，返回 mtime 及 error 信息。  
 如果 **callback** 参数**存在**，则为**异步**发送，返回 0 及 error 信息。真实的 mtime，将通过 callback 传递。
 
-### func (client *RTMServerClient) SendRoomAudio(fromUid int64, roomId int64, message []byte, rest ... interface{}) (int64, error)
-
-	func (client *RTMServerClient) SendRoomAudio(fromUid int64, roomId int64, message []byte, rest ... interface{}) (int64, error)
-
-发送房间语音消息。
-
-可接受的参数为：
-
-+ `attrs string`
-
-	消息的属性信息。默认为空字符串。
-
-+ `timeout time.Duration`
-
-	发送超时。  
-	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
-	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
-
-+ `callback func(mtime int64, errorCode int, errInfo string)`
-
-	异步回调函数。  
-
-如果 **callback** 参数**不存在**，则为**同步**发送，返回 mtime 及 error 信息。  
-如果 **callback** 参数**存在**，则为**异步**发送，返回 0 及 error 信息。真实的 mtime，将通过 callback 传递。
-
-### func (client *RTMServerClient) SendRoomCmd(fromUid int64, roomId int64, message string, rest ... interface{}) (int64, error)
-
-	func (client *RTMServerClient) SendRoomCmd(fromUid int64, roomId int64, message string, rest ... interface{}) (int64, error)
-
-发送房间控制命令。
-
-可接受的参数为：
-
-+ `attrs string`
-
-	消息的属性信息。默认为空字符串。
-
-+ `timeout time.Duration`
-
-	发送超时。  
-	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
-	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
-
-+ `callback func(mtime int64, errorCode int, errInfo string)`
-
-	异步回调函数。  
-
-如果 **callback** 参数**不存在**，则为**同步**发送，返回 mtime 及 error 信息。  
-如果 **callback** 参数**存在**，则为**异步**发送，返回 0 及 error 信息。真实的 mtime，将通过 callback 传递。
-
 ### func (client *RTMServerClient) SendBroadcastChat(fromUid int64, message string, rest ... interface{}) (int64, error)
 
 	func (client *RTMServerClient) SendBroadcastChat(fromUid int64, message string, rest ... interface{}) (int64, error)
 
 发送广播聊天消息。
-
-可接受的参数为：
-
-+ `attrs string`
-
-	消息的属性信息。默认为空字符串。
-
-+ `timeout time.Duration`
-
-	发送超时。  
-	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
-	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
-
-+ `callback func(mtime int64, errorCode int, errInfo string)`
-
-	异步回调函数。  
-
-如果 **callback** 参数**不存在**，则为**同步**发送，返回 mtime 及 error 信息。  
-如果 **callback** 参数**存在**，则为**异步**发送，返回 0 及 error 信息。真实的 mtime，将通过 callback 传递。
-
-### func (client *RTMServerClient) SendBroadcastAudio(fromUid int64, message []byte, rest ... interface{}) (int64, error)
-
-	func (client *RTMServerClient) SendBroadcastAudio(fromUid int64, message []byte, rest ... interface{}) (int64, error)
-
-发送广播语音消息。
 
 可接受的参数为：
 
@@ -384,6 +234,17 @@
 
 ### -----------------------[ 获取聊天历史记录 ]-----------------------------
 
+### type FileMsgInfo
+
+	type FileMsgInfo struct {
+		Url		  string `json:"url"`
+		Duration  int32	  // ms，如果是rtm语音会有此值	
+		FileSize  int64   `json:"size"`// 字节大小
+		Lang 	  string  // 如果是rtm语音会有此值
+		Surl      string  `surl`// 缩略图的地址，如果是图片类型会有此值
+		IsRTMaudio bool    // 是否是rtm语音消息
+	}
+
 ### type RTMMessage
 
 	type RTMMessage struct {
@@ -394,7 +255,7 @@
 		Message     	string
 		Attrs       	string
 		ModifiedTime	int64
-		Audio        	*AudioInfo
+		FileInfo     	*FileMsgInfo
 	}
 
 ### type HistoryMessageUnit
@@ -796,6 +657,9 @@
 
 敏感词过滤。
 
+note:
+	maybe in after version this interface will be discarded，recommend use TextCheck interface replace
+
 必选参数：
 
 + `classify bool`
@@ -817,11 +681,12 @@
 如果 **callback** 参数**不存在**，则为**同步**请求，返回 过滤后的文本 及 error 信息。  
 如果 **callback** 参数**存在**，则为**异步**请求，返回 "" 及 error 信息。真实的 过滤后文本，将通过 callback 传递。
 
-### -----------------------[ 语音识别 ]-----------------------------
 
-### func (client *RTMServerClient) Transcribe(audio []byte, uid int64, profanityFilter bool, rest ... interface{}) (string, string, error)
+### -----------------------[ 语音转文字 ]-------------------------------
 
-	func (client *RTMServerClient) Transcribe(audio []byte, uid int64, profanityFilter bool, rest ... interface{}) (string, string, error)
+### func (client *RTMServerClient) Speech2Text(audio string, audioType int32, lang RTMTranslateLanguage, codec string, srate int32, uid int64, rest ...interface{}) (string, string, error)
+
+	func (client *RTMServerClient) Speech2Text(audio string, audioType int32, lang RTMTranslateLanguage, codec string, srate int32, uid int64, rest ...interface{}) (string, string, error)
 
 语音识别。
 
@@ -829,15 +694,28 @@
 
 + `audio []byte`
 
-	语音数据
+	音频的url或者内容（需要提供lang&codec&srate）
+
++ `audioType int32`
+
+	语音数据类型. 1:url 2:内容
+
++ `lang RTMTranslateLanguage`
+
+	语言
+
+可选参数
++ `codec string`
+
+	codec为空则默认为AMR_WB
+
++ `srate int32`
+
+	srate为0或者空则默认为16000
 
 + `uid int64`
 
-	用户id
-
-+ `profanityFilter bool`
-
-	是否过滤
+	用户
 
 可接受的参数为：
 
@@ -851,40 +729,29 @@
 
 	异步回调函数。  
 
-如果 **callback** 参数**不存在**，则为**同步**请求，返回 过滤后的文本及lang及 error 信息。  
-如果 **callback** 参数**存在**，则为**异步**请求，返回 "" "" 及 error 信息。真实的 过滤后文本，将通过 callback 传递。
+如果 **callback** 参数**不存在**，则为**同步**请求，返回 文本及lang及 error 信息。  
+如果 **callback** 参数**存在**，则为**异步**请求，返回 "" "" 及 error 信息。真实的文本，将通过 callback 传递。
 
 
-### -----------------------[ 语音识别 ]-----------------------------
-	此接口只支持通过rtm发送的语音消息，无需把原始语音再一次发送，节省流量
+### -----------------------[ 文本审核 ]-----------------------------
 
-### func (client *RTMServerClient) Stranscribe(from int64, messageId int64, xid int64, messageType MessageType, profanityFilter bool, rest ... interface{}) (string, string, error)
+### func (client *RTMServerClient) TextCheck(text string, uid int64, rest ...interface{}) (int32, string, []int32, []string, error)
 
-	func (client *RTMServerClient) Stranscribe(from int64, messageId int64, xid int64, messageType MessageType, profanityFilter bool, rest ... interface{}) (string, string, error)
+	func (client *RTMServerClient) TextCheck(text string, uid int64, rest ...interface{}) (result int32, text string, tags []int32, wlist []string, error)
 
-语音识别。
+文本审核。
 
 必选参数：
 
-+ `from int64`
++ `text string`
 
-	来源的用户uid
+	文本内容
 
-+ `messageId int64`
+可选参数
 
-	消息的id
++ `uid int64`
 
-+ `xid int64`
-  
-  目标id toUid/groupid/roomid/0
-
-+ `messageType MessageType`
-  
-  消息类型 p2p/group/room/broadcast
-
-+ `profanityFilter bool`
-
-	是否过滤
+	用户
 
 可接受的参数为：
 
@@ -894,10 +761,153 @@
 	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
 	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
 
-+ `callback func (text string, lang string, errorCode int, errInfo string)`
++ `callback func (result int32, text string, tags []int32, wlist []string, errorCode int, errorMessage string)`
 
 	异步回调函数。  
 
 如果 **callback** 参数**不存在**，则为**同步**请求，返回 过滤后的文本及lang及 error 信息。  
-如果 **callback** 参数**存在**，则为**异步**请求，返回 "" "" 及 error 信息。真实的 过滤后文本，将通过 callback 传递。
+如果 **callback** 参数**存在**，则为**异步**请求，返回 "" "" 及 error 信息。真实的 过滤后文本，将通过 callback 传递。result: 0 通过 2 不通过；text: 敏感词过滤后的文本内容，含有的敏感词会被替换为*，如果没有被标星，则无此字段；tags: 触发的分类，比如涉黄涉政等等，具体见文本审核分类；wlist: 敏感词列表
 
+说明：如果返回的result=2，正常处理是：如果text不为空则可以直接发出(用返回的text)，否则拦截（可能是广告或者隐晦色情等等）
+注：如果需要详细的返回结果，请调用审核产品原生接口
+
+
+### -----------------------[ 图片审核 ]-----------------------------
+
+### func (client *RTMServerClient) ImageCheck(image string, imageType int32, uid int64, rest ...interface{}) (int32, []int32, error)
+
+	func (client *RTMServerClient) ImageCheck(image string, imageType int32, uid int64, rest ...interface{}) (int32, []int32, error)
+
+图片审核。
+
+必选参数：
+
++ `image string`
+
+	图片的url 或者内容
+
++ `imageType int32`
+
+	1, url, 2, 内容
+
+可选参数
+
++ `uid int64`
+
+	用户
+
+可接受的参数为：
+
++ `timeout time.Duration`
+
+	请求超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+
++ `callback func (result int32, tags []int32, errorCode int, errorMessage string)`
+
+	异步回调函数。  
+
+如果 **callback** 参数**不存在**，则为**同步**请求，返回 过滤后的文本及lang及 error 信息。  
+如果 **callback** 参数**存在**，则为**异步**请求，返回 "" "" 及 error 信息。真实的 过滤后文本，将通过 callback 传递。result: 0 通过，2 不通过；tags：触发的分类，比如涉黄涉政等等，具体见图片审核分类
+
+注：如果需要详细的返回结果，请调用审核产品原生接口
+
+
+### -----------------------[ 视频审核 ]-----------------------------
+
+### func (client *RTMServerClient) VideoCheck(video string, videoType int32, videoName string, uid int64, rest ...interface{}) (int32, []int32, error)
+
+	func (client *RTMServerClient) VideoCheck(video string, videoType int32, videoName string, uid int64, rest ...interface{}) (int32, []int32, error)
+
+视频审核。
+
+必选参数：
+
++ `video string`
+
+	视频的url或者内容
+
++ `videoType int32`
+
+	1, url, 2, 内容
+
++ `videoName string`
+
+	视频文件名，type=2时候必选，可以通过文件名获取文件格式
+
+可选参数
+
++ `uid int64`
+
+	用户
+
+可接受的参数为：
+
++ `timeout time.Duration`
+
+	请求超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+
++ `callback func (result int32, tags []int32, errorCode int, errorMessage string)`
+
+	异步回调函数。  
+
+如果 **callback** 参数**不存在**，则为**同步**请求，返回 过滤后的文本及lang及 error 信息。  
+如果 **callback** 参数**存在**，则为**异步**请求，返回 "" "" 及 error 信息。真实的结果，将通过 callback 传递。result: 0 通过，2 不通过；tags：触发的分类，比如涉黄涉政等等，具体见视频审核分类
+
+注：如果需要详细的返回结果，请调用审核产品原生接口
+
+
+### -----------------------[ 音频审核 ]-----------------------------
+
+### func (client *RTMServerClient) AudioCheck(audio string, audioType int32, lang RTMTranslateLanguage, codec string, srate int32, uid int64, rest ...interface{}) (int32, []int32, error)
+
+	func (client *RTMServerClient) AudioCheck(audio string, audioType int32, lang RTMTranslateLanguage, codec string, srate int32, uid int64, rest ...interface{}) (int32, []int32, error)
+
+音频审核。
+
+必选参数：
+
++ `audio []byte`
+
+	音频的url或者内容（需要提供lang&codec&srate）
+
++ `audioType int32`
+
+	语音数据类型. 1:url 2:内容
+
++ `lang RTMTranslateLanguage`
+
+	语言
+
+可选参数
++ `codec string`
+
+	codec为空则默认为AMR_WB
+
++ `srate int32`
+
+	srate为0或者空则默认为16000
+
++ `uid int64`
+
+	用户
+
+可接受的参数为：
+
++ `timeout time.Duration`
+
+	请求超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+
++ `callback func (result int32, tags []int32, errorCode int, errorMessage string)`
+
+	异步回调函数。  
+
+如果 **callback** 参数**不存在**，则为**同步**请求，返回 过滤后的文本及lang及 error 信息。  
+如果 **callback** 参数**存在**，则为**异步**请求，返回 "" "" 及 error 信息。真实的结果，将通过 callback 传递。result: 0 通过，2 不通过；tags：触发的分类，比如涉黄涉政等等，具体见音频审核分类
+
+注：如果需要详细的返回结果，请调用审核产品原生接口

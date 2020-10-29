@@ -1,5 +1,7 @@
 github.com/highras/fpnn-sdk-go v1.0.4 h1:BbgbWpbevLLwqLFrwAODxvihziMO1OzNsIgWyAStYug=
 github.com/highras/fpnn-sdk-go v1.0.4/go.mod h1:62VsZdoRb/FM1MJO8XzUr+2Nxs6B2CYQHvtRbenZSn4=
+github.com/highras/fpnn-sdk-go v1.0.6 h1:+B+r4cO6eev2wa8a0v2mGeX09DD7j4FGHgGS8i3O2Yk=
+github.com/highras/fpnn-sdk-go v1.0.6/go.mod h1:62VsZdoRb/FM1MJO8XzUr+2Nxs6B2CYQHvtRbenZSn4=
 github.com/ugorji/go v1.1.7 h1:/68gy2h+1mWMrwZFeD1kQialdSzAb432dtpeJ42ovdo=
 github.com/ugorji/go v1.1.7/go.mod h1:kZn38zHttfInRq0xu/PH0az30d+z6vm202qpg1oXVMw=
 github.com/ugorji/go/codec v1.1.7 h1:2SvQaVZ1ouYrrKKwoSk2pzd4A9evlKJb9oTL+OaLUSs=

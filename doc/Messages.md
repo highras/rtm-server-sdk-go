@@ -144,6 +144,17 @@
 
 ### -----------------------[ 获取历史消息 ]-----------------------------
 
+### type FileMsgInfo
+
+	type FileMsgInfo struct {
+		Url		  string `json:"url"`
+		Duration  int32	  // ms，如果是rtm语音会有此值	
+		FileSize  int64   `json:"size"`// 字节大小
+		Lang 	  string  // 如果是rtm语音会有此值
+		Surl      string  `surl`// 缩略图的地址，如果是图片类型会有此值
+		IsRTMaudio bool    // 是否是rtm语音消息
+	}
+
 ### type RTMMessage
 
 	type RTMMessage struct {
@@ -154,7 +165,7 @@
 		Message     	string
 		Attrs       	string
 		ModifiedTime	int64
-		Audio        	*AudioInfo
+		FileInfo    	*FileMsgInfo
 	}
 
 ### type HistoryMessageUnit

@@ -15,14 +15,16 @@ import (
 )
 
 const (
-	SDKVersion = "0.4.1"
+	SDKVersion = "0.5.0"
 )
 
 const (
-	APIVersion = "2.2.0"
+	APIVersion = "2.3.0"
 )
 
-// for compatible before v0.3.1(include) , please use new serverPush interface IRTMServerMonitor
+/*  for compatible before v0.3.1(include) maybe in after version this interface will be discarded, 
+	please use new serverPush interface IRTMServerMonitor
+*/
 type RTMServerMonitor interface {
 	P2PMessage(fromUid int64, toUid int64, mtype int8, mid int64, message string, attrs string, mtime int64)
 	GroupMessage(fromUid int64, groupId int64, mtype int8, mid int64, message string, attrs string, mtime int64)
@@ -31,9 +33,6 @@ type RTMServerMonitor interface {
 	P2PChat(fromUid int64, toUid int64, mid int64, message string, attrs string, mtime int64)
 	GroupChat(fromUid int64, groupId int64, mid int64, message string, attrs string, mtime int64)
 	RoomChat(fromUid int64, roomIid int64, mid int64, message string, attrs string, mtime int64)
-	P2PAudio(fromUid int64, toUid int64, mid int64, message []byte, attrs string, mtime int64)
-	GroupAudio(fromUid int64, groupId int64, mid int64, message []byte, attrs string, mtime int64)
-	RoomAudio(fromUid int64, roomIid int64, mid int64, message []byte, attrs string, mtime int64)
 	P2PCmd(fromUid int64, toUid int64, mid int64, message string, attrs string, mtime int64)
 	GroupCmd(fromUid int64, groupId int64, mid int64, message string, attrs string, mtime int64)
 	RoomCmd(fromUid int64, roomIid int64, mid int64, message string, attrs string, mtime int64)
@@ -51,10 +50,6 @@ type IRTMServerMonitor interface {
 	P2PChat(messageInfo *RTMMessage)
 	GroupChat(messageInfo *RTMMessage)
 	RoomChat(messageInfo *RTMMessage)
-
-	P2PAudio(messageInfo *RTMMessage)
-	GroupAudio(messageInfo *RTMMessage)
-	RoomAudio(messageInfo *RTMMessage)
 
 	P2PCmd(messageInfo *RTMMessage)
 	GroupCmd(messageInfo *RTMMessage)
@@ -141,7 +136,9 @@ func NewRTMServerClient(pid int32, secretKey string, endpoint string) *RTMServer
 }
 
 //------------------------------[ RTM Server Client Config Interfaces ]---------------------------------------//
-// for compatible before v0.3.1(include), please use new set serverpush interface SetServerPushMonitor
+/*	for compatible before v0.3.1(include) maybe in after version this interface will be discarded, 
+	please use new set serverpush interface SetServerPushMonitor
+*/
 func (client *RTMServerClient) SetMonitor(monitor RTMServerMonitor) {
 	client.processor.monitor = monitor
 }
@@ -611,6 +608,20 @@ func (client *RTMServerClient) convertSliceToInt64Slice(slice []interface{}) []i
 	return rev
 }
 
+func (client *RTMServerClient) convertSliceToInt32Slice(slice []interface{}) []int32 {
+	if slice == nil || len(slice) == 0 {
+		return make([]int32, 0, 1)
+	}
+
+	rev := make([]int32, 0, len(slice))
+	for _, elem := range slice {
+		val := int32(client.convertToInt64(elem))
+		rev = append(rev, val)
+	}
+	return rev
+}
+
+
 func (client *RTMServerClient) sendSliceQuest(quest *fpnn.Quest, timeout time.Duration,
 	sliceKey string, callback func(slice []int64, errorCode int, errInfo string)) ([]int64, error) {
 
@@ -768,6 +779,103 @@ func (client *RTMServerClient) sendProfanityQuest(quest *fpnn.Quest, timeout tim
 		return text, classification, nil
 	} else {
 		return "", make([]string, 0, 1), fmt.Errorf("[Exception] code: %d, ex: %s", answer.WantInt("code"), answer.WantString("ex"))
+	}
+}
+
+func (client *RTMServerClient) sendSpeech2Text(quest *fpnn.Quest, timeout time.Duration, 
+	callback func(text string, lang string, errorCode int, errInfo string)) (string, string, error) {
+
+	if callback != nil {
+		callbackFunc := func(answer *fpnn.Answer, errorCode int) {
+			if errorCode == fpnn.FPNN_EC_OK {
+				callback(answer.WantString("text"), answer.WantString("lang"), fpnn.FPNN_EC_OK, "")
+			} else if answer == nil {
+				callback("", "", errorCode, "")
+			} else {
+				callback("", "", answer.WantInt("code"), answer.WantString("ex"))
+			}
+		}
+		_, err := client.sendQuest(quest, timeout, callbackFunc)
+		return "", "", err
+	}
+
+	answer, err := client.sendQuest(quest, timeout, nil)
+	if err != nil {
+		return "", "", err
+	} else if !answer.IsException() {
+		return answer.WantString("text"), answer.WantString("lang"), nil
+	} else {
+		return "", "", fmt.Errorf("[Exception] code: %d, ex: %s", answer.WantInt("code"), answer.WantString("ex"))
+	}
+}
+
+func (client *RTMServerClient) sendOtherCheck(quest *fpnn.Quest, timeout time.Duration, 
+	callback func(result int32, tags []int32, errorCode int, errInfo string)) (int32, []int32, error) {
+
+	if callback != nil {
+		callbackFunc := func(answer *fpnn.Answer, errorCode int) {
+			if errorCode == fpnn.FPNN_EC_OK {
+				sliceTag, _ := answer.GetSlice("tags")
+				tags := client.convertSliceToInt32Slice(sliceTag)
+				callback((int32)(answer.WantInt("result")), tags, fpnn.FPNN_EC_OK, "")
+			} else if answer == nil {
+				callback(-1, make([]int32, 0, 1), errorCode, "")
+			} else {
+				callback(-1, make([]int32, 0, 1), answer.WantInt("code"), answer.WantString("ex"))
+			}
+		}
+
+		_, err := client.sendQuest(quest, timeout, callbackFunc)
+		return -1, make([]int32, 0, 1), err
+	}
+	
+	answer, err := client.sendQuest(quest, timeout, nil)
+	if err != nil {
+		return -1, make([]int32, 0, 1), err
+	} else if !answer.IsException() {
+		sliceTag, _ := answer.GetSlice("tags")
+		tags := client.convertSliceToInt32Slice(sliceTag)
+		return (int32)(answer.WantInt("result")), tags, nil
+	} else {
+		return -1, make([]int32, 0, 1), fmt.Errorf("[Exception] code: %d, ex: %s", answer.WantInt("code"), answer.WantString("ex"))
+	}
+}
+
+func (client *RTMServerClient) sendTextCheck(quest *fpnn.Quest, timeout time.Duration, 
+	callback func(result int32, text string, tags []int32, wlist []string, errorCode int, errInfo string)) (int32, string, []int32, []string, error) {
+
+	if callback != nil {
+		callbackFunc := func(answer *fpnn.Answer, errorCode int) {
+			if errorCode == fpnn.FPNN_EC_OK {
+				text, _ := answer.GetString("text")
+				sliceTag, _ := answer.GetSlice("tags")
+				tags := client.convertSliceToInt32Slice(sliceTag)
+				sliceSensitive, _ := answer.GetSlice("wlist")
+				wlist := client.convertSliceToStringSlice(sliceSensitive)
+				callback((int32)(answer.WantInt("result")), text, tags, wlist, fpnn.FPNN_EC_OK, "")
+			} else if answer == nil {
+				callback(-1, "", make([]int32, 0, 1), make([]string, 0, 1), errorCode, "")
+			} else {
+				callback(-1, "", make([]int32, 0, 1), make([]string, 0, 1), answer.WantInt("code"), answer.WantString("ex"))
+			}
+		}
+
+		_, err := client.sendQuest(quest, timeout, callbackFunc)
+		return -1, "", make([]int32, 0, 1), make([]string, 0, 1), err
+	}
+	
+	answer, err := client.sendQuest(quest, timeout, nil)
+	if err != nil {
+		return -1, "", make([]int32, 0, 1), make([]string, 0, 1), err
+	} else if !answer.IsException() {
+		text, _ := answer.GetString("text")
+		sliceTag, _ := answer.GetSlice("tags")
+		tags := client.convertSliceToInt32Slice(sliceTag)
+		sliceSensitive, _ := answer.GetSlice("wlist")
+		wlist := client.convertSliceToStringSlice(sliceSensitive)
+		return (int32)(answer.WantInt("result")), text, tags, wlist, nil
+	} else {
+		return -1, "", make([]int32, 0, 1), make([]string, 0, 1), fmt.Errorf("[Exception] code: %d, ex: %s", answer.WantInt("code"), answer.WantString("ex"))
 	}
 }
 

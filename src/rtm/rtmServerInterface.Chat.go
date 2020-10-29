@@ -10,9 +10,18 @@ import (
 
 const (
 	defaultMtype_Chat  = 30
-	defaultMtype_Audio = 31
 	defaultMtype_Cmd   = 32
+	defaultMtype_Image = 40
+	defaultMtype_Audio = 41
+	defaultMtype_Video = 42
+	defaultMtype_File  = 50
 )
+
+var (
+	getChatMtypes = []int8{defaultMtype_Chat, defaultMtype_Cmd, defaultMtype_Image, defaultMtype_Audio, defaultMtype_Video, defaultMtype_File}
+	fileMtypes = []int8{defaultMtype_Image, defaultMtype_Audio, defaultMtype_Video, defaultMtype_File}
+)
+
 
 //-----------[ Chat functions ]-------------------//
 /*
@@ -27,20 +36,6 @@ const (
 */
 func (client *RTMServerClient) SendChat(fromUid int64, toUid int64, message string, rest ...interface{}) (int64, error) {
 	return client.SendMessage(fromUid, toUid, defaultMtype_Chat, message, rest...)
-}
-
-/*
-	Params:
-		rest: can be include following params:
-			attrs string
-			timeout time.Duration
-			func (mtime int64, errorCode int, errInfo string)
-
-		If include func param, this function will enter into async mode, and return (0, error);
-		else this function work in sync mode, and return (mtime int64, err error)
-*/
-func (client *RTMServerClient) SendAudio(fromUid int64, toUid int64, message []byte, rest ...interface{}) (int64, error) {
-	return client.SendMessage(fromUid, toUid, defaultMtype_Audio, string(message), rest...)
 }
 
 /*
@@ -81,20 +76,6 @@ func (client *RTMServerClient) SendChats(fromUid int64, toUids []int64, message 
 		If include func param, this function will enter into async mode, and return (0, error);
 		else this function work in sync mode, and return (mtime int64, err error)
 */
-func (client *RTMServerClient) SendAudios(fromUid int64, toUids []int64, message []byte, rest ...interface{}) (int64, error) {
-	return client.SendMessages(fromUid, toUids, defaultMtype_Audio, string(message), rest...)
-}
-
-/*
-	Params:
-		rest: can be include following params:
-			attrs string
-			timeout time.Duration
-			func (mtime int64, errorCode int, errInfo string)
-
-		If include func param, this function will enter into async mode, and return (0, error);
-		else this function work in sync mode, and return (mtime int64, err error)
-*/
 func (client *RTMServerClient) SendCmds(fromUid int64, toUids []int64, message string, rest ...interface{}) (int64, error) {
 	return client.SendMessages(fromUid, toUids, defaultMtype_Cmd, message, rest...)
 }
@@ -111,20 +92,6 @@ func (client *RTMServerClient) SendCmds(fromUid int64, toUids []int64, message s
 */
 func (client *RTMServerClient) SendGroupChat(fromUid int64, groupId int64, message string, rest ...interface{}) (int64, error) {
 	return client.SendGroupMessage(fromUid, groupId, defaultMtype_Chat, message, rest...)
-}
-
-/*
-	Params:
-		rest: can be include following params:
-			attrs string
-			timeout time.Duration
-			func (mtime int64, errorCode int, errInfo string)
-
-		If include func param, this function will enter into async mode, and return (0, error);
-		else this function work in sync mode, and return (mtime int64, err error)
-*/
-func (client *RTMServerClient) SendGroupAudio(fromUid int64, groupId int64, message []byte, rest ...interface{}) (int64, error) {
-	return client.SendGroupMessage(fromUid, groupId, defaultMtype_Audio, string(message), rest...)
 }
 
 /*
@@ -165,20 +132,6 @@ func (client *RTMServerClient) SendRoomChat(fromUid int64, roomId int64, message
 		If include func param, this function will enter into async mode, and return (0, error);
 		else this function work in sync mode, and return (mtime int64, err error)
 */
-func (client *RTMServerClient) SendRoomAudio(fromUid int64, roomId int64, message []byte, rest ...interface{}) (int64, error) {
-	return client.SendRoomMessage(fromUid, roomId, defaultMtype_Audio, string(message), rest...)
-}
-
-/*
-	Params:
-		rest: can be include following params:
-			attrs string
-			timeout time.Duration
-			func (mtime int64, errorCode int, errInfo string)
-
-		If include func param, this function will enter into async mode, and return (0, error);
-		else this function work in sync mode, and return (mtime int64, err error)
-*/
 func (client *RTMServerClient) SendRoomCmd(fromUid int64, roomId int64, message string, rest ...interface{}) (int64, error) {
 	return client.SendRoomMessage(fromUid, roomId, defaultMtype_Cmd, message, rest...)
 }
@@ -195,20 +148,6 @@ func (client *RTMServerClient) SendRoomCmd(fromUid int64, roomId int64, message 
 */
 func (client *RTMServerClient) SendBroadcastChat(fromUid int64, message string, rest ...interface{}) (int64, error) {
 	return client.SendBroadcastMessage(fromUid, defaultMtype_Chat, message, rest...)
-}
-
-/*
-	Params:
-		rest: can be include following params:
-			attrs string
-			timeout time.Duration
-			func (mtime int64, errorCode int, errInfo string)
-
-		If include func param, this function will enter into async mode, and return (0, error);
-		else this function work in sync mode, and return (mtime int64, err error)
-*/
-func (client *RTMServerClient) SendBroadcastAudio(fromUid int64, message []byte, rest ...interface{}) (int64, error) {
-	return client.SendBroadcastMessage(fromUid, defaultMtype_Audio, string(message), rest...)
 }
 
 /*
@@ -246,7 +185,7 @@ func (client *RTMServerClient) GetGroupChat(groupId int64, desc bool, num int16,
 		}
 	}
 
-	return client.GetGroupMessage(groupId, desc, num, begin, end, lastCursorId, uid, append(rest, []int8{defaultMtype_Chat, defaultMtype_Audio, defaultMtype_Cmd})...)
+	return client.GetGroupMessage(groupId, desc, num, begin, end, lastCursorId, uid, append(rest, getChatMtypes)...)
 }
 
 /*
@@ -268,7 +207,7 @@ func (client *RTMServerClient) GetRoomChat(roomId int64, desc bool, num int16,
 		}
 	}
 
-	return client.GetRoomMessage(roomId, desc, num, begin, end, lastCursorId, uid, append(rest, []int8{defaultMtype_Chat, defaultMtype_Audio, defaultMtype_Cmd})...)
+	return client.GetRoomMessage(roomId, desc, num, begin, end, lastCursorId, uid, append(rest, getChatMtypes)...)
 }
 
 /*
@@ -290,7 +229,7 @@ func (client *RTMServerClient) GetBroadcastChat(desc bool, num int16,
 		}
 	}
 
-	return client.GetBroadcastMessage(desc, num, begin, end, lastCursorId, uid, append(rest, []int8{defaultMtype_Chat, defaultMtype_Audio, defaultMtype_Cmd})...)
+	return client.GetBroadcastMessage(desc, num, begin, end, lastCursorId, uid, append(rest, getChatMtypes)...)
 }
 
 /*
@@ -312,7 +251,7 @@ func (client *RTMServerClient) GetP2PChat(uid int64, peerUid int64, desc bool, n
 		}
 	}
 
-	return client.GetP2PMessage(uid, peerUid, desc, num, begin, end, lastCursorId, append(rest, []int8{defaultMtype_Chat, defaultMtype_Audio, defaultMtype_Cmd})...)
+	return client.GetP2PMessage(uid, peerUid, desc, num, begin, end, lastCursorId, append(rest, getChatMtypes)...)
 }
 
 //-----------[ Delete Chat functions ]-------------------//
@@ -549,6 +488,7 @@ func (client *RTMServerClient) TranslateByLanguageCode(text string, sourceLangua
 //-----------[ Profanity functions ]-------------------//
 
 /*
+	Explain: maybe in after version this interface will be discarded，recommend use TextCheck interface replace 
 	Params:
 		rest: can be include following params:
 			timeout time.Duration
@@ -584,75 +524,146 @@ func (client *RTMServerClient) Profanity(text string, classify bool, uid int64, 
 	return client.sendProfanityQuest(quest, timeout, callback)
 }
 
-/*
-	Params:
-
-		rest: can be include following params:
-			timeout time.Duration
-			func (text string, lang string, errorCode int, errInfo string)
-
-		If include func param, this function will enter into async mode, and return ("", error);
-		else this function work in sync mode, and return (text string, lang string, err error)
-*/
-func (client *RTMServerClient) Transcribe(audio []byte, uid int64, profanityFilter bool, rest ...interface{}) (string, string, error) {
-
-	var timeout time.Duration = 120
+func (client *RTMServerClient) Speech2Text(audio string, audioType int32, lang RTMTranslateLanguage, codec string, srate int32, uid int64, rest ...interface{}) (string, string, error) {
+	var timeout time.Duration = 120 * time.Second
 	var callback func(string, string, int, string)
 
 	for _, value := range rest {
-		switch value := value.(type) {
+		switch value:= value.(type) {
 		case time.Duration:
 			timeout = value
 		case func(string, string, int, string):
 			callback = value
 		default:
-			return "", "", errors.New("Invaild params when call RTMServerClient.Transcribe() function.")
+			return "", "", errors.New("Invalid params when call RTMServerClient.Speech2Text() function.")
 		}
 	}
 
-	quest := client.genServerQuest("transcribe")
-	quest.Param("audio", string(audio))
-	quest.Param("profanityFilter", profanityFilter)
+	quest := client.genServerQuest("speech2text")
+	quest.Param("audio", audio)
+	quest.Param("type", audioType)
+	quest.Param("lang", lang.String())
+	if len(codec) != 0 {
+		quest.Param("codec", codec)
+	}
+	if srate > 0 {
+		quest.Param("srate", srate)
+	}
+	if uid > 0 {
+		quest.Param("uid", uid)
+	}
+	
+	return client.sendSpeech2Text(quest, timeout, callback)
+}
+
+func (client *RTMServerClient) TextCheck(text string, uid int64, rest ...interface{}) (int32, string, []int32, []string, error) {
+	var timeout time.Duration
+	var callback func(int32, string, []int32, []string, int, string)
+
+	for _, value := range rest {
+		switch value:= value.(type) {
+		case time.Duration:
+			timeout = value
+		case func(int32, string, []int32, []string, int, string):
+			callback = value
+		default:
+			return -1, "", make([]int32, 0, 1), make([]string , 0, 1), errors.New("Invalid params when call RTMServerClient.TextCheck() function.")
+		}
+	}
+
+	quest := client.genServerQuest("tcheck")
+	quest.Param("text", text)
+	if uid > 0 {
+		quest.Param("uid", uid)
+	}
+	
+	return client.sendTextCheck(quest, timeout, callback)	
+}
+
+func (client *RTMServerClient) ImageCheck(image string, imageType int32, uid int64, rest ...interface{}) (int32, []int32, error) {
+	var timeout time.Duration = 120 * time.Second
+	var callback func(int32, []int32, int, string)
+
+	for _, value := range rest {
+		switch value := value.(type) {
+		case time.Duration:
+			timeout = value
+		case func(int32, []int32, int, string):
+			callback = value
+		default:
+			return -1, make([]int32, 0, 1), errors.New("Invalid params when call RTMServerClient.ImageCheck() function.")
+		}
+	}
+
+	quest := client.genServerQuest("icheck")
+	quest.Param("image", image)
+	quest.Param("type", imageType)
+	if uid > 0 {
+		quest.Param("uid", uid)
+	}
+
+	return client.sendOtherCheck(quest, timeout, callback)
+
+}
+
+func (client *RTMServerClient) AudioCheck(audio string, audioType int32, lang RTMTranslateLanguage, codec string, srate int32, uid int64, rest ...interface{}) (int32, []int32, error) {
+	var timeout time.Duration = 120 * time.Second
+	var callback func(int32, []int32, int, string)
+
+	for _, value := range rest {
+		switch value := value.(type) {
+		case time.Duration:
+			timeout = value
+		case func(int32, []int32, int, string):
+			callback = value
+		default:
+			return -1, make([]int32, 0, 1), errors.New("Invalid params when call RTMServerClient.AudioCheck() function.")
+		}
+	}
+
+	quest := client.genServerQuest("acheck")
+	quest.Param("audio", audio)
+	quest.Param("type", audioType)
+	quest.Param("lang", lang.String())
+
+	if len(codec) != 0 {
+		quest.Param("codec", codec)
+	}
+
+	if srate > 0 {
+		quest.Param("srate", srate)
+	}
 
 	if uid > 0 {
 		quest.Param("uid", uid)
 	}
 
-	return client.sendTranscribeQuest(quest, timeout, callback)
+	return client.sendOtherCheck(quest, timeout, callback)
+
 }
 
-/*
-	Params:
-
-		rest: can be include following params:
-			timeout time.Duration
-			func (text string, lang string, errorCode int, errInfo string)
-
-		If include func param, this function will enter into async mode, and return ("", error);
-		else this function work in sync mode, and return (text string, lang string, err error)
-*/
-func (client *RTMServerClient) Stranscribe(from int64, messageId int64, xid int64, messageType MessageType, profanityFilter bool, rest ...interface{}) (string, string, error) {
-
-	var timeout time.Duration = 120
-	var callback func(string, string, int, string)
+func (client *RTMServerClient) VideoCheck(video string, videoType int32, videoName string, uid int64, rest ...interface{}) (int32, []int32, error) {
+	var timeout time.Duration = 120 * time.Second
+	var callback func(int32, []int32, int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
 		case time.Duration:
 			timeout = value
-		case func(string, string, int, string):
+		case func(int32, []int32, int, string):
 			callback = value
 		default:
-			return "", "", errors.New("Invaild params when call RTMServerClient.Stranscribe() function.")
+			return -1, make([]int32, 0, 1), errors.New("Invalid params when call RTMServerClient.VideoCheck() function.")
 		}
 	}
 
-	quest := client.genServerQuest("stranscribe")
-	quest.Param("from", from)
-	quest.Param("mid", messageId)
-	quest.Param("xid", xid)
-	quest.Param("type", messageType)
-	quest.Param("profanityFilter", profanityFilter)
+	quest := client.genServerQuest("vcheck")
+	quest.Param("video", video)
+	quest.Param("type", videoType)
+	quest.Param("videoName", videoName)
+	if uid > 0 {
+		quest.Param("uid", uid)
+	}
 
-	return client.sendTranscribeQuest(quest, timeout, callback)
+	return client.sendOtherCheck(quest, timeout, callback)
 }
