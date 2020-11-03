@@ -144,15 +144,23 @@
 
 ### -----------------------[ 获取历史消息 ]-----------------------------
 
+### type RTMAudioFileInfo
+
+	type RTMAudioFileInfo struct {
+		IsRTMaudio bool   // 是否是rtm语音消息
+		Codec      string // rtm语音消息时有此值编 码格式
+		Srate      int32  // rtm语音消息时有此值 采样率
+		Lang       string // 如果是rtm语音会有此值
+		Duration   int32  // ms，如果是rtm语音会有此值
+	}
+
 ### type FileMsgInfo
 
 	type FileMsgInfo struct {
-		Url		  string `json:"url"`
-		Duration  int32	  // ms，如果是rtm语音会有此值	
-		FileSize  int64   `json:"size"`// 字节大小
-		Lang 	  string  // 如果是rtm语音会有此值
-		Surl      string  `surl`// 缩略图的地址，如果是图片类型会有此值
-		IsRTMaudio bool    // 是否是rtm语音消息
+		Url      string `json:"url"`
+		FileSize int64  `json:"size"` // 字节大小
+		Surl     string `json:"surl"` // 缩略图的地址，如果是图片类型会有此值
+		RTMAudioFileInfo
 	}
 
 ### type RTMMessage

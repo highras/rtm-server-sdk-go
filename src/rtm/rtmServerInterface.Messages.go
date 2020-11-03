@@ -285,13 +285,20 @@ func (client *RTMServerClient) SendBroadcastMessageByteArray(fromUid int64, mess
 // }
 
 // new version
-type FileMsgInfo struct {
-	Url        string `json:"url"`
-	Duration   int32  // ms，如果是rtm语音会有此值
-	FileSize   int64  `json:"size"` // 字节大小
-	Lang       string // 如果是rtm语音会有此值
-	Surl       string `surl` // 缩略图的地址，如果是图片类型会有此值
+
+type RTMAudioFileInfo struct {
 	IsRTMaudio bool   // 是否是rtm语音消息
+	Codec      string // rtm语音消息时有此值编 码格式
+	Srate      int32  // rtm语音消息时有此值 采样率
+	Lang       string // 如果是rtm语音会有此值
+	Duration   int32  // ms，如果是rtm语音会有此值
+}
+
+type FileMsgInfo struct {
+	Url      string `json:"url"`
+	FileSize int64  `json:"size"` // 字节大小
+	Surl     string `json:"surl"` // 缩略图的地址，如果是图片类型会有此值
+	RTMAudioFileInfo
 }
 
 type RTMMessage struct {
@@ -317,17 +324,6 @@ type HistoryMessageResult struct {
 	Begin        int64
 	End          int64
 	Messages     []*HistoryMessageUnit
-}
-
-func checkIsBinaryType(value interface{}) bool {
-	switch value.(type) {
-	case []byte:
-		return true
-	case []rune:
-		return true
-	default:
-		return false
-	}
 }
 
 func findMtypeInFileSlice(key int8) bool {
@@ -376,6 +372,17 @@ func processFileInfo(msg string, attrs string, mtype int8, logger *log.Logger) *
 							fileInfo.Duration = realDuration
 						}
 					}
+					if rate, ok7 := rtmdata["srate"]; ok7 {
+						if realRate, ok8 := rate.(int32); ok8 {
+							fileInfo.Srate = realRate
+						}
+					}
+					if codec, ok9 := rtmdata["codec"]; ok9 {
+						if realCodec, ok10 := codec.(string); ok10 {
+							fileInfo.Codec = realCodec
+						}
+					}
+
 					fileInfo.IsRTMaudio = true
 				}
 			}
@@ -385,13 +392,26 @@ func processFileInfo(msg string, attrs string, mtype int8, logger *log.Logger) *
 	return fileInfo
 }
 
-func (client *RTMServerClient) processHistoryAnswer(answer *fpnn.Answer, p2pInfo []int64) (res *HistoryMessageResult, err error) {
-
-	defer func() {
-		if r := recover(); r != nil {
-			err = fmt.Errorf("[ERROR] Process history messages exception. Panic: %v.", r)
+func fetchFileCustomAttrs(attrs string, logger *log.Logger) string {
+	realAttrs := make(map[string]interface{})
+	if err := json.Unmarshal(([]byte)(attrs), &realAttrs); err != nil {
+		logger.Printf("parse file custom attrs error, attrs := %s, err := %v.\n", attrs, err)
+	} else {
+		if value, ok := realAttrs["custom"]; ok {
+			if cAttrs, ok1 := value.(map[string]interface{}); ok1 {
+				if attrJson, err := json.Marshal(cAttrs); err == nil {
+					return (string)(attrJson)
+				}
+			} else if customString, ok2 := value.(string); ok2 {
+				return customString
+			}
 		}
-	}()
+		logger.Printf("parse file custom attrs error, attrs := %s.\n", attrs)
+	}
+	return ""
+}
+
+func (client *RTMServerClient) processHistoryAnswer(answer *fpnn.Answer, p2pInfo []int64) (res *HistoryMessageResult, err error) {
 
 	result := &HistoryMessageResult{}
 	result.Num = answer.WantInt16("num")
@@ -408,7 +428,6 @@ func (client *RTMServerClient) processHistoryAnswer(answer *fpnn.Answer, p2pInfo
 	messages := answer.WantSlice("msgs")
 	for _, unit := range messages {
 		elems := unit.([]interface{})
-
 		msgUnit := &HistoryMessageUnit{}
 
 		msgUnit.CursorId = client.convertToInt64(elems[0])
@@ -421,6 +440,7 @@ func (client *RTMServerClient) processHistoryAnswer(answer *fpnn.Answer, p2pInfo
 			msg := client.convertToString(elems[5])
 			fileInfo := processFileInfo(msg, msgUnit.Attrs, msgUnit.MessageType, client.logger)
 			msgUnit.FileInfo = fileInfo
+			msgUnit.Attrs = fetchFileCustomAttrs(msgUnit.Attrs, client.logger)
 
 		} else {
 			msgUnit.Message = client.convertToString(elems[5])

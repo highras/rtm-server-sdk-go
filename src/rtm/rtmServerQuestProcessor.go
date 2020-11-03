@@ -341,6 +341,7 @@ func (processor *rtmServerQuestProcessor) processPushFile(quest *fpnn.Quest) (*f
 	} else if processor.newMonitor != nil {
 		fileInfo := processFileInfo(msg, rtmMessage.Attrs, rtmMessage.MessageType, processor.logger)
 		rtmMessage.FileInfo = fileInfo
+		rtmMessage.Attrs = fetchFileCustomAttrs(rtmMessage.Attrs, processor.logger)
 		go processor.newMonitor.P2PFile(rtmMessage)
 	}
 
@@ -365,6 +366,7 @@ func (processor *rtmServerQuestProcessor) processPushGroupFile(quest *fpnn.Quest
 	} else if processor.newMonitor != nil {
 		fileInfo := processFileInfo(msg, rtmMessage.Attrs, rtmMessage.MessageType, processor.logger)
 		rtmMessage.FileInfo = fileInfo
+		rtmMessage.Attrs = fetchFileCustomAttrs(rtmMessage.Attrs, processor.logger)
 		go processor.newMonitor.GroupFile(rtmMessage)
 	}
 
@@ -389,6 +391,7 @@ func (processor *rtmServerQuestProcessor) processPushRoomFile(quest *fpnn.Quest)
 	} else if processor.newMonitor != nil {
 		fileInfo := processFileInfo(msg, rtmMessage.Attrs, rtmMessage.MessageType, processor.logger)
 		rtmMessage.FileInfo = fileInfo
+		rtmMessage.Attrs = fetchFileCustomAttrs(rtmMessage.Attrs, processor.logger)
 		go processor.newMonitor.RoomFile(rtmMessage)
 	}
 

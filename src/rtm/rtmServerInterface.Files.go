@@ -112,12 +112,12 @@ func calculateFileSign(token string, fileContent []byte) string {
 	return sign
 }
 
-func genFileAttrs(token string, fileContent []byte, filename string, extension string, customAttr string) (string, error) {
+func genFileAttrs(token string, fileContent []byte, filename string, extension string, customAttr string, audioInfo *RTMAudioFileInfo) (string, error) {
 
-	sgin := calculateFileSign(token, fileContent)
-	attrsMap := make(map[string]map[string]string)
-	rtmMap := make(map[string]string)
-	rtmMap["sign"] = sgin
+	sign := calculateFileSign(token, fileContent)
+	attrsMap := make(map[string]interface{})
+	rtmMap := make(map[string]interface{})
+	rtmMap["sign"] = sign
 
 	if len(filename) > 0 {
 		if len(extension) > 0 {
@@ -136,16 +136,26 @@ func genFileAttrs(token string, fileContent []byte, filename string, extension s
 	if len(extension) > 0 {
 		rtmMap["ext"] = extension
 	}
+	if audioInfo != nil && audioInfo.IsRTMaudio {
+		rtmMap["type"] = "audiomsg"
+		rtmMap["codec"] = audioInfo.Codec
+		rtmMap["srate"] = audioInfo.Srate
+		rtmMap["lang"] = audioInfo.Lang
+		rtmMap["duration"] = audioInfo.Duration
+	}
 	attrsMap["rtm"] = rtmMap
 
-	customMap := make(map[string]string)
+	customMap := make(map[string]interface{})
 	if len(customAttr) > 0 {
 		err := json.Unmarshal(([]byte)(customAttr), &customMap)
 		if err != nil {
-			return "", err
+			attrsMap["custom"] = customAttr
+		} else {
+			attrsMap["custom"] = customMap
 		}
+	} else {
+		attrsMap["custom"] = ""
 	}
-	attrsMap["custom"] = customMap
 	bytes, err := json.Marshal(attrsMap)
 
 	return string(bytes), err
@@ -162,7 +172,7 @@ func genFileAttrs(token string, fileContent []byte, filename string, extension s
 		If include func param, this function will enter into async mode, and return (0, error);
 		else this function work in sync mode, and return (mtime int64, err error)
 */
-func (client *RTMServerClient) SendFile(fromUid int64, toUid int64, fileContent []byte, filename string, rest ...interface{}) (int64, error) {
+func (client *RTMServerClient) SendFile(fromUid int64, toUid int64, fileContent []byte, filename string, attr string, audioInfo *RTMAudioFileInfo, rest ...interface{}) (int64, error) {
 
 	var mtype int8 = 50
 	var extension string
@@ -195,7 +205,7 @@ func (client *RTMServerClient) SendFile(fromUid int64, toUid int64, fileContent 
 			return 0, fmt.Errorf("[Exception] Exception when get file token, error: %v", err)
 		}
 
-		attrs, err := genFileAttrs(token, fileContent, filename, extension, "")
+		attrs, err := genFileAttrs(token, fileContent, filename, extension, attr, audioInfo)
 		if err != nil {
 			return 0, fmt.Errorf("[Exception] Exception when building file attrs, error: %v", err)
 		}
@@ -226,7 +236,7 @@ func (client *RTMServerClient) SendFile(fromUid int64, toUid int64, fileContent 
 
 		realCallback := func(token string, endpoint string, errorCode int, errInfo string) {
 
-			attrs, err := genFileAttrs(token, fileContent, filename, extension, "")
+			attrs, err := genFileAttrs(token, fileContent, filename, extension, attr, audioInfo)
 			if err != nil {
 				callback(0, fpnn.FPNN_EC_CORE_UNKNOWN_ERROR, fmt.Sprintf("[Exception] Exception when building file attrs, error: %v", err))
 			}
@@ -279,7 +289,7 @@ func (client *RTMServerClient) SendFile(fromUid int64, toUid int64, fileContent 
 		If include func param, this function will enter into async mode, and return (0, error);
 		else this function work in sync mode, and return (mtime int64, err error)
 */
-func (client *RTMServerClient) SendFiles(fromUid int64, toUids []int64, fileContent []byte, filename string, rest ...interface{}) (int64, error) {
+func (client *RTMServerClient) SendFiles(fromUid int64, toUids []int64, fileContent []byte, filename string, attr string, audioInfo *RTMAudioFileInfo, rest ...interface{}) (int64, error) {
 
 	var mtype int8 = 50
 	var extension string
@@ -312,7 +322,7 @@ func (client *RTMServerClient) SendFiles(fromUid int64, toUids []int64, fileCont
 			return 0, fmt.Errorf("[Exception] Exception when get file token, error: %v", err)
 		}
 
-		attrs, err := genFileAttrs(token, fileContent, filename, extension, "")
+		attrs, err := genFileAttrs(token, fileContent, filename, extension, attr, audioInfo)
 		if err != nil {
 			return 0, fmt.Errorf("[Exception] Exception when building file attrs, error: %v", err)
 		}
@@ -343,7 +353,7 @@ func (client *RTMServerClient) SendFiles(fromUid int64, toUids []int64, fileCont
 
 		realCallback := func(token string, endpoint string, errorCode int, errInfo string) {
 
-			attrs, err := genFileAttrs(token, fileContent, filename, extension, "")
+			attrs, err := genFileAttrs(token, fileContent, filename, extension, attr, audioInfo)
 			if err != nil {
 				callback(0, fpnn.FPNN_EC_CORE_UNKNOWN_ERROR, fmt.Sprintf("[Exception] Exception when building file attrs, error: %v", err))
 			}
@@ -396,7 +406,7 @@ func (client *RTMServerClient) SendFiles(fromUid int64, toUids []int64, fileCont
 		If include func param, this function will enter into async mode, and return (0, error);
 		else this function work in sync mode, and return (mtime int64, err error)
 */
-func (client *RTMServerClient) SendGroupFile(fromUid int64, groupId int64, fileContent []byte, filename string, rest ...interface{}) (int64, error) {
+func (client *RTMServerClient) SendGroupFile(fromUid int64, groupId int64, fileContent []byte, filename string, attr string, audioInfo *RTMAudioFileInfo, rest ...interface{}) (int64, error) {
 
 	var mtype int8 = 50
 	var extension string
@@ -429,7 +439,7 @@ func (client *RTMServerClient) SendGroupFile(fromUid int64, groupId int64, fileC
 			return 0, fmt.Errorf("[Exception] Exception when get file token, error: %v", err)
 		}
 
-		attrs, err := genFileAttrs(token, fileContent, filename, extension, "")
+		attrs, err := genFileAttrs(token, fileContent, filename, extension, attr, audioInfo)
 		if err != nil {
 			return 0, fmt.Errorf("[Exception] Exception when building file attrs, error: %v", err)
 		}
@@ -460,7 +470,7 @@ func (client *RTMServerClient) SendGroupFile(fromUid int64, groupId int64, fileC
 
 		realCallback := func(token string, endpoint string, errorCode int, errInfo string) {
 
-			attrs, err := genFileAttrs(token, fileContent, filename, extension, "")
+			attrs, err := genFileAttrs(token, fileContent, filename, extension, attr, audioInfo)
 			if err != nil {
 				callback(0, fpnn.FPNN_EC_CORE_UNKNOWN_ERROR, fmt.Sprintf("[Exception] Exception when building file attrs, error: %v", err))
 			}
@@ -513,7 +523,7 @@ func (client *RTMServerClient) SendGroupFile(fromUid int64, groupId int64, fileC
 		If include func param, this function will enter into async mode, and return (0, error);
 		else this function work in sync mode, and return (mtime int64, err error)
 */
-func (client *RTMServerClient) SendRoomFile(fromUid int64, roomId int64, fileContent []byte, filename string, rest ...interface{}) (int64, error) {
+func (client *RTMServerClient) SendRoomFile(fromUid int64, roomId int64, fileContent []byte, filename string, attr string, audioInfo *RTMAudioFileInfo, rest ...interface{}) (int64, error) {
 
 	var mtype int8 = 50
 	var extension string
@@ -546,7 +556,7 @@ func (client *RTMServerClient) SendRoomFile(fromUid int64, roomId int64, fileCon
 			return 0, fmt.Errorf("[Exception] Exception when get file token, error: %v", err)
 		}
 
-		attrs, err := genFileAttrs(token, fileContent, filename, extension, "")
+		attrs, err := genFileAttrs(token, fileContent, filename, extension, attr, audioInfo)
 		if err != nil {
 			return 0, fmt.Errorf("[Exception] Exception when building file attrs, error: %v", err)
 		}
@@ -577,7 +587,7 @@ func (client *RTMServerClient) SendRoomFile(fromUid int64, roomId int64, fileCon
 
 		realCallback := func(token string, endpoint string, errorCode int, errInfo string) {
 
-			attrs, err := genFileAttrs(token, fileContent, filename, extension, "")
+			attrs, err := genFileAttrs(token, fileContent, filename, extension, attr, audioInfo)
 			if err != nil {
 				callback(0, fpnn.FPNN_EC_CORE_UNKNOWN_ERROR, fmt.Sprintf("[Exception] Exception when building file attrs, error: %v", err))
 			}
@@ -630,7 +640,7 @@ func (client *RTMServerClient) SendRoomFile(fromUid int64, roomId int64, fileCon
 		If include func param, this function will enter into async mode, and return (0, error);
 		else this function work in sync mode, and return (mtime int64, err error)
 */
-func (client *RTMServerClient) SendBroadcastFile(fromUid int64, fileContent []byte, filename string, rest ...interface{}) (int64, error) {
+func (client *RTMServerClient) SendBroadcastFile(fromUid int64, fileContent []byte, filename string, attr string, audioInfo *RTMAudioFileInfo, rest ...interface{}) (int64, error) {
 
 	var mtype int8 = 50
 	var extension string
@@ -660,7 +670,7 @@ func (client *RTMServerClient) SendBroadcastFile(fromUid int64, fileContent []by
 			return 0, fmt.Errorf("[Exception] Exception when get file token, error: %v", err)
 		}
 
-		attrs, err := genFileAttrs(token, fileContent, filename, extension, "")
+		attrs, err := genFileAttrs(token, fileContent, filename, extension, attr, audioInfo)
 		if err != nil {
 			return 0, fmt.Errorf("[Exception] Exception when building file attrs, error: %v", err)
 		}
@@ -690,7 +700,7 @@ func (client *RTMServerClient) SendBroadcastFile(fromUid int64, fileContent []by
 
 		realCallback := func(token string, endpoint string, errorCode int, errInfo string) {
 
-			attrs, err := genFileAttrs(token, fileContent, filename, extension, "")
+			attrs, err := genFileAttrs(token, fileContent, filename, extension, attr, audioInfo)
 			if err != nil {
 				callback(0, fpnn.FPNN_EC_CORE_UNKNOWN_ERROR, fmt.Sprintf("[Exception] Exception when building file attrs, error: %v", err))
 			}

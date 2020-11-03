@@ -22,8 +22,8 @@ const (
 	APIVersion = "2.3.0"
 )
 
-/*  for compatible before v0.3.1(include) maybe in after version this interface will be discarded, 
-	please use new serverPush interface IRTMServerMonitor
+/*  for compatible before v0.3.1(include) maybe in after version this interface will be discarded,
+please use new serverPush interface IRTMServerMonitor
 */
 type RTMServerMonitor interface {
 	P2PMessage(fromUid int64, toUid int64, mtype int8, mid int64, message string, attrs string, mtime int64)
@@ -136,7 +136,7 @@ func NewRTMServerClient(pid int32, secretKey string, endpoint string) *RTMServer
 }
 
 //------------------------------[ RTM Server Client Config Interfaces ]---------------------------------------//
-/*	for compatible before v0.3.1(include) maybe in after version this interface will be discarded, 
+/*	for compatible before v0.3.1(include) maybe in after version this interface will be discarded,
 	please use new set serverpush interface SetServerPushMonitor
 */
 func (client *RTMServerClient) SetMonitor(monitor RTMServerMonitor) {
@@ -621,7 +621,6 @@ func (client *RTMServerClient) convertSliceToInt32Slice(slice []interface{}) []i
 	return rev
 }
 
-
 func (client *RTMServerClient) sendSliceQuest(quest *fpnn.Quest, timeout time.Duration,
 	sliceKey string, callback func(slice []int64, errorCode int, errInfo string)) ([]int64, error) {
 
@@ -782,7 +781,7 @@ func (client *RTMServerClient) sendProfanityQuest(quest *fpnn.Quest, timeout tim
 	}
 }
 
-func (client *RTMServerClient) sendSpeech2Text(quest *fpnn.Quest, timeout time.Duration, 
+func (client *RTMServerClient) sendSpeech2Text(quest *fpnn.Quest, timeout time.Duration,
 	callback func(text string, lang string, errorCode int, errInfo string)) (string, string, error) {
 
 	if callback != nil {
@@ -809,7 +808,7 @@ func (client *RTMServerClient) sendSpeech2Text(quest *fpnn.Quest, timeout time.D
 	}
 }
 
-func (client *RTMServerClient) sendOtherCheck(quest *fpnn.Quest, timeout time.Duration, 
+func (client *RTMServerClient) sendOtherCheck(quest *fpnn.Quest, timeout time.Duration,
 	callback func(result int32, tags []int32, errorCode int, errInfo string)) (int32, []int32, error) {
 
 	if callback != nil {
@@ -828,7 +827,7 @@ func (client *RTMServerClient) sendOtherCheck(quest *fpnn.Quest, timeout time.Du
 		_, err := client.sendQuest(quest, timeout, callbackFunc)
 		return -1, make([]int32, 0, 1), err
 	}
-	
+
 	answer, err := client.sendQuest(quest, timeout, nil)
 	if err != nil {
 		return -1, make([]int32, 0, 1), err
@@ -841,7 +840,7 @@ func (client *RTMServerClient) sendOtherCheck(quest *fpnn.Quest, timeout time.Du
 	}
 }
 
-func (client *RTMServerClient) sendTextCheck(quest *fpnn.Quest, timeout time.Duration, 
+func (client *RTMServerClient) sendTextCheck(quest *fpnn.Quest, timeout time.Duration,
 	callback func(result int32, text string, tags []int32, wlist []string, errorCode int, errInfo string)) (int32, string, []int32, []string, error) {
 
 	if callback != nil {
@@ -863,7 +862,7 @@ func (client *RTMServerClient) sendTextCheck(quest *fpnn.Quest, timeout time.Dur
 		_, err := client.sendQuest(quest, timeout, callbackFunc)
 		return -1, "", make([]int32, 0, 1), make([]string, 0, 1), err
 	}
-	
+
 	answer, err := client.sendQuest(quest, timeout, nil)
 	if err != nil {
 		return -1, "", make([]int32, 0, 1), make([]string, 0, 1), err
