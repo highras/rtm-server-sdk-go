@@ -488,7 +488,7 @@ func (client *RTMServerClient) TranslateByLanguageCode(text string, sourceLangua
 //-----------[ Profanity functions ]-------------------//
 
 /*
-	Explain: maybe in after version this interface will be discarded，recommend use TextCheck interface replace 
+	Explain: maybe in after version this interface will be deprecated，recommend use TextCheck interface replace 
 	Params:
 		rest: can be include following params:
 			timeout time.Duration
@@ -667,3 +667,5 @@ func (client *RTMServerClient) VideoCheck(video string, videoType int32, videoNa
 
 	return client.sendOtherCheck(quest, timeout, callback)
 }
+
+

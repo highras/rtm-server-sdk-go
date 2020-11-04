@@ -15,14 +15,14 @@ import (
 )
 
 const (
-	SDKVersion = "0.5.0"
+	SDKVersion = "0.5.1"
 )
 
 const (
 	APIVersion = "2.3.0"
 )
 
-/*  for compatible before v0.3.1(include) maybe in after version this interface will be discarded,
+/*  for compatible before v0.3.1(include) maybe in after version this interface will be deprecated,
 please use new serverPush interface IRTMServerMonitor
 */
 type RTMServerMonitor interface {
@@ -46,7 +46,6 @@ type IRTMServerMonitor interface {
 	P2PMessage(messageInfo *RTMMessage)
 	GroupMessage(messageInfo *RTMMessage)
 	RoomMessage(messageInfo *RTMMessage)
-
 	P2PChat(messageInfo *RTMMessage)
 	GroupChat(messageInfo *RTMMessage)
 	RoomChat(messageInfo *RTMMessage)
@@ -136,7 +135,7 @@ func NewRTMServerClient(pid int32, secretKey string, endpoint string) *RTMServer
 }
 
 //------------------------------[ RTM Server Client Config Interfaces ]---------------------------------------//
-/*	for compatible before v0.3.1(include) maybe in after version this interface will be discarded,
+/*	for compatible before v0.3.1(include) maybe in after version this interface will be deprecated,
 	please use new set serverpush interface SetServerPushMonitor
 */
 func (client *RTMServerClient) SetMonitor(monitor RTMServerMonitor) {
@@ -917,9 +916,16 @@ func (client *RTMServerClient) getMsgInfo(answer *fpnn.Answer) (res *HistoryMess
 	result := &HistoryMessageUnit{}
 	result.CursorId = answer.WantInt64("id")
 	result.MessageType = answer.WantInt8("mtype")
-	result.Message = answer.WantString("msg")
+	msg := answer.WantString("msg")
 	result.Attrs = answer.WantString("attrs")
 	result.ModifiedTime = answer.WantInt64("mtime")
+	if findMtypeInFileSlice(result.MessageType) {
+		fileInfo := processFileInfo(msg, result.Attrs, result.MessageType, client.logger)
+		result.FileInfo = fileInfo
+		result.Attrs = fetchFileCustomAttrs(result.Attrs, client.logger)
+	} else {
+		result.Message = msg
+	}
 
 	return result, err
 }

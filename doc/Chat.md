@@ -665,8 +665,9 @@
 
 敏感词过滤。
 
-note:
-	maybe in after version this interface will be discarded，recommend use TextCheck interface replace
+Note: 
+
+* maybe in after version this interface will be deprecated，recommend use TextCheck interface replace
 
 必选参数：
 
