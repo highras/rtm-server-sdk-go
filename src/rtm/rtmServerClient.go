@@ -919,12 +919,11 @@ func (client *RTMServerClient) getMsgInfo(answer *fpnn.Answer) (res *HistoryMess
 	msg := answer.WantString("msg")
 	result.Attrs = answer.WantString("attrs")
 	result.ModifiedTime = answer.WantInt64("mtime")
-	if findMtypeInFileSlice(result.MessageType) {
+	result.Message = msg
+	if result.MessageType >= defaultMtype_Image && result.MessageType <= defaultMtype_File {
 		fileInfo := processFileInfo(msg, result.Attrs, result.MessageType, client.logger)
 		result.FileInfo = fileInfo
 		result.Attrs = fetchFileCustomAttrs(result.Attrs, client.logger)
-	} else {
-		result.Message = msg
 	}
 
 	return result, err

@@ -118,7 +118,8 @@ If client.SetAutoReconnect(false) is called, one of these explicit connecting me
 
 ## API docs
 
-Please refer: [API docs](doc/API.md)
+Please refer: [API docs](doc/API.md)   
+			  [API docs_EN](doc_en/API.md)
 
 
 ## Directory structure

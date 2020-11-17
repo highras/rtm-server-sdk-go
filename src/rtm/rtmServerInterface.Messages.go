@@ -326,15 +326,6 @@ type HistoryMessageResult struct {
 	Messages     []*HistoryMessageUnit
 }
 
-func findMtypeInFileSlice(key int8) bool {
-	for _, value := range fileMtypes {
-		if value == key {
-			return true
-		}
-	}
-	return false
-}
-
 func processFileInfo(msg string, attrs string, mtype int8, logger *log.Logger) *FileMsgInfo {
 	fileInfo := &FileMsgInfo{}
 	err1 := json.Unmarshal(([]byte)(msg), fileInfo)
@@ -436,8 +427,9 @@ func (client *RTMServerClient) processHistoryAnswer(answer *fpnn.Answer, p2pInfo
 		msgUnit.MessageId = client.convertToInt64(elems[3])
 		msgUnit.Attrs = client.convertToString(elems[6])
 		//msgUnit.Deleted = elems[4].(bool)
-		if findMtypeInFileSlice(msgUnit.MessageType) {
+		if msgUnit.MessageType >= defaultMtype_Image && msgUnit.MessageType <= defaultMtype_File {
 			msg := client.convertToString(elems[5])
+			msgUnit.Message = msg
 			fileInfo := processFileInfo(msg, msgUnit.Attrs, msgUnit.MessageType, client.logger)
 			msgUnit.FileInfo = fileInfo
 			msgUnit.Attrs = fetchFileCustomAttrs(msgUnit.Attrs, client.logger)

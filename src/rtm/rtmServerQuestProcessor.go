@@ -162,12 +162,6 @@ func (processor *rtmServerQuestProcessor) Process(method string) func(*fpnn.Ques
 		return processor.processPushRoomMessage
 	case "pushevent":
 		return processor.processPushEvent
-	case "pushfile":
-		return processor.processPushFile
-	case "pushgroupfile":
-		return processor.processPushGroupFile
-	case "pushroomfile":
-		return processor.processPushRoomFile
 	default:
 		return nil
 	}
@@ -183,11 +177,10 @@ func (processor *rtmServerQuestProcessor) processPushMessage(quest *fpnn.Quest) 
 	rtmMessage.MessageId = quest.WantInt64("mid")
 	rtmMessage.Attrs = quest.WantString("attrs")
 	rtmMessage.ModifiedTime = quest.WantInt64("mtime")
-	message := quest.WantString("msg")
+	rtmMessage.Message = quest.WantString("msg")
 
 	if processor.dupFilter.checkP2PMessage(rtmMessage.FromUid, rtmMessage.ToId, rtmMessage.MessageId) {
 		if rtmMessage.MessageType == defaultMtype_Chat {
-			rtmMessage.Message = message
 			if processor.monitor != nil {
 				go processor.monitor.P2PChat(rtmMessage.FromUid, rtmMessage.ToId, rtmMessage.MessageId,
 					rtmMessage.Message, rtmMessage.Attrs, rtmMessage.ModifiedTime)
@@ -195,15 +188,23 @@ func (processor *rtmServerQuestProcessor) processPushMessage(quest *fpnn.Quest) 
 				go processor.newMonitor.P2PChat(rtmMessage)
 			}
 		} else if rtmMessage.MessageType == defaultMtype_Cmd {
-			rtmMessage.Message = message
 			if processor.monitor != nil {
 				go processor.monitor.P2PCmd(rtmMessage.FromUid, rtmMessage.ToId, rtmMessage.MessageId,
 					rtmMessage.Message, rtmMessage.Attrs, rtmMessage.ModifiedTime)
 			} else if processor.newMonitor != nil {
 				go processor.newMonitor.P2PCmd(rtmMessage)
 			}
+		} else if rtmMessage.MessageType >= defaultMtype_Image && rtmMessage.MessageType <= defaultMtype_File {
+			if processor.monitor != nil {
+				go processor.monitor.P2PFile(rtmMessage.FromUid, rtmMessage.ToId, rtmMessage.MessageType, rtmMessage.MessageId,
+					rtmMessage.Message, rtmMessage.Attrs, rtmMessage.ModifiedTime)
+			} else if processor.newMonitor != nil {
+				fileInfo := processFileInfo(rtmMessage.Message, rtmMessage.Attrs, rtmMessage.MessageType, processor.logger)
+				rtmMessage.FileInfo = fileInfo
+				rtmMessage.Attrs = fetchFileCustomAttrs(rtmMessage.Attrs, processor.logger)
+				go processor.newMonitor.P2PFile(rtmMessage)
+			}
 		} else {
-			rtmMessage.Message = message
 			if processor.monitor != nil {
 				go processor.monitor.P2PMessage(rtmMessage.FromUid, rtmMessage.ToId, rtmMessage.MessageType, rtmMessage.MessageId,
 					rtmMessage.Message, rtmMessage.Attrs, rtmMessage.ModifiedTime)
@@ -226,10 +227,9 @@ func (processor *rtmServerQuestProcessor) processPushGroupMessage(quest *fpnn.Qu
 	rtmMessage.Attrs = quest.WantString("attrs")
 	rtmMessage.ModifiedTime = quest.WantInt64("mtime")
 
-	message := quest.WantString("msg")
+	rtmMessage.Message = quest.WantString("msg")
 	if processor.dupFilter.checkGroupMessage(rtmMessage.FromUid, rtmMessage.ToId, rtmMessage.MessageId) {
 		if rtmMessage.MessageType == defaultMtype_Chat {
-			rtmMessage.Message = message
 			if processor.monitor != nil {
 				go processor.monitor.GroupChat(rtmMessage.FromUid, rtmMessage.ToId, rtmMessage.MessageId,
 					rtmMessage.Message, rtmMessage.Attrs, rtmMessage.ModifiedTime)
@@ -237,15 +237,23 @@ func (processor *rtmServerQuestProcessor) processPushGroupMessage(quest *fpnn.Qu
 				go processor.newMonitor.GroupChat(rtmMessage)
 			}
 		} else if rtmMessage.MessageType == defaultMtype_Cmd {
-			rtmMessage.Message = message
 			if processor.monitor != nil {
 				go processor.monitor.GroupCmd(rtmMessage.FromUid, rtmMessage.ToId, rtmMessage.MessageId,
 					rtmMessage.Message, rtmMessage.Attrs, rtmMessage.ModifiedTime)
 			} else if processor.newMonitor != nil {
 				go processor.newMonitor.GroupCmd(rtmMessage)
 			}
+		} else if rtmMessage.MessageType >= defaultMtype_Image && rtmMessage.MessageType <= defaultMtype_File {
+			if processor.monitor != nil {
+				go processor.monitor.GroupFile(rtmMessage.FromUid, rtmMessage.ToId, rtmMessage.MessageType, rtmMessage.MessageId,
+					rtmMessage.Message, rtmMessage.Attrs, rtmMessage.ModifiedTime)
+			} else if processor.newMonitor != nil {
+				fileInfo := processFileInfo(rtmMessage.Message, rtmMessage.Attrs, rtmMessage.MessageType, processor.logger)
+				rtmMessage.FileInfo = fileInfo
+				rtmMessage.Attrs = fetchFileCustomAttrs(rtmMessage.Attrs, processor.logger)
+				go processor.newMonitor.GroupFile(rtmMessage)
+			}
 		} else {
-			rtmMessage.Message = message
 			if processor.monitor != nil {
 				go processor.monitor.GroupMessage(rtmMessage.FromUid, rtmMessage.ToId, rtmMessage.MessageType, rtmMessage.MessageId,
 					rtmMessage.Message, rtmMessage.Attrs, rtmMessage.ModifiedTime)
@@ -268,10 +276,9 @@ func (processor *rtmServerQuestProcessor) processPushRoomMessage(quest *fpnn.Que
 	rtmMessage.Attrs = quest.WantString("attrs")
 	rtmMessage.ModifiedTime = quest.WantInt64("mtime")
 
-	message := quest.WantString("msg")
+	rtmMessage.Message = quest.WantString("msg")
 	if processor.dupFilter.checkRoomMessage(rtmMessage.FromUid, rtmMessage.ToId, rtmMessage.MessageId) {
 		if rtmMessage.MessageType == defaultMtype_Chat {
-			rtmMessage.Message = message
 			if processor.monitor != nil {
 				go processor.monitor.RoomChat(rtmMessage.FromUid, rtmMessage.ToId, rtmMessage.MessageId,
 					rtmMessage.Message, rtmMessage.Attrs, rtmMessage.ModifiedTime)
@@ -279,15 +286,23 @@ func (processor *rtmServerQuestProcessor) processPushRoomMessage(quest *fpnn.Que
 				go processor.newMonitor.RoomChat(rtmMessage)
 			}
 		} else if rtmMessage.MessageType == defaultMtype_Cmd {
-			rtmMessage.Message = message
 			if processor.monitor != nil {
 				go processor.monitor.RoomCmd(rtmMessage.FromUid, rtmMessage.ToId, rtmMessage.MessageId,
 					rtmMessage.Message, rtmMessage.Attrs, rtmMessage.ModifiedTime)
 			} else if processor.newMonitor != nil {
 				go processor.newMonitor.RoomCmd(rtmMessage)
 			}
+		} else if rtmMessage.MessageType >= defaultMtype_Image && rtmMessage.MessageType <= defaultMtype_File {
+			if processor.monitor != nil {
+				go processor.monitor.RoomFile(rtmMessage.FromUid, rtmMessage.ToId, rtmMessage.MessageType, rtmMessage.MessageId,
+					rtmMessage.Message, rtmMessage.Attrs, rtmMessage.ModifiedTime)
+			} else if processor.newMonitor != nil {
+				fileInfo := processFileInfo(rtmMessage.Message, rtmMessage.Attrs, rtmMessage.MessageType, processor.logger)
+				rtmMessage.FileInfo = fileInfo
+				rtmMessage.Attrs = fetchFileCustomAttrs(rtmMessage.Attrs, processor.logger)
+				go processor.newMonitor.RoomFile(rtmMessage)
+			}
 		} else {
-			rtmMessage.Message = message
 			if processor.monitor != nil {
 				go processor.monitor.RoomMessage(rtmMessage.FromUid, rtmMessage.ToId, rtmMessage.MessageType, rtmMessage.MessageId,
 					rtmMessage.Message, rtmMessage.Attrs, rtmMessage.ModifiedTime)
@@ -320,80 +335,5 @@ func (processor *rtmServerQuestProcessor) processPushEvent(quest *fpnn.Quest) (*
 }
 
 func (processor *rtmServerQuestProcessor) processPing(quest *fpnn.Quest) (*fpnn.Answer, error) {
-	return fpnn.NewAnswer(quest), nil
-}
-
-func (processor *rtmServerQuestProcessor) processPushFile(quest *fpnn.Quest) (*fpnn.Answer, error) {
-
-	rtmMessage := &RTMMessage{}
-	rtmMessage.FromUid = quest.WantInt64("from")
-	rtmMessage.ToId = quest.WantInt64("to")
-	rtmMessage.MessageType = quest.WantInt8("mtype")
-
-	rtmMessage.MessageId = quest.WantInt64("mid")
-	msg := quest.WantString("msg")
-	rtmMessage.Attrs = quest.WantString("attrs")
-	rtmMessage.ModifiedTime = quest.WantInt64("mtime")
-
-	if processor.monitor != nil {
-		go processor.monitor.P2PFile(rtmMessage.FromUid, rtmMessage.ToId, rtmMessage.MessageType, rtmMessage.MessageId,
-			msg, rtmMessage.Attrs, rtmMessage.ModifiedTime)
-	} else if processor.newMonitor != nil {
-		fileInfo := processFileInfo(msg, rtmMessage.Attrs, rtmMessage.MessageType, processor.logger)
-		rtmMessage.FileInfo = fileInfo
-		rtmMessage.Attrs = fetchFileCustomAttrs(rtmMessage.Attrs, processor.logger)
-		go processor.newMonitor.P2PFile(rtmMessage)
-	}
-
-	return fpnn.NewAnswer(quest), nil
-}
-
-func (processor *rtmServerQuestProcessor) processPushGroupFile(quest *fpnn.Quest) (*fpnn.Answer, error) {
-
-	rtmMessage := &RTMMessage{}
-	rtmMessage.FromUid = quest.WantInt64("from")
-	rtmMessage.ToId = quest.WantInt64("gid")
-	rtmMessage.MessageType = quest.WantInt8("mtype")
-
-	rtmMessage.MessageId = quest.WantInt64("mid")
-	msg := quest.WantString("msg")
-	rtmMessage.Attrs = quest.WantString("attrs")
-	rtmMessage.ModifiedTime = quest.WantInt64("mtime")
-
-	if processor.monitor != nil {
-		go processor.monitor.GroupFile(rtmMessage.FromUid, rtmMessage.ToId, rtmMessage.MessageType, rtmMessage.MessageId,
-			msg, rtmMessage.Attrs, rtmMessage.ModifiedTime)
-	} else if processor.newMonitor != nil {
-		fileInfo := processFileInfo(msg, rtmMessage.Attrs, rtmMessage.MessageType, processor.logger)
-		rtmMessage.FileInfo = fileInfo
-		rtmMessage.Attrs = fetchFileCustomAttrs(rtmMessage.Attrs, processor.logger)
-		go processor.newMonitor.GroupFile(rtmMessage)
-	}
-
-	return fpnn.NewAnswer(quest), nil
-}
-
-func (processor *rtmServerQuestProcessor) processPushRoomFile(quest *fpnn.Quest) (*fpnn.Answer, error) {
-
-	rtmMessage := &RTMMessage{}
-	rtmMessage.FromUid = quest.WantInt64("from")
-	rtmMessage.ToId = quest.WantInt64("rid")
-	rtmMessage.MessageType = quest.WantInt8("mtype")
-
-	rtmMessage.MessageId = quest.WantInt64("mid")
-	msg := quest.WantString("msg")
-	rtmMessage.Attrs = quest.WantString("attrs")
-	rtmMessage.ModifiedTime = quest.WantInt64("mtime")
-
-	if processor.monitor != nil {
-		go processor.monitor.RoomFile(rtmMessage.FromUid, rtmMessage.ToId, rtmMessage.MessageType, rtmMessage.MessageId,
-			msg, rtmMessage.Attrs, rtmMessage.ModifiedTime)
-	} else if processor.newMonitor != nil {
-		fileInfo := processFileInfo(msg, rtmMessage.Attrs, rtmMessage.MessageType, processor.logger)
-		rtmMessage.FileInfo = fileInfo
-		rtmMessage.Attrs = fetchFileCustomAttrs(rtmMessage.Attrs, processor.logger)
-		go processor.newMonitor.RoomFile(rtmMessage)
-	}
-
 	return fpnn.NewAnswer(quest), nil
 }

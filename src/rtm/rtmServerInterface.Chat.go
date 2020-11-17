@@ -19,9 +19,7 @@ const (
 
 var (
 	getChatMtypes = []int8{defaultMtype_Chat, defaultMtype_Cmd, defaultMtype_Image, defaultMtype_Audio, defaultMtype_Video, defaultMtype_File}
-	fileMtypes = []int8{defaultMtype_Image, defaultMtype_Audio, defaultMtype_Video, defaultMtype_File}
 )
-
 
 //-----------[ Chat functions ]-------------------//
 /*
@@ -488,7 +486,7 @@ func (client *RTMServerClient) TranslateByLanguageCode(text string, sourceLangua
 //-----------[ Profanity functions ]-------------------//
 
 /*
-	Explain: maybe in after version this interface will be deprecated，recommend use TextCheck interface replace 
+	Explain: maybe in after version this interface will be deprecated，recommend use TextCheck interface replace
 	Params:
 		rest: can be include following params:
 			timeout time.Duration
@@ -529,7 +527,7 @@ func (client *RTMServerClient) Speech2Text(audio string, audioType int32, lang R
 	var callback func(string, string, int, string)
 
 	for _, value := range rest {
-		switch value:= value.(type) {
+		switch value := value.(type) {
 		case time.Duration:
 			timeout = value
 		case func(string, string, int, string):
@@ -552,7 +550,7 @@ func (client *RTMServerClient) Speech2Text(audio string, audioType int32, lang R
 	if uid > 0 {
 		quest.Param("uid", uid)
 	}
-	
+
 	return client.sendSpeech2Text(quest, timeout, callback)
 }
 
@@ -561,13 +559,13 @@ func (client *RTMServerClient) TextCheck(text string, uid int64, rest ...interfa
 	var callback func(int32, string, []int32, []string, int, string)
 
 	for _, value := range rest {
-		switch value:= value.(type) {
+		switch value := value.(type) {
 		case time.Duration:
 			timeout = value
 		case func(int32, string, []int32, []string, int, string):
 			callback = value
 		default:
-			return -1, "", make([]int32, 0, 1), make([]string , 0, 1), errors.New("Invalid params when call RTMServerClient.TextCheck() function.")
+			return -1, "", make([]int32, 0, 1), make([]string, 0, 1), errors.New("Invalid params when call RTMServerClient.TextCheck() function.")
 		}
 	}
 
@@ -576,8 +574,8 @@ func (client *RTMServerClient) TextCheck(text string, uid int64, rest ...interfa
 	if uid > 0 {
 		quest.Param("uid", uid)
 	}
-	
-	return client.sendTextCheck(quest, timeout, callback)	
+
+	return client.sendTextCheck(quest, timeout, callback)
 }
 
 func (client *RTMServerClient) ImageCheck(image string, imageType int32, uid int64, rest ...interface{}) (int32, []int32, error) {
@@ -667,5 +665,3 @@ func (client *RTMServerClient) VideoCheck(video string, videoType int32, videoNa
 
 	return client.sendOtherCheck(quest, timeout, callback)
 }
-
-
