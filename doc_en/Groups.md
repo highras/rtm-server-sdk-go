@@ -4,7 +4,7 @@
 
 [TOC]
 
-### -----------------------[ Group Relationship Interface ]-----------------------------
+### -----------------------[Group Relationship Interface]-----------------------------
 
 ### func (client *RTMServerClient) AddGroupMembers(groupId int64, uids []int64, rest ... interface{}) error
 
@@ -22,7 +22,7 @@ The acceptable parameters are:
 
 + `callback func(errorCode int, errInfo string)`
 
-	Asynchronous callback function.  
+	Asynchronous callback function.
 
 If the **callback** parameter ** does not exist**, it is a **synchronization** request.
 If the **callback** parameter **exists**, it is an **asynchronous** request.
@@ -43,7 +43,7 @@ The acceptable parameters are:
 
 + `callback func(errorCode int, errInfo string)`
 
-	Asynchronous callback function.  
+	Asynchronous callback function.
 
 If the **callback** parameter ** does not exist**, it is a **synchronization** request.
 If the **callback** parameter **exists**, it is an **asynchronous** request.
@@ -64,7 +64,7 @@ The acceptable parameters are:
 
 + `callback func(errorCode int, errInfo string)`
 
-	Asynchronous callback function.  
+	Asynchronous callback function.
 
 If the **callback** parameter ** does not exist**, it is a **synchronization** request.
 If the **callback** parameter **exists**, it is an **asynchronous** request.
@@ -85,7 +85,7 @@ The acceptable parameters are:
 
 + `callback func(uids []int64, errorCode int, errInfo string)`
 
-	Asynchronous callback function.  
+	Asynchronous callback function.
 
 If the **callback** parameter ** does not exist**, it is a **synchronization** request, and the group member list and error information are returned.
 If the **callback** parameter **exists**, it is an **asynchronous** request and returns nil and error information. The real list of group members will be passed through callback.
@@ -106,7 +106,7 @@ The acceptable parameters are:
 
 + `callback func(ok bool, errorCode int, errInfo string)`
 
-	Asynchronous callback function.  
+	Asynchronous callback function.
 
 If the **callback** parameter ** does not exist**, it is a **synchronization** request, and bool and error messages are returned.
 If the **callback** parameter **exists**, it is an **asynchronous** request, and false and error messages are returned. The real group relationship will be passed through callback.
@@ -127,18 +127,24 @@ The acceptable parameters are:
 
 + `callback func(groupIds []int64, errorCode int, errInfo string)`
 
-	Asynchronous callback function.  
+	Asynchronous callback function.
 
 If the **callback** parameter ** does not exist**, it is a **synchronization** request, and the group list and error information are returned.
 If the **callback** parameter **exists**, it is an **asynchronous** request and returns nil and error information. The real group list will be passed through callback.
 
-### -----------------------[ Management interface ]-----------------------------
+### -----------------------[Management Interface]-------------------- ---------
 
 ### func (client *RTMServerClient) AddGroupBan(groupId int64, uid int64, bannedSeconds int32, rest ... interface{}) error
 
 	func (client *RTMServerClient) AddGroupBan(groupId int64, uid int64, bannedSeconds int32, rest ... interface{}) error
 
 Forbid users to speak in the specified group.
+
+Parameter Description:
+
++ `groupId int64`:
+
+	When groupId <= 0, all groups will be muted
 
 The acceptable parameters are:
 
@@ -150,7 +156,7 @@ The acceptable parameters are:
 
 + `callback func(errorCode int, errInfo string)`
 
-	Asynchronous callback function.  
+	Asynchronous callback function.
 
 If the **callback** parameter ** does not exist**, it is a **synchronization** request.
 If the **callback** parameter **exists**, it is an **asynchronous** request.
@@ -162,6 +168,12 @@ If the **callback** parameter **exists**, it is an **asynchronous** request.
 
 Unblock the user-specified group.
 
+Parameter Description:
+
++ `groupId int64`:
+
+	When groupId <= 0, all groups will be unblocked
+
 The acceptable parameters are:
 
 + `timeout time.Duration`
@@ -172,7 +184,7 @@ The acceptable parameters are:
 
 + `callback func(errorCode int, errInfo string)`
 
-	Asynchronous callback function.  
+	Asynchronous callback function.
 
 If the **callback** parameter ** does not exist**, it is a **synchronization** request.
 If the **callback** parameter **exists**, it is an **asynchronous** request.
@@ -193,18 +205,18 @@ The acceptable parameters are:
 
 + `callback func(ok bool, errorCode int, errInfo string)`
 
-	Asynchronous callback function.  
+	Asynchronous callback function.
 
 If the **callback** parameter ** does not exist**, it is a **synchronization** request, and bool and error messages are returned.
 If the **callback** parameter **exists**, it is an **asynchronous** request, and false and error messages are returned. The real mute status will be passed through callback.
 
-### -----------------------[ 群组信息接口 ]-----------------------------
+### -----------------------[Group Information Interface]------------------ -----------
 
 ### func (client *RTMServerClient) SetGroupInfo(groupId int64, publicInfo *string, privateInfo *string, rest ... interface{}) error
 
 	func (client *RTMServerClient) SetGroupInfo(groupId int64, publicInfo *string, privateInfo *string, rest ... interface{}) error
 
-Set up group public and private information.
+Set group public information and private information.
 
 Required parameters:
 
@@ -226,7 +238,7 @@ The acceptable parameters are:
 
 + `callback func (errorCode int, errInfo string)`
 
-	Asynchronous callback function.  
+	Asynchronous callback function.
 
 If the **callback** parameter ** does not exist**, it is a **synchronization** request.
 If the **callback** parameter **exists**, it is an **asynchronous** request.
@@ -247,7 +259,7 @@ The acceptable parameters are:
 
 + `callback func (publicInfo string, privateInfo string, errorCode int, errInfo string)`
 
-	Asynchronous callback function.  
+	Asynchronous callback function.
 
 If the **callback** parameter ** does not exist**, it is a **synchronization** request, returning group public information, group private information, and error information.
 If the **callback** parameter **exists**, it is an **asynchronous** request and returns "", "", error information. The true public and private information of the group will be passed through callbacks.

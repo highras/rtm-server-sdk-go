@@ -80,7 +80,7 @@ func (client *RTMServerClient) SendMessage(fromUid int64, toUid int64, messageTy
 	return client.sendMessageQuest(quest, timeout, callback)
 }
 
-func (client *RTMServerClient) SendMessageByByteArray(fromUid int64, toUid int64, messageType int8, message []byte, rest ...interface{}) (int64, error) {
+func (client *RTMServerClient) SendMessageByBinary(fromUid int64, toUid int64, messageType int8, message []byte, rest ...interface{}) (int64, error) {
 	return client.SendMessage(fromUid, toUid, messageType, string(message), rest...)
 }
 
@@ -125,7 +125,7 @@ func (client *RTMServerClient) SendMessages(fromUid int64, toUids []int64, messa
 	return client.sendMessageQuest(quest, timeout, callback)
 }
 
-func (client *RTMServerClient) SendMessagesByByteArray(fromUid int64, toUids []int64, messageType int8, message []byte, rest ...interface{}) (int64, error) {
+func (client *RTMServerClient) SendMessagesByBinary(fromUid int64, toUids []int64, messageType int8, message []byte, rest ...interface{}) (int64, error) {
 	return client.SendMessages(fromUid, toUids, messageType, string(message), rest...)
 }
 
@@ -170,7 +170,7 @@ func (client *RTMServerClient) SendGroupMessage(fromUid int64, groupId int64, me
 	return client.sendMessageQuest(quest, timeout, callback)
 }
 
-func (client *RTMServerClient) SendGroupMessageByByteArray(fromUid int64, groupId int64, messageType int8, message []byte, rest ...interface{}) (int64, error) {
+func (client *RTMServerClient) SendGroupMessageByBinary(fromUid int64, groupId int64, messageType int8, message []byte, rest ...interface{}) (int64, error) {
 	return client.SendGroupMessage(fromUid, groupId, messageType, string(message), rest...)
 }
 
@@ -215,7 +215,7 @@ func (client *RTMServerClient) SendRoomMessage(fromUid int64, roomId int64, mess
 	return client.sendMessageQuest(quest, timeout, callback)
 }
 
-func (client *RTMServerClient) SendRoomMessageByteArray(fromUid int64, roomId int64, messageType int8, message []byte, rest ...interface{}) (int64, error) {
+func (client *RTMServerClient) SendRoomMessageByBinary(fromUid int64, roomId int64, messageType int8, message []byte, rest ...interface{}) (int64, error) {
 	return client.SendRoomMessage(fromUid, roomId, messageType, string(message), rest...)
 }
 
@@ -259,7 +259,7 @@ func (client *RTMServerClient) SendBroadcastMessage(fromUid int64, messageType i
 	return client.sendMessageQuest(quest, timeout, callback)
 }
 
-func (client *RTMServerClient) SendBroadcastMessageByteArray(fromUid int64, messageType int8, message []byte, rest ...interface{}) (int64, error) {
+func (client *RTMServerClient) SendBroadcastMessageByBinary(fromUid int64, messageType int8, message []byte, rest ...interface{}) (int64, error) {
 	return client.SendBroadcastMessage(fromUid, messageType, string(message), rest...)
 }
 

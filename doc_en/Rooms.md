@@ -4,7 +4,7 @@
 
 [TOC]
 
-### -----------------------[ Room relationship interface ]-----------------------------
+### -----------------------[ Room Relationship Interface]-----------------------------
 
 ### func (client *RTMServerClient) AddRoomMember(roomId int64, uid int64, rest ... interface{}) error
 
@@ -22,7 +22,7 @@ The acceptable parameters are:
 
 + `callback func(errorCode int, errInfo string)`
 
-	Asynchronous callback function.  
+	Asynchronous callback function.
 
 If the **callback** parameter ** does not exist**, it is a **synchronization** request.
 If the **callback** parameter **exists**, it is an **asynchronous** request.
@@ -43,12 +43,12 @@ The acceptable parameters are:
 
 + `callback func(errorCode int, errInfo string)`
 
-	Asynchronous callback function.  
+	Asynchronous callback function.
 
 If the **callback** parameter ** does not exist**, it is a **synchronization** request.
 If the **callback** parameter **exists**, it is an **asynchronous** request.
 
-### -----------------------[ manage interface ]-----------------------------
+### -----------------------[Management Interface]-------------------- ---------
 
 ### func (client *RTMServerClient) AddRoomBan(roomId int64, uid int64, bannedSeconds int32, rest ... interface{}) error
 
@@ -56,6 +56,12 @@ If the **callback** parameter **exists**, it is an **asynchronous** request.
 
 The user is prohibited from speaking in the designated room.
 
+Parameter Description:
+
++ `roomId int64`:
+
+	When roomId <= 0, all rooms are muted
+
 The acceptable parameters are:
 
 + `timeout time.Duration`
@@ -66,16 +72,22 @@ The acceptable parameters are:
 
 + `callback func(errorCode int, errInfo string)`
 
-	Asynchronous callback function.  
+	Asynchronous callback function.
 
 If the **callback** parameter ** does not exist**, it is a **synchronization** request.
 If the **callback** parameter **exists**, it is an **asynchronous** request.
 
 ### func (client *RTMServerClient) RemoveRoomBan(roomId int64, uid int64, rest ... interface{}) error
-	
+
 	func (client *RTMServerClient) RemoveRoomBan(roomId int64, uid int64, rest ... interface{}) error
 
 Remove the mute in the room specified by the user.
+
+Parameter Description:
+
++ `roomId int64`:
+
+	When roomId <= 0, all rooms will be muted
 
 The acceptable parameters are:
 
@@ -87,7 +99,7 @@ The acceptable parameters are:
 
 + `callback func(errorCode int, errInfo string)`
 
-	Asynchronous callback function.  
+Asynchronous callback function.
 
 If the **callback** parameter ** does not exist**, it is a **synchronization** request.
 If the **callback** parameter **exists**, it is an **asynchronous** request.
@@ -108,12 +120,12 @@ The acceptable parameters are:
 
 + `callback func(ok bool, errorCode int, errInfo string)`
 
-	Asynchronous callback function.  
+	Asynchronous callback function.
 
 If the **callback** parameter ** does not exist**, it is a **synchronization** request, and bool and error messages are returned.
 If the **callback** parameter **exists**, it is an **asynchronous** request, and false and error messages are returned. The real mute status will be passed through callback.
 
-### -----------------------[ Room information interface ]-----------------------------
+### -----------------------[Room Information Interface]------------------- ----------
 
 ### func (client *RTMServerClient) SetRoomInfo(roomId int64, publicInfo *string, privateInfo *string, rest ... interface{}) error
 
@@ -141,7 +153,7 @@ The acceptable parameters are:
 
 + `callback func (errorCode int, errInfo string)`
 
-	Asynchronous callback function.  
+	Asynchronous callback function.
 
 If the **callback** parameter ** does not exist**, it is a **synchronization** request.
 If the **callback** parameter **exists**, it is an **asynchronous** request.
@@ -162,7 +174,49 @@ The acceptable parameters are:
 
 + `callback func (publicInfo string, privateInfo string, errorCode int, errInfo string)`
 
-	Asynchronous callback function.  
+	Asynchronous callback function.
 
 If the **callback** parameter ** does not exist**, it is a **synchronization** request, returning the room public information, room private information, and error information.
 If the **callback** parameter **exists**, it is an **asynchronous** request and returns "", "", error information. The real room public information and private information will be passed through callback.
+
+### func (client *RTMServerClient) GetRoomMembers(roomId int64, rest ...interface{}) ([]int64, error)
+
+	func (client *RTMServerClient) GetRoomMembers(roomId int64, rest ...interface{}) ([]int64, error)
+
+Get all members of the room.
+
+The acceptable parameters are:
+
++ `timeout time.Duration`
+
+	Request timed out.
+	When the timeout parameter is missing or the timeout parameter is 0, the configuration of the RTM Server Client instance will be adopted.
+	If the RTM Server Client instance is not configured, the corresponding configuration of fpnn.Config will be adopted.
+
++ `callback func (uids []int64, errorCode int, errInfo string)`
+
+	Asynchronous callback function.
+
+If the **callback** parameter ** does not exist**, it is a **synchronization** request, and the room member and error information are returned.
+If the **callback** parameter **exists**, it is an **asynchronous** request, and uids []int64, error information is returned. The real room members will be passed through callback.
+
+### func (client *RTMServerClient) GetRoomCount(roomId int64, rest ...interface{}) (int32, error)
+
+	func (client *RTMServerClient) GetRoomCount(roomId int64, rest ...interface{}) (int32, error)
+
+Get the number of users in the room
+
+The acceptable parameters are:
+
++ `timeout time.Duration`
+
+	Request timed out.
+	When the timeout parameter is missing or the timeout parameter is 0, the configuration of the RTM Server Client instance will be adopted.
+	If the RTM Server Client instance is not configured, the corresponding configuration of fpnn.Config will be adopted.
+
++ `callback func(int32, int, string)`
+
+	Asynchronous callback function.
+
+If the **callback** parameter ** does not exist**, it is a **synchronization** request, returning the number of users in the room and error information.
+If the **callback** parameter **exists**, it is an **asynchronous** request and return count int32, error information. The number of users in the real room will be passed through callback.

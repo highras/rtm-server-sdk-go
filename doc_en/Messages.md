@@ -10,7 +10,7 @@
 
 	func (client *RTMServerClient) SendMessage(fromUid int64, toUid int64, mtype int8, message string, rest ... interface{}) (int64, error)
 
-	func (client *RTMServerClient) SendMessageByByteArray(fromUid int64, toUid int64, messageType int8, message []byte, rest ...interface{}) (int64, error)
+	func (client *RTMServerClient) SendMessageByBinary(fromUid int64, toUid int64, messageType int8, message []byte, rest ...interface{}) (int64, error)
 
 Send P2P messages.
 
@@ -37,7 +37,7 @@ If the **callback** parameter **exists**, it is **asynchronous** sending, and 0 
 
 	func (client *RTMServerClient) SendMessages(fromUid int64, toUids []int64, mtype int8, message string, rest ... interface{}) (int64, error)
 
-	func (client *RTMServerClient) SendMessagesByByteArray(fromUid int64, toUids []int64, messageType int8, message []byte, rest ...interface{}) (int64, error)
+	func (client *RTMServerClient) SendMessagesByBinary(fromUid int64, toUids []int64, messageType int8, message []byte, rest ...interface{}) (int64, error)
 
 Send multi-person P2P messages.
 
@@ -64,7 +64,7 @@ If the **callback** parameter **exists**, it is **asynchronous** sending, and 0 
 
 	func (client *RTMServerClient) SendGroupMessage(fromUid int64, groupId int64, mtype int8, message string, rest ... interface{}) (int64, error)
 
-	func (client *RTMServerClient) SendGroupMessageByByteArray(fromUid int64, groupId int64, messageType int8, message []byte, rest ...interface{}) (int64, error)
+	func (client *RTMServerClient) SendGroupMessageByBinary(fromUid int64, groupId int64, messageType int8, message []byte, rest ...interface{}) (int64, error)
 
 Send group messages.
 
@@ -91,7 +91,7 @@ If the **callback** parameter **exists**, it is **asynchronous** sending, and 0 
 
 	func (client *RTMServerClient) SendRoomMessage(fromUid int64, roomId int64, mtype int8, message string, rest ... interface{}) (int64, error)
 
-	func (client *RTMServerClient) SendRoomMessageByteArray(fromUid int64, roomId int64, messageType int8, message []byte, rest ...interface{}) (int64, error)
+	func (client *RTMServerClient) SendRoomMessageByBinary(fromUid int64, roomId int64, messageType int8, message []byte, rest ...interface{}) (int64, error)
 
 Send room message
 
@@ -118,7 +118,7 @@ If the **callback** parameter **exists**, it is **asynchronous** sending, and 0 
 
 	func (client *RTMServerClient) SendBroadcastMessage(fromUid int64, mtype int8, message string, rest ... interface{}) (int64, error)
 
-	func (client *RTMServerClient) SendBroadcastMessageByteArray(fromUid int64, messageType int8, message []byte, rest ...interface{}) (int64, error)
+	func (client *RTMServerClient) SendBroadcastMessageByBinary(fromUid int64, messageType int8, message []byte, rest ...interface{}) (int64, error)
 	
 Send broadcast message
 
@@ -142,7 +142,7 @@ If the **callback** parameter ** does not exist**, it is sent as **synchronized*
 If the **callback** parameter **exists**, it is **asynchronous** sending, and 0 and error information are returned. The real mtime will be passed through callback.
 
 
-### -----------------------[ Get historical news ]-----------------------------
+### -----------------------[ Get message historical ]-----------------------------
 
 ### type RTMAudioFileInfo
 

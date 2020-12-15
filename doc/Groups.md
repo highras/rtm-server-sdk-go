@@ -140,6 +140,12 @@
 
 禁止用户指定群组内发言。
 
+参数说明：
+
++ `groupId int64`:
+
+	groupId <= 0时，则对所有群组禁言
+
 可接受的参数为：
 
 + `timeout time.Duration`
@@ -161,6 +167,12 @@
 	func (client *RTMServerClient) RemoveGroupBan(groupId int64, uid int64, rest ... interface{}) error
 
 解除用户指定群组内禁言。
+
+参数说明：
+
++ `groupId int64`:
+
+	groupId <= 0时，则对所有群组解除禁言
 
 可接受的参数为：
 

@@ -97,7 +97,9 @@ func (client *RTMServerClient) AddRoomBan(roomId int64, uid int64, bannedSeconds
 	}
 
 	quest := client.genServerQuest("addroomban")
-	quest.Param("rid", roomId)
+	if roomId > 0 {
+		quest.Param("rid", roomId)
+	}
 	quest.Param("uid", uid)
 	quest.Param("btime", bannedSeconds)
 
@@ -130,7 +132,9 @@ func (client *RTMServerClient) RemoveRoomBan(roomId int64, uid int64, rest ...in
 	}
 
 	quest := client.genServerQuest("removeroomban")
-	quest.Param("rid", roomId)
+	if roomId > 0 {
+		quest.Param("rid", roomId)
+	}
 	quest.Param("uid", uid)
 
 	return client.sendSilentQuest(quest, timeout, callback)
@@ -244,4 +248,64 @@ func (client *RTMServerClient) GetRoomInfo(roomId int64, rest ...interface{}) (s
 	quest.Param("rid", roomId)
 
 	return client.sendGetObjectInfoQuest(quest, timeout, callback)
+}
+
+/*
+	Params:
+		rest: can be include following params:
+			timeout time.Duration
+			func (uids []int64, errorCode int, errInfo string)
+
+		If include func param, this function will enter into async mode, and return ([]int64, error);
+		else this function work in sync mode, and return (uids []int64, err error)
+*/
+func (client *RTMServerClient) GetRoomMembers(roomId int64, rest ...interface{}) ([]int64, error) {
+
+	var timeout time.Duration
+	var callback func([]int64, int, string)
+
+	for _, value := range rest {
+		switch value := value.(type) {
+		case time.Duration:
+			timeout = value
+		case func([]int64, int, string):
+			callback = value
+		default:
+			return nil, errors.New("Invaild params when call RTMServerClient.GetRoomMembers() function.")
+		}
+	}
+
+	quest := client.genServerQuest("getroommembers")
+	quest.Param("rid", roomId)
+	return client.sendSliceQuest(quest, timeout, "uids", callback)
+}
+
+/*
+	Params:
+		rest: can be include following params:
+			timeout time.Duration
+			func (count int32, errorCode int, errInfo string)
+
+		If include func param, this function will enter into async mode, and return (int32, error);
+		else this function work in sync mode, and return (count int32, err error)
+*/
+func (client *RTMServerClient) GetRoomCount(roomId int64, rest ...interface{}) (int32, error) {
+
+	var timeout time.Duration
+	var callback func(int32, int, string)
+
+	for _, value := range rest {
+		switch value := value.(type) {
+		case time.Duration:
+			timeout = value
+		case func(int32, int, string):
+			callback = value
+		default:
+			return 0, errors.New("Invaild params when call RTMServerClient.GetRoomCount() function.")
+		}
+	}
+
+	quest := client.genServerQuest("getroomcount")
+	quest.Param("rid", roomId)
+	return client.sendIntQuest(quest, timeout, "cn", callback)
 }

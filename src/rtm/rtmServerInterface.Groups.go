@@ -222,7 +222,9 @@ func (client *RTMServerClient) AddGroupBan(groupId int64, uid int64, bannedSecon
 	}
 
 	quest := client.genServerQuest("addgroupban")
-	quest.Param("gid", groupId)
+	if groupId > 0 {
+		quest.Param("gid", groupId)
+	}
 	quest.Param("uid", uid)
 	quest.Param("btime", bannedSeconds)
 
@@ -255,7 +257,9 @@ func (client *RTMServerClient) RemoveGroupBan(groupId int64, uid int64, rest ...
 	}
 
 	quest := client.genServerQuest("removegroupban")
-	quest.Param("gid", groupId)
+	if groupId > 0 {
+		quest.Param("gid", groupId)
+	}
 	quest.Param("uid", uid)
 
 	return client.sendSilentQuest(quest, timeout, callback)
