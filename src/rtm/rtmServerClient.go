@@ -16,11 +16,11 @@ import (
 )
 
 const (
-	SDKVersion = "0.6.0"
+	SDKVersion = "0.7.0"
 )
 
 const (
-	APIVersion = "2.4.0"
+	APIVersion = "2.5.0"
 )
 
 /*  for compatible before v0.3.1(include) maybe in after version this interface will be deprecated,
@@ -1140,71 +1140,6 @@ func (client *RTMServerClient) RemoveToken(uid int64, rest ...interface{}) error
 
 	quest := client.genServerQuest("removetoken")
 	quest.Param("uid", uid)
-
-	return client.sendSilentQuest(quest, timeout, callback)
-}
-
-/*
-	Params:
-		rest: can be include following params:
-			timeout time.Duration
-			func (errorCode int, errInfo string)
-
-		If include func param, this function will enter into async mode, and return (error);
-		else this function work in sync mode, and return (err error)
-*/
-func (client *RTMServerClient) AddDevice(uid int64, appType string, deviceToken string, rest ...interface{}) error {
-
-	var timeout time.Duration
-	var callback func(int, string)
-
-	for _, value := range rest {
-		switch value := value.(type) {
-		case time.Duration:
-			timeout = value
-		case func(int, string):
-			callback = value
-		default:
-			return errors.New("Invaild params when call RTMServerClient.AddDevice() function.")
-		}
-	}
-
-	quest := client.genServerQuest("adddevice")
-	quest.Param("uid", uid)
-	quest.Param("apptype", appType)
-	quest.Param("devicetoken", deviceToken)
-
-	return client.sendSilentQuest(quest, timeout, callback)
-}
-
-/*
-	Params:
-		rest: can be include following params:
-			timeout time.Duration
-			func (errorCode int, errInfo string)
-
-		If include func param, this function will enter into async mode, and return (error);
-		else this function work in sync mode, and return (err error)
-*/
-func (client *RTMServerClient) RemoveDevice(uid int64, deviceToken string, rest ...interface{}) error {
-
-	var timeout time.Duration
-	var callback func(int, string)
-
-	for _, value := range rest {
-		switch value := value.(type) {
-		case time.Duration:
-			timeout = value
-		case func(int, string):
-			callback = value
-		default:
-			return errors.New("Invaild params when call RTMServerClient.RemoveDevice() function.")
-		}
-	}
-
-	quest := client.genServerQuest("removedevice")
-	quest.Param("uid", uid)
-	quest.Param("devicetoken", deviceToken)
 
 	return client.sendSilentQuest(quest, timeout, callback)
 }
