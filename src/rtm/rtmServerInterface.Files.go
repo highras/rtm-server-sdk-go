@@ -217,7 +217,7 @@ func (client *RTMServerClient) SendFile(fromUid int64, toUid int64, fileContent 
 
 		quest.Param("from", fromUid)
 		quest.Param("to", toUid)
-		quest.Param("mid", client.idGen.genMid())
+		quest.Param("mid", idGen.genMid())
 		quest.Param("file", fileContent)
 		quest.Param("attrs", attrs)
 
@@ -248,7 +248,7 @@ func (client *RTMServerClient) SendFile(fromUid int64, toUid int64, fileContent 
 
 			quest.Param("from", fromUid)
 			quest.Param("to", toUid)
-			quest.Param("mid", client.idGen.genMid())
+			quest.Param("mid", idGen.genMid())
 			quest.Param("file", fileContent)
 			quest.Param("attrs", attrs)
 
@@ -334,7 +334,7 @@ func (client *RTMServerClient) SendFiles(fromUid int64, toUids []int64, fileCont
 
 		quest.Param("from", fromUid)
 		quest.Param("tos", toUids)
-		quest.Param("mid", client.idGen.genMid())
+		quest.Param("mid", idGen.genMid())
 		quest.Param("file", fileContent)
 		quest.Param("attrs", attrs)
 
@@ -365,7 +365,7 @@ func (client *RTMServerClient) SendFiles(fromUid int64, toUids []int64, fileCont
 
 			quest.Param("from", fromUid)
 			quest.Param("tos", toUids)
-			quest.Param("mid", client.idGen.genMid())
+			quest.Param("mid", idGen.genMid())
 			quest.Param("file", fileContent)
 			quest.Param("attrs", attrs)
 
@@ -451,7 +451,7 @@ func (client *RTMServerClient) SendGroupFile(fromUid int64, groupId int64, fileC
 
 		quest.Param("from", fromUid)
 		quest.Param("gid", groupId)
-		quest.Param("mid", client.idGen.genMid())
+		quest.Param("mid", idGen.genMid())
 		quest.Param("file", fileContent)
 		quest.Param("attrs", attrs)
 
@@ -482,7 +482,7 @@ func (client *RTMServerClient) SendGroupFile(fromUid int64, groupId int64, fileC
 
 			quest.Param("from", fromUid)
 			quest.Param("gid", groupId)
-			quest.Param("mid", client.idGen.genMid())
+			quest.Param("mid", idGen.genMid())
 			quest.Param("file", fileContent)
 			quest.Param("attrs", attrs)
 
@@ -568,7 +568,7 @@ func (client *RTMServerClient) SendRoomFile(fromUid int64, roomId int64, fileCon
 
 		quest.Param("from", fromUid)
 		quest.Param("rid", roomId)
-		quest.Param("mid", client.idGen.genMid())
+		quest.Param("mid", idGen.genMid())
 		quest.Param("file", fileContent)
 		quest.Param("attrs", attrs)
 
@@ -599,7 +599,7 @@ func (client *RTMServerClient) SendRoomFile(fromUid int64, roomId int64, fileCon
 
 			quest.Param("from", fromUid)
 			quest.Param("rid", roomId)
-			quest.Param("mid", client.idGen.genMid())
+			quest.Param("mid", idGen.genMid())
 			quest.Param("file", fileContent)
 			quest.Param("attrs", attrs)
 
@@ -681,7 +681,7 @@ func (client *RTMServerClient) SendBroadcastFile(fromUid int64, fileContent []by
 		quest.Param("mtype", mtype)
 
 		quest.Param("from", fromUid)
-		quest.Param("mid", client.idGen.genMid())
+		quest.Param("mid", idGen.genMid())
 		quest.Param("file", fileContent)
 		quest.Param("attrs", attrs)
 
@@ -711,7 +711,7 @@ func (client *RTMServerClient) SendBroadcastFile(fromUid int64, fileContent []by
 			quest.Param("mtype", mtype)
 
 			quest.Param("from", fromUid)
-			quest.Param("mid", client.idGen.genMid())
+			quest.Param("mid", idGen.genMid())
 			quest.Param("file", fileContent)
 			quest.Param("attrs", attrs)
 

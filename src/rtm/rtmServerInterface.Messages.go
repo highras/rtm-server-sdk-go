@@ -73,7 +73,7 @@ func (client *RTMServerClient) SendMessage(fromUid int64, toUid int64, messageTy
 
 	quest.Param("from", fromUid)
 	quest.Param("to", toUid)
-	quest.Param("mid", client.idGen.genMid())
+	quest.Param("mid", idGen.genMid())
 	quest.Param("msg", message)
 	quest.Param("attrs", attrs)
 
@@ -118,7 +118,7 @@ func (client *RTMServerClient) SendMessages(fromUid int64, toUids []int64, messa
 
 	quest.Param("from", fromUid)
 	quest.Param("tos", toUids)
-	quest.Param("mid", client.idGen.genMid())
+	quest.Param("mid", idGen.genMid())
 	quest.Param("msg", message)
 	quest.Param("attrs", attrs)
 
@@ -163,7 +163,7 @@ func (client *RTMServerClient) SendGroupMessage(fromUid int64, groupId int64, me
 
 	quest.Param("from", fromUid)
 	quest.Param("gid", groupId)
-	quest.Param("mid", client.idGen.genMid())
+	quest.Param("mid", idGen.genMid())
 	quest.Param("msg", message)
 	quest.Param("attrs", attrs)
 
@@ -208,7 +208,7 @@ func (client *RTMServerClient) SendRoomMessage(fromUid int64, roomId int64, mess
 
 	quest.Param("from", fromUid)
 	quest.Param("rid", roomId)
-	quest.Param("mid", client.idGen.genMid())
+	quest.Param("mid", idGen.genMid())
 	quest.Param("msg", message)
 	quest.Param("attrs", attrs)
 
@@ -252,7 +252,7 @@ func (client *RTMServerClient) SendBroadcastMessage(fromUid int64, messageType i
 	quest.Param("mtype", messageType)
 
 	quest.Param("from", fromUid)
-	quest.Param("mid", client.idGen.genMid())
+	quest.Param("mid", idGen.genMid())
 	quest.Param("msg", message)
 	quest.Param("attrs", attrs)
 

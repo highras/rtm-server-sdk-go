@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io"
 	"log"
-	"math/rand"
 	"os"
 	"strconv"
 	"sync"
@@ -16,7 +15,7 @@ import (
 )
 
 const (
-	SDKVersion = "0.7.0"
+	SDKVersion = "0.7.1"
 )
 
 const (
@@ -64,44 +63,6 @@ type IRTMServerMonitor interface {
 
 //------------------------------[ RTM Server Client ]---------------------------------------//
 
-type midGenerator struct {
-	mutex        sync.Mutex
-	randId       int32
-	count        int32
-	randBits     int32
-	sequenceBits int32
-	sequenceMask int32
-	lastTime     int64
-}
-
-func (gen *midGenerator) genMid() int64 {
-	gen.mutex.Lock()
-	defer gen.mutex.Unlock()
-
-	currentMillis := gen.getNewStamp()
-	gen.count = (gen.count + 1) & gen.sequenceMask
-	if gen.count == 0 {
-		currentMillis = gen.getNextTimeMillis(gen.lastTime)
-	}
-	gen.lastTime = currentMillis
-	mid := (currentMillis << (gen.randBits + gen.sequenceBits)) | (int64)((gen.randId)<<(gen.sequenceBits)) | int64(gen.count)
-	return mid
-}
-
-func (gen *midGenerator) getNewStamp() int64 {
-	now := time.Now()
-	currentMillis := now.UnixNano() / 1000000
-	return currentMillis
-}
-
-func (gen *midGenerator) getNextTimeMillis(lastTime int64) int64 {
-	curr := gen.getNewStamp()
-	for curr <= lastTime {
-		curr = gen.getNewStamp()
-	}
-	return curr
-}
-
 type RtmRegressiveState struct {
 	CurrentFailedCount       int
 	ConnectStartMilliseconds int64
@@ -114,7 +75,6 @@ type RTMServerClient struct {
 	client                    *fpnn.TCPClient
 	processor                 *rtmServerQuestProcessor
 	logger                    *log.Logger
-	idGen                     *midGenerator
 	pid                       int32
 	secretKey                 string
 	regressiveState           *RtmRegressiveState
@@ -136,9 +96,6 @@ func NewRTMServerClient(pid int32, secretKey string, endpoint string) *RTMServer
 
 	client.client = fpnn.NewTCPClient(endpoint)
 	client.processor = newRTMServerQuestProcessor()
-	rand.Seed(time.Now().Unix())
-	index := rand.Int31n(255) + 1
-	client.idGen = &midGenerator{randId: index, count: 0, randBits: 8, sequenceBits: 6, sequenceMask: -1 ^ (-1 << 6), lastTime: 0}
 	client.secretKey = secretKey
 	client.pid = pid
 	client.regressiveState = &RtmRegressiveState{0, 0}
@@ -291,7 +248,7 @@ func (client *RTMServerClient) makeSignAndSalt() (string, int64) {
 func (client *RTMServerClient) genServerQuest(cmd string) *fpnn.Quest {
 
 	now := time.Now()
-	salt := client.idGen.genMid()
+	salt := idGen.genMid()
 	ts := int32(now.Unix())
 
 	pidStr := strconv.FormatInt(int64(client.pid), 10)
