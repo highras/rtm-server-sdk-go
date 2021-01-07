@@ -676,7 +676,7 @@ func (client *RTMServerClient) GetP2PMessage(uid int64, peerUid int64, desc bool
 
 //-----------[ Delete Messages functions ]-------------------//
 
-type MessageType int
+type MessageType int8
 
 const (
 	_                           = iota
@@ -806,4 +806,44 @@ func (client *RTMServerClient) DelRoomMessage(messageId int64, fromUid int64, ri
 */
 func (client *RTMServerClient) DelBroadcastMessage(messageId int64, fromUid int64, rest ...interface{}) error {
 	return client.DelMessage(messageId, fromUid, 0, MessageType_Broadcast, rest)
+}
+
+/*
+	Params:
+		rest: can be include following params:
+			timeout time.Duration
+			func (sender int32, count int32, errorCode int, errInfo string)
+
+		If include func param, this function will enter into async mode, and return (error);
+		else this function work in sync mode, and return (sender int32, count int32, err error)
+*/
+func (client *RTMServerClient) GetMsgCount(msgType MessageType, xid int64, begin int64, end int64, mtype []int8, rest ...interface{}) (sender int32, count int32, err error) {
+	var timeout time.Duration
+	var callback func(int32, int32, int, string)
+
+	for _, value := range rest {
+		switch value := value.(type) {
+		case time.Duration:
+			timeout = value
+		case func(int32, int32, int, string):
+			callback = value
+		default:
+			return 0, 0, errors.New("Invaild params when call RTMServerClient.GetMsgNum() function.")
+		}
+	}
+
+	quest := client.genServerQuest("getmsgnum")
+	quest.Param("type", msgType)
+	quest.Param("xid", xid)
+	if mtype != nil && len(mtype) > 0 {
+		quest.Param("mtypes", mtype)
+	}
+	if begin > 0 {
+		quest.Param("begin", begin)
+	}
+	if end > 0 {
+		quest.Param("end", end)
+	}
+
+	return client.sendDoubleIntQuest(quest, timeout, "sender", "num", callback)
 }

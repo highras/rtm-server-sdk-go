@@ -15,11 +15,11 @@ import (
 )
 
 const (
-	SDKVersion = "0.7.1"
+	SDKVersion = "0.8.0"
 )
 
 const (
-	APIVersion = "2.5.0"
+	APIVersion = "2.6.0"
 )
 
 /*  for compatible before v0.3.1(include) maybe in after version this interface will be deprecated,
@@ -708,6 +708,34 @@ func (client *RTMServerClient) sendIntQuest(quest *fpnn.Quest, timeout time.Dura
 		return answer.WantInt32(stringKey), nil
 	} else {
 		return 0, fmt.Errorf("[Exception] code: %d, ex: %s", answer.WantInt("code"), answer.WantString("ex"))
+	}
+}
+
+func (client *RTMServerClient) sendDoubleIntQuest(quest *fpnn.Quest, timeout time.Duration, stringKey string, stringKey1 string,
+	callback func(sender int32, count int32, errorCode int, errInfo string)) (int32, int32, error) {
+
+	if callback != nil {
+		callbackFunc := func(answer *fpnn.Answer, errorCode int) {
+			if errorCode == fpnn.FPNN_EC_OK {
+				callback(answer.WantInt32(stringKey), answer.WantInt32(stringKey1), fpnn.FPNN_EC_OK, "")
+			} else if answer == nil {
+				callback(0, 0, errorCode, "")
+			} else {
+				callback(0, 0, answer.WantInt("code"), answer.WantString("ex"))
+			}
+		}
+
+		_, err := client.sendQuest(quest, timeout, callbackFunc)
+		return 0, 0, err
+	}
+
+	answer, err := client.sendQuest(quest, timeout, nil)
+	if err != nil {
+		return 0, 0, err
+	} else if !answer.IsException() {
+		return answer.WantInt32(stringKey), answer.WantInt32(stringKey1), nil
+	} else {
+		return 0, 0, fmt.Errorf("[Exception] code: %d, ex: %s", answer.WantInt("code"), answer.WantString("ex"))
 	}
 }
 

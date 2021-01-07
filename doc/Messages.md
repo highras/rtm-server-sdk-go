@@ -505,3 +505,46 @@
 
 如果 **callback** 参数**不存在**，则为**同步**请求。  
 如果 **callback** 参数**存在**，则为**异步**请求。
+
+### func (client *RTMServerClient) GetMsgCount(msgType MessageType, xid int64, begin int64, end int64, mtype []int8, rest ...interface{}) (sender int32, count int32, err error)
+
+	func (client *RTMServerClient) GetMsgCount(msgType MessageType, xid int64, begin int64, end int64, mtype []int8, rest ...interface{}) (sender int32, count int32, err error)
+
+获取房间或者群组内发送消息的统计
+
+必选参数：
+
++ `msgType MessageType`: 
+	
+	获取消息的类别，**可接受rtm.MessageType_Group、rtm.MessageType_Room**
+
++ `xid int64`: 
+	
+	当msgType为**rtm.MessageType_Group**时，为**groupId**；当msgType为**rtm.MessageType_Room**时，为**roomId**
+
++ `begin int64`: 
+	
+	毫秒级时间戳，开始时间，为0则忽略时间
+
++ `end int64`: 
+	
+	毫秒级时间戳，结束时间，为0则忽略时间
+
++ `mtype []int8`: 
+
+	如果mtype为nil或者为空时，则返回所有
+
+可接受的参数为：
+
++ `timeout time.Duration`
+
+	请求超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+
++ `callback func (sender int32, count int32, errorCode int, errInfo string)`
+
+	异步回调函数。  
+
+如果 **callback** 参数**不存在**，则为**同步**请求，返回房间或者群组内发送消息的人数(去重后的)，和消息数量
+如果 **callback** 参数**存在**，则为**异步**请求。返回的结果将通过callback返回

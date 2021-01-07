@@ -505,3 +505,46 @@ The acceptable parameters are:
 
 If the **callback** parameter ** does not exist**, it is a **synchronization** request.
 If the **callback** parameter **exists**, it is an **asynchronous** request.
+
+### func (client *RTMServerClient) GetMsgCount(msgType MessageType, xid int64, begin int64, end int64, mtype []int8, rest ...interface{}) (sender int32, count int32, err error)
+
+	func (client *RTMServerClient) GetMsgCount(msgType MessageType, xid int64, begin int64, end int64, mtype []int8, rest ...interface{}) (sender int32, count int32, err error)
+
+Get statistics of messages sent in a room or group
+
+Required parameters:
+
++ `msgType MessageType`: 
+	
+	Get the type of message, **accept rtm.MessageType_Group, rtm.MessageType_Room**
+
++ `xid int64`: 
+	
+	When msgType is **rtm.MessageType_Group**, it is **groupId**; when msgType is **rtm.MessageType_Room**, it is **roomId**
+
++ `begin int64`: 
+	
+	Millisecond timestamp, start time, if **0**, the time is ignored
+
++ `end int64`: 
+	
+	Millisecond timestamp, end time, if **0**, the time is ignored
+
++ `mtype []int8`: 
+
+	If mtype is nil or empty, return all
+
+The acceptable parameters are:
+
++ `timeout time.Duration`
+
+	Request timed out.
+	When the timeout parameter is missing or the timeout parameter is 0, the configuration of the RTM Server Client instance will be adopted.
+	If the RTM Server Client instance is not configured, the corresponding configuration of fpnn.Config will be adopted.
+
++ `callback func (sender int32, count int32, errorCode int, errInfo string)`
+
+	Asynchronous callback function.   
+
+If the **callback** parameter ** does not exist**, it is a **synchronization** request, returning the number of people who sent messages in the room or group (after deduplication), and the number of messages
+If the **callback** parameter **exists**, it is an **asynchronous** request. The returned result will be returned through callback
