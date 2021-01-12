@@ -30,8 +30,8 @@ var (
 	fromUid  int64   = 102456
 	toUid    int64   = 102457
 	toUids   []int64 = []int64{102458, 102459, 102460, 102461, 102462, 102463, 102464, 102465, 102466, 102467, 102468}
-	groupId  int64   = 12345
-	roomId   int64   = 9981
+	groupId  int64   = 34567
+	roomId   int64   = 9987
 	mtype    int8    = 127
 )
 
@@ -279,7 +279,7 @@ func main() {
 	}
 	client := rtm.NewRTMServerClient(int32(pid), os.Args[3], os.Args[1])
 
-	demoSendMessage(client)
+	//demoSendMessage(client)
 	//deleteMessage(client)
 	time.Sleep(2 * time.Second)
 	getMsgCount(client)

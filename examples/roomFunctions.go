@@ -31,7 +31,7 @@ var (
 	toUid    int64   = 102457
 	toUids   []int64 = []int64{102458, 102459, 102460, 102461, 102462, 102463, 102464, 102465, 102466, 102467, 102468}
 	groupId  int64   = 12345
-	roomId   int64   = 9981
+	roomId   int64   = 666
 	mtype    int8    = 127
 )
 
@@ -100,7 +100,7 @@ func getRoomMembers(client *rtm.RTMServerClient) {
 func getRoomMemberCount(client *rtm.RTMServerClient) {
 
 	//-- sync mode
-	count, err := client.GetRoomCount(roomId)
+	count, err := client.GetRoomCount([]int64{roomId})
 	locker.print(func() {
 		if err == nil {
 			fmt.Printf("GetRoomCount in sync mode is fine. count = %d.\n", count)
@@ -110,7 +110,7 @@ func getRoomMemberCount(client *rtm.RTMServerClient) {
 	})
 
 	//-- async mode
-	_, err = client.GetRoomCount(roomId, func(count int32, errorCode int, errInfo string) {
+	_, err = client.GetRoomCount([]int64{roomId}, func(count map[int64]int32, errorCode int, errInfo string) {
 		locker.print(func() {
 			if errorCode == fpnn.FPNN_EC_OK {
 				fmt.Printf("GetRoomCount in async mode is fine. count = %d.\n", count)
@@ -173,12 +173,12 @@ func main() {
 	}
 	client := rtm.NewRTMServerClient(int32(pid), os.Args[3], os.Args[1])
 
-	addRoomMember(client)
-	time.Sleep(6 * time.Second)
-	getRoomMembers(client)
+	//addRoomMember(client)
+	//time.Sleep(6 * time.Second)
+	//getRoomMembers(client)
 	getRoomMemberCount(client)
 	time.Sleep(500 * time.Millisecond)
-	deleteRoomMember(client)
+	//deleteRoomMember(client)
 
 	locker.print(func() {
 		fmt.Println("Wait 1 second for async callbacks are printed.")

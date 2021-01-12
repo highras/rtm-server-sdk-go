@@ -2,6 +2,9 @@ package rtm
 
 import (
 	"errors"
+	"fmt"
+	"github.com/highras/fpnn-sdk-go/src/fpnn"
+	"strconv"
 	"time"
 )
 
@@ -280,32 +283,69 @@ func (client *RTMServerClient) GetRoomMembers(roomId int64, rest ...interface{})
 	return client.sendSliceQuest(quest, timeout, "uids", callback)
 }
 
+func (client *RTMServerClient) convertToInt64MapByInt32(value map[interface{}]interface{}) map[int64]int32 {
+
+	result := make(map[int64]int32)
+
+	for k, v := range value {
+		key := client.convertToString(k)
+		count := int32(client.convertToInt64(v))
+		if i, err := strconv.ParseInt(key, 10, 64); err == nil {
+			result[i] = count
+		}
+	}
+
+	return result
+}
+
 /*
 	Params:
 		rest: can be include following params:
 			timeout time.Duration
 			func (count int32, errorCode int, errInfo string)
 
-		If include func param, this function will enter into async mode, and return (int32, error);
-		else this function work in sync mode, and return (count int32, err error)
+		If include func param, this function will enter into async mode, and return (map[int64]int32, error);
+		else this function work in sync mode, and return (count map[int64]int32, err error)
 */
-func (client *RTMServerClient) GetRoomCount(roomId int64, rest ...interface{}) (int32, error) {
+func (client *RTMServerClient) GetRoomCount(roomIds []int64, rest ...interface{}) (map[int64]int32, error) {
 
 	var timeout time.Duration
-	var callback func(int32, int, string)
+	var callback func(map[int64]int32, int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
 		case time.Duration:
 			timeout = value
-		case func(int32, int, string):
+		case func(map[int64]int32, int, string):
 			callback = value
 		default:
-			return 0, errors.New("Invaild params when call RTMServerClient.GetRoomCount() function.")
+			return nil, errors.New("Invaild params when call RTMServerClient.GetRoomCount() function.")
 		}
 	}
 
 	quest := client.genServerQuest("getroomcount")
-	quest.Param("rid", roomId)
-	return client.sendIntQuest(quest, timeout, "cn", callback)
+	quest.Param("rids", roomIds)
+	if callback != nil {
+		callbackFunc := func(answer *fpnn.Answer, errorCode int) {
+			if errorCode == fpnn.FPNN_EC_OK {
+				callback(client.convertToInt64MapByInt32(answer.WantMap("cn")), fpnn.FPNN_EC_OK, "")
+			} else if answer == nil {
+				callback(nil, errorCode, "")
+			} else {
+				callback(nil, answer.WantInt("code"), answer.WantString("ex"))
+			}
+		}
+
+		_, err := client.sendQuest(quest, timeout, callbackFunc)
+		return nil, err
+	}
+
+	answer, err := client.sendQuest(quest, timeout, nil)
+	if err != nil {
+		return nil, err
+	} else if !answer.IsException() {
+		return client.convertToInt64MapByInt32(answer.WantMap("cn")), nil
+	} else {
+		return nil, fmt.Errorf("[Exception] code: %d, ex: %s", answer.WantInt("code"), answer.WantString("ex"))
+	}
 }

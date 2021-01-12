@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/highras/fpnn-sdk-go/src/fpnn"
+	"strconv"
 	"time"
 )
 
@@ -173,7 +174,7 @@ func (client *RTMServerClient) convertValueToInt8(value interface{}) int8 {
 	case float64:
 		return int8(tmp)
 	default:
-		client.logger.Println("[ERROR] Type convert failed.")
+		client.logger.Println("[ERROR] convertValueToInt8 Type convert failed.")
 		return 0
 	}
 }
@@ -183,7 +184,7 @@ func (client *RTMServerClient) convertToInt64Map(value map[interface{}]interface
 	result := make(map[int64][]int8)
 
 	for k, v := range value {
-		key := client.convertToInt64(k)
+		key := client.convertToString(k)
 		var result_type []int8
 		if data, ok := v.([]interface{}); ok {
 			for _, tmp := range data {
@@ -191,7 +192,9 @@ func (client *RTMServerClient) convertToInt64Map(value map[interface{}]interface
 				result_type = append(result_type, tmp_r)
 			}
 		}
-		result[key] = result_type
+		if i, err := strconv.ParseInt(key, 10, 64); err == nil {
+			result[i] = result_type
+		}
 	}
 
 	return result

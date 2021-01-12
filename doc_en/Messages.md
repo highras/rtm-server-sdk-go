@@ -512,6 +512,9 @@ If the **callback** parameter **exists**, it is an **asynchronous** request.
 
 Get statistics of messages sent in a room or group
 
+Note：
+	Only the saved messages will be counted. The current chat messages are saved by default, plus the message type configured by the user.
+
 Required parameters:
 
 + `msgType MessageType`: 

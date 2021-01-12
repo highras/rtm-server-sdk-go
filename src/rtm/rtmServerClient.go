@@ -7,6 +7,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"reflect"
 	"strconv"
 	"sync"
 	"time"
@@ -19,7 +20,7 @@ const (
 )
 
 const (
-	APIVersion = "2.6.0"
+	APIVersion = "2.6.1"
 )
 
 /*  for compatible before v0.3.1(include) maybe in after version this interface will be deprecated,
@@ -322,7 +323,7 @@ func (client *RTMServerClient) convertToString(value interface{}) string {
 	case []rune:
 		return string(value.([]rune))
 	default:
-		client.logger.Println("[ERROR] Type convert failed.")
+		client.logger.Printf("[ERROR] convertToString Type  %v convert failed.", reflect.TypeOf(value))
 		return ""
 	}
 }

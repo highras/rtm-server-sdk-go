@@ -200,9 +200,9 @@
 如果 **callback** 参数**不存在**，则为**同步**请求，返回 房间成员、error 信息。  
 如果 **callback** 参数**存在**，则为**异步**请求，返回 uids []int64、error 信息。真实的房间成员，将通过 callback 传递。
 
-### func (client *RTMServerClient) GetRoomCount(roomId int64, rest ...interface{}) (int32, error)
+### func (client *RTMServerClient) GetRoomCount(roomId []int64, rest ...interface{}) (map[int64]int32, error)
 
-	func (client *RTMServerClient) GetRoomCount(roomId int64, rest ...interface{}) (int32, error)
+	func (client *RTMServerClient) GetRoomCount(roomId []int64, rest ...interface{}) (map[int64]int32, error)
 
 获取房间中用户数量
 
@@ -214,9 +214,9 @@
 	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
 	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
 
-+ `callback func(int32, int, string)`
++ `callback func(map[int64]int32, int, string)`
 
 	异步回调函数。  
 
 如果 **callback** 参数**不存在**，则为**同步**请求，返回 房间中用户数量、error 信息。  
-如果 **callback** 参数**存在**，则为**异步**请求，返回 count int32、error 信息。真实的 房间中用户数量，将通过 callback 传递。
+如果 **callback** 参数**存在**，则为**异步**请求，返回 count map[int64]int32、error 信息。真实的 房间中用户数量，将通过 callback 传递。

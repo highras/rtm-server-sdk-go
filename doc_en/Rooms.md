@@ -200,9 +200,9 @@ The acceptable parameters are:
 If the **callback** parameter ** does not exist**, it is a **synchronization** request, and the room member and error information are returned.
 If the **callback** parameter **exists**, it is an **asynchronous** request, and uids []int64, error information is returned. The real room members will be passed through callback.
 
-### func (client *RTMServerClient) GetRoomCount(roomId int64, rest ...interface{}) (int32, error)
+### func (client *RTMServerClient) GetRoomCount(roomId []int64, rest ...interface{}) (map[int64]int32, error)
 
-	func (client *RTMServerClient) GetRoomCount(roomId int64, rest ...interface{}) (int32, error)
+	func (client *RTMServerClient) GetRoomCount(roomId []int64, rest ...interface{}) (map[int64]int32, error)
 
 Get the number of users in the room
 
@@ -214,9 +214,9 @@ The acceptable parameters are:
 	When the timeout parameter is missing or the timeout parameter is 0, the configuration of the RTM Server Client instance will be adopted.
 	If the RTM Server Client instance is not configured, the corresponding configuration of fpnn.Config will be adopted.
 
-+ `callback func(int32, int, string)`
++ `callback func(map[int64]int32, int, string)`
 
 	Asynchronous callback function.
 
 If the **callback** parameter ** does not exist**, it is a **synchronization** request, returning the number of users in the room and error information.
-If the **callback** parameter **exists**, it is an **asynchronous** request and return count int32, error information. The number of users in the real room will be passed through callback.
+If the **callback** parameter **exists**, it is an **asynchronous** request and return count map[int64]int32, error information. The number of users in the real room will be passed through callback.
