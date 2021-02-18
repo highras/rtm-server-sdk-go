@@ -661,7 +661,7 @@ If the **callback** parameter **exists**, it is an **asynchronous** request and 
 
 ### func (client *RTMServerClient) Profanity(text string, classify bool, uid int64, rest ... interface{}) (string, error)
 
-	func (client *RTMServerClient) Profanity(text string, action string, rest ... interface{}) (string, error)
+	func (client *RTMServerClient) Profanity(text string, classify bool, uid int64, rest ... interface{}) (string, error)
 
 Sensitive word filtering.
 

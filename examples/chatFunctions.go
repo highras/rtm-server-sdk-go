@@ -8,8 +8,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/highras/rtm-server-sdk-go/src/rtm"
 	"github.com/highras/fpnn-sdk-go/src/fpnn"
+	"github.com/highras/rtm-server-sdk-go/src/rtm"
 )
 
 //---------------[ Help tools for serializing concurrent printing. ]---------------------//
@@ -383,7 +383,7 @@ func demoTranslate(client *rtm.RTMServerClient) {
 
 func demoSpeech2Text(client *rtm.RTMServerClient) {
 
-	audio := "test aaaaa"  // 格式可能错误，此处只是展示api使用，具体格式请咨询client sdk人员
+	audio := "test aaaaa" // 格式可能错误，此处只是展示api使用，具体格式请咨询client sdk人员
 
 	//-- sync Speech2Text
 	text, lang, err := client.Speech2Text(audio, 2, rtm.EN, "", 0, 0)
@@ -416,10 +416,10 @@ func demoSpeech2Text(client *rtm.RTMServerClient) {
 
 func demoTextCheck(client *rtm.RTMServerClient) {
 
-	message := "test aaaaa"
+	message := "test shit"
 
 	//-- sync TextCheck
-	result, text, tags, wlist, err := client.TextCheck(message,  0)
+	result, text, tags, wlist, err := client.TextCheck(message, 0)
 	locker.print(func() {
 		if err == nil {
 			fmt.Printf("[TextCheck] TextCheck result: %d, text: %s, tags: %v, wlist: %v\n", result, text, tags, wlist)
@@ -429,7 +429,7 @@ func demoTextCheck(client *rtm.RTMServerClient) {
 	})
 
 	//-- async TextCheck
-	_, _,_,_, err = client.TextCheck(message, 0, func(result int32, text string , tags []int32, wlist []string, errorCode int, errInfo string) {
+	_, _, _, _, err = client.TextCheck(message, 0, func(result int32, text string, tags []int32, wlist []string, errorCode int, errInfo string) {
 		locker.print(func() {
 			if errorCode == fpnn.FPNN_EC_OK {
 				fmt.Printf("[TextCheck] TextCheck result: %d, text: %s, tags: %v, wlist: %v\n", result, text, tags, wlist)
@@ -464,10 +464,10 @@ func main() {
 	client := rtm.NewRTMServerClient(int32(pid), os.Args[3], os.Args[1])
 
 	//demoSendChat(client)
-	demoSpeech2Text(client)
+	//demoSpeech2Text(client)
 	demoTextCheck(client)
 	time.Sleep(time.Second * 150) //-- Waiting for the async callback printed.
-return
+	return
 	demoSendCmd(client)
 
 	deleteChat(client)

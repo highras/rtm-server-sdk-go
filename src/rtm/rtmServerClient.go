@@ -16,7 +16,7 @@ import (
 )
 
 const (
-	SDKVersion = "0.8.0"
+	SDKVersion = "0.8.1"
 )
 
 const (
@@ -309,7 +309,7 @@ func (client *RTMServerClient) convertToInt64(value interface{}) int64 {
 		return int64(value.(float64))
 
 	default:
-		client.logger.Println("[ERROR] Type convert failed.")
+		client.logger.Printf("[ERROR] convertToInt64 Type %v convert failed.", reflect.TypeOf(value))
 		return 0
 	}
 }
@@ -781,6 +781,23 @@ func (client *RTMServerClient) convertSliceToStringSlice(slice []interface{}) []
 	return rev
 }
 
+func (client *RTMServerClient) convertStringSliceToInt32Slice(slice []string) []int32 {
+	if slice == nil || len(slice) == 0 {
+		return make([]int32, 0, 1)
+	}
+
+	rev := make([]int32, 0, len(slice))
+	for _, elem := range slice {
+		if v, err := strconv.Atoi(elem); err == nil {
+			rev = append(rev, int32(v))
+		} else {
+			client.logger.Printf("[ERROR] str atoi failed, value: %v, type: %v.", elem, reflect.TypeOf(elem))
+		}
+
+	}
+	return rev
+}
+
 func (client *RTMServerClient) sendProfanityQuest(quest *fpnn.Quest, timeout time.Duration,
 	callback func(text string, classification []string, errorCode int, errInfo string)) (string, []string, error) {
 
@@ -849,8 +866,8 @@ func (client *RTMServerClient) sendOtherCheck(quest *fpnn.Quest, timeout time.Du
 		callbackFunc := func(answer *fpnn.Answer, errorCode int) {
 			if errorCode == fpnn.FPNN_EC_OK {
 				sliceTag, _ := answer.GetSlice("tags")
-				tags := client.convertSliceToInt32Slice(sliceTag)
-				callback((int32)(answer.WantInt("result")), tags, fpnn.FPNN_EC_OK, "")
+				tags := client.convertSliceToStringSlice(sliceTag)
+				callback((int32)(answer.WantInt("result")), client.convertStringSliceToInt32Slice(tags), fpnn.FPNN_EC_OK, "")
 			} else if answer == nil {
 				callback(-1, make([]int32, 0, 1), errorCode, "")
 			} else {
@@ -867,8 +884,8 @@ func (client *RTMServerClient) sendOtherCheck(quest *fpnn.Quest, timeout time.Du
 		return -1, make([]int32, 0, 1), err
 	} else if !answer.IsException() {
 		sliceTag, _ := answer.GetSlice("tags")
-		tags := client.convertSliceToInt32Slice(sliceTag)
-		return (int32)(answer.WantInt("result")), tags, nil
+		tags := client.convertSliceToStringSlice(sliceTag)
+		return (int32)(answer.WantInt("result")), client.convertStringSliceToInt32Slice(tags), nil
 	} else {
 		return -1, make([]int32, 0, 1), fmt.Errorf("[Exception] code: %d, ex: %s", answer.WantInt("code"), answer.WantString("ex"))
 	}
@@ -882,10 +899,10 @@ func (client *RTMServerClient) sendTextCheck(quest *fpnn.Quest, timeout time.Dur
 			if errorCode == fpnn.FPNN_EC_OK {
 				text, _ := answer.GetString("text")
 				sliceTag, _ := answer.GetSlice("tags")
-				tags := client.convertSliceToInt32Slice(sliceTag)
+				tags := client.convertSliceToStringSlice(sliceTag)
 				sliceSensitive, _ := answer.GetSlice("wlist")
 				wlist := client.convertSliceToStringSlice(sliceSensitive)
-				callback((int32)(answer.WantInt("result")), text, tags, wlist, fpnn.FPNN_EC_OK, "")
+				callback((int32)(answer.WantInt("result")), text, client.convertStringSliceToInt32Slice(tags), wlist, fpnn.FPNN_EC_OK, "")
 			} else if answer == nil {
 				callback(-1, "", make([]int32, 0, 1), make([]string, 0, 1), errorCode, "")
 			} else {
@@ -903,10 +920,10 @@ func (client *RTMServerClient) sendTextCheck(quest *fpnn.Quest, timeout time.Dur
 	} else if !answer.IsException() {
 		text, _ := answer.GetString("text")
 		sliceTag, _ := answer.GetSlice("tags")
-		tags := client.convertSliceToInt32Slice(sliceTag)
+		tags := client.convertSliceToStringSlice(sliceTag)
 		sliceSensitive, _ := answer.GetSlice("wlist")
 		wlist := client.convertSliceToStringSlice(sliceSensitive)
-		return (int32)(answer.WantInt("result")), text, tags, wlist, nil
+		return (int32)(answer.WantInt("result")), text, client.convertStringSliceToInt32Slice(tags), wlist, nil
 	} else {
 		return -1, "", make([]int32, 0, 1), make([]string, 0, 1), fmt.Errorf("[Exception] code: %d, ex: %s", answer.WantInt("code"), answer.WantString("ex"))
 	}
