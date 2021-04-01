@@ -189,7 +189,7 @@ Historical message data unit.
 
 	type HistoryMessageResult struct {
 		Num				int16						//-- Actual number of entries returned
-		LastCursorId	nt64						//-- When the polling continues, the value of the lastid parameter used in the next call
+		LastCursorId	int64						//-- When the polling continues, the value of the lastid parameter used in the next call
 		Begin			int64						//-- When continuing to poll, the value of the begin parameter used in the next call
 		End				int64						//-- When continuing to poll, the value of the end parameter used in the next call
 		Messages		[]*HistoryMessageUnit

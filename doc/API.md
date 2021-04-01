@@ -12,7 +12,7 @@ rtm 包提供go连接和访问 RTM 后端服务的能力。
 
 ## Constants
 
-	const SDKVersion = "0.8.1"
+	const SDKVersion = "0.9.0"
 
 ## Variables
 
@@ -126,3 +126,9 @@ RTM Server 客户端。
 拉黑用户相关接口。
 
 具体请参见: [拉黑用户相关接口](Blacklist.md)
+
+## RealTime-Voice Functions
+
+实时语音相关接口。
+
+具体请参见: [实时语音相关接口](RealTimeVoice.md)

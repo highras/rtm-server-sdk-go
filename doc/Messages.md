@@ -189,7 +189,7 @@
 
 	type HistoryMessageResult struct {
 		Num				int16						//-- 实际返回的条目数量
-		LastCursorId	nt64						//-- 继续轮询时，下次调用使用的 lastid 参数的值
+		LastCursorId	int64						//-- 继续轮询时，下次调用使用的 lastid 参数的值
 		Begin			int64						//-- 继续轮询时，下次调用使用的 begin 参数的值
 		End				int64						//-- 继续轮询时，下次调用使用的 end 参数的值
 		Messages		[]*HistoryMessageUnit

@@ -16,11 +16,11 @@ import (
 )
 
 const (
-	SDKVersion = "0.8.1"
+	SDKVersion = "0.9.0"
 )
 
 const (
-	APIVersion = "2.6.1"
+	APIVersion = "2.7.0"
 )
 
 /*  for compatible before v0.3.1(include) maybe in after version this interface will be deprecated,
@@ -628,6 +628,36 @@ func (client *RTMServerClient) sendSliceQuest(quest *fpnn.Quest, timeout time.Du
 	}
 }
 
+func (client *RTMServerClient) sendDoubleSliceQuest(quest *fpnn.Quest, timeout time.Duration,
+	sliceKey string, secondSliceKey string, callback func(first []int64, second []int64, errorCode int, errInfo string)) ([]int64, []int64, error) {
+
+	if callback != nil {
+		callbackFunc := func(answer *fpnn.Answer, errorCode int) {
+			if errorCode == fpnn.FPNN_EC_OK {
+				callback(client.convertSliceToInt64Slice(answer.WantSlice(sliceKey)), client.convertSliceToInt64Slice(answer.WantSlice(secondSliceKey)), fpnn.FPNN_EC_OK, "")
+			} else if answer == nil {
+				callback(nil, nil, errorCode, "")
+			} else {
+				callback(nil, nil, answer.WantInt("code"), answer.WantString("ex"))
+			}
+		}
+
+		_, err := client.sendQuest(quest, timeout, callbackFunc)
+		return nil, nil, err
+	}
+
+	answer, err := client.sendQuest(quest, timeout, nil)
+	if err != nil {
+		return nil, nil, err
+	} else if !answer.IsException() {
+		slice1 := client.convertSliceToInt64Slice(answer.WantSlice(sliceKey))
+		slice2 := client.convertSliceToInt64Slice(answer.WantSlice(secondSliceKey))
+		return slice1, slice2, nil
+	} else {
+		return nil, nil, fmt.Errorf("[Exception] code: %d, ex: %s", answer.WantInt("code"), answer.WantString("ex"))
+	}
+}
+
 func (client *RTMServerClient) sendSilentQuest(quest *fpnn.Quest, timeout time.Duration,
 	callback func(errorCode int, errInfo string)) error {
 
@@ -1031,14 +1061,11 @@ func (client *RTMServerClient) sendGetMsgInfoQuest(quest *fpnn.Quest, timeout ti
 */
 func (client *RTMServerClient) Kickout(uid int64, rest ...interface{}) error {
 
-	var clientEndpoint string
 	var timeout time.Duration
 	var callback func(int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
-		case string:
-			clientEndpoint = value
 		case time.Duration:
 			timeout = value
 		case func(int, string):
@@ -1050,7 +1077,6 @@ func (client *RTMServerClient) Kickout(uid int64, rest ...interface{}) error {
 
 	quest := client.genServerQuest("kickout")
 	quest.Param("uid", uid)
-	quest.Param("ce", clientEndpoint)
 
 	return client.sendSilentQuest(quest, timeout, callback)
 }
