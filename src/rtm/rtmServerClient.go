@@ -16,7 +16,7 @@ import (
 )
 
 const (
-	SDKVersion = "0.9.0"
+	SDKVersion = "0.9.1"
 )
 
 const (
@@ -105,7 +105,7 @@ func NewRTMServerClient(pid int32, secretKey string, endpoint string) *RTMServer
 	client.listenCache = newRtmListenCache()
 
 	client.client.SetQuestProcessor(client.processor)
-	client.SetLogger(log.New(os.Stdout, "[RTM Go SDK] ", log.LstdFlags))
+	client.SetLogger(log.New(os.Stdout, "[RTM Go SDK] ", log.LstdFlags|log.Lshortfile))
 	client.SetConnectTimeOut(rtmServerConnectTimeout)
 	client.SetQuestTimeOut(rtmServerQuestTimeout)
 	client.SetOnConnectedCallback(nil)
@@ -443,9 +443,8 @@ func (client *RTMServerClient) sendListenCache() {
 	client.mutex.Lock()
 	defer client.mutex.Unlock()
 
-	var sendData = false
 	if !client.listenCache.empty() {
-		quest := client.genServerQuest("addlisten")
+		quest := client.genServerQuest("setlisten")
 
 		if len(client.listenCache.listenUids) > 0 {
 			quest.Param("uids", client.listenCache.listenUids)
@@ -459,7 +458,6 @@ func (client *RTMServerClient) sendListenCache() {
 		if len(client.listenCache.listenEvents) > 0 {
 			quest.Param("events", client.listenCache.listenEvents)
 		}
-		sendData = true
 		err := client.sendSilentQuest(quest, 0, func(errorCode int, errInfo string) {
 			if errorCode != fpnn.FPNN_EC_OK {
 				client.logger.Printf("[ERROR] connected send add listencache error, errorCode:= %d, errorInfo:= %s.\n", errorCode, errInfo)
@@ -476,7 +474,6 @@ func (client *RTMServerClient) sendListenCache() {
 		quest.Param("room", client.listenCache.allRoom)
 		quest.Param("p2p", client.listenCache.allP2P)
 		quest.Param("ev", client.listenCache.allEvent)
-		sendData = true
 		err := client.sendSilentQuest(quest, 0, func(errorCode int, errInfo string) {
 			if errorCode != fpnn.FPNN_EC_OK {
 				client.logger.Printf("[ERROR] connected send set listencache error, errorCode:= %d, errorInfo:= %s.\n", errorCode, errInfo)
@@ -486,11 +483,6 @@ func (client *RTMServerClient) sendListenCache() {
 			client.logger.Printf("[ERROR] connected send set listencache error in async mode, err: %v.\n", err)
 		}
 	}
-
-	if sendData {
-		client.listenCache.clear()
-	}
-
 }
 
 //------------------------------[ RTM Server Client Interfaces ]---------------------------------------//
