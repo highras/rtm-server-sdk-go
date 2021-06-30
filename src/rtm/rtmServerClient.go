@@ -16,7 +16,7 @@ import (
 )
 
 const (
-	SDKVersion = "0.9.1"
+	SDKVersion = "0.9.2"
 )
 
 const (
@@ -65,8 +65,8 @@ type IRTMServerMonitor interface {
 //------------------------------[ RTM Server Client ]---------------------------------------//
 
 type RtmRegressiveState struct {
-	CurrentFailedCount       int
-	ConnectStartMilliseconds int64
+	CurrentFailedCount         int
+	ConnectSuccessMilliseconds int64
 }
 
 type RTMClientConnectEventUserCallback func(connId uint64, endpoint string, connected bool, autoReconnect bool, connectState *RtmRegressiveState)
@@ -140,21 +140,25 @@ func (client *RTMServerClient) SetQuestTimeOut(timeout time.Duration) {
 
 func (client *RTMServerClient) SetOnConnectedCallback(onConnect RTMClientConnectEventUserCallback) {
 	client.client.SetOnConnectedCallback(func(connId uint64, endpoint string, connected bool) {
+		if connected {
+			client.regressiveState.ConnectSuccessMilliseconds = time.Now().UnixNano() / 1e6
+			client.regressiveState.CurrentFailedCount = 0
+			client.sendListenCache()
+		}
+
 		if onConnect != nil {
 			var state = &RtmRegressiveState{}
-			state.ConnectStartMilliseconds = client.regressiveState.ConnectStartMilliseconds
+			state.ConnectSuccessMilliseconds = client.regressiveState.ConnectSuccessMilliseconds
 			state.CurrentFailedCount = client.regressiveState.CurrentFailedCount
 			onConnect(connId, endpoint, connected, client.canReconnect(), state)
 		}
-		//
-		if connected {
-			client.regressiveState.CurrentFailedCount = 0
-			client.sendListenCache()
-			return
-		}
 
-		if !connected && client.canReconnect() {
-			go client.regressiveReconnection()
+		//
+		if !connected {
+			client.regressiveState.CurrentFailedCount++
+			if client.canReconnect() {
+				go client.regressiveReconnection()
+			}
 		}
 	})
 }
@@ -163,7 +167,7 @@ func (client *RTMServerClient) SetOnClosedCallback(onClosed RTMClientCloseEventU
 	client.client.SetOnClosedCallback(func(connId uint64, endpoint string) {
 		if onClosed != nil {
 			var state = &RtmRegressiveState{}
-			state.ConnectStartMilliseconds = client.regressiveState.ConnectStartMilliseconds
+			state.ConnectSuccessMilliseconds = client.regressiveState.ConnectSuccessMilliseconds
 			state.CurrentFailedCount = client.regressiveState.CurrentFailedCount
 			onClosed(connId, endpoint, client.canReconnect(), state)
 		}
@@ -186,7 +190,6 @@ func (client *RTMServerClient) Endpoint() string {
 
 func (client *RTMServerClient) Connect() bool {
 	client.isClose = false
-	client.regressiveState.ConnectStartMilliseconds = time.Now().UnixNano() / 1e6
 	return client.client.Connect()
 }
 
@@ -352,13 +355,16 @@ func (client *RTMServerClient) reconnect() {
 func (client *RTMServerClient) regressiveReconnection() {
 	current := int64(time.Now().UnixNano() / 1e6)
 	strategy := client.regressiveConnectStrategy
-	internval := current - int64(client.regressiveState.ConnectStartMilliseconds)
+	internval := current - int64(client.regressiveState.ConnectSuccessMilliseconds)
 	if internval > int64(strategy.connectFailedMaxIntervalMilliseconds) {
-		client.regressiveState.CurrentFailedCount = 0
-		client.reconnect()
-		return
+		if client.regressiveState.CurrentFailedCount <= strategy.startConnectFailedCount {
+			client.reconnect()
+			return
+		}
+	} else {
+		client.regressiveState.CurrentFailedCount++
 	}
-	client.regressiveState.CurrentFailedCount++
+
 	if client.regressiveState.CurrentFailedCount <= strategy.startConnectFailedCount {
 		client.reconnect()
 		return

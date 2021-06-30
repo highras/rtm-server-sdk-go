@@ -44,7 +44,7 @@ func main() {
 			if connected {
 				fmt.Printf("connect success connId:= %d, endpoint:= %s.\n", connId, endpoint)
 			} else {
-				info := fmt.Sprintf("RTM last connect time at %d, currentFailedCount = %d", connectState.ConnectStartMilliseconds, connectState.CurrentFailedCount)
+				info := fmt.Sprintf("RTM last connected time at %d, currentFailedCount = %d", connectState.ConnectSuccessMilliseconds, connectState.CurrentFailedCount)
 				fmt.Printf("connect result connId:= %d, endpoint:= %s, connected:= %t, autoReconnect:= %t, reconnectinfo = %s.\n", connId, endpoint, connected, autoReconnect, info)
 			}
 		})
@@ -53,7 +53,7 @@ func main() {
 	client.SetOnClosedCallback(func(connId uint64, endpoint string, autoReconnect bool, connectState *rtm.RtmRegressiveState) {
 		locker.print(func() {
 			if connectState != nil {
-				info := fmt.Sprintf("RTMReconnect time at %d, currentFailedCount = %d", connectState.ConnectStartMilliseconds, connectState.CurrentFailedCount)
+				info := fmt.Sprintf("RTM last connected time at %d, currentFailedCount = %d", connectState.ConnectSuccessMilliseconds, connectState.CurrentFailedCount)
 				fmt.Printf("connect close connId:= %d, endpoint:= %s, autoReconnect:= %t, reconnectinfo:= %s.\n", connId, endpoint, autoReconnect, info)
 			}
 		})

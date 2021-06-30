@@ -1,7 +1,7 @@
 package rtm
 
 type RTMRegressiveConnectStrategy struct {
-	connectFailedMaxIntervalMilliseconds int // 从连接到断开多少毫秒内算连接失败
+	connectFailedMaxIntervalMilliseconds int // 从连接成功到断开多少毫秒内算闪断，记一次连接失败
 	startConnectFailedCount              int // 连接失败多少次后，开始退行性处理
 	firstIntervalSeconds                 int // 第一次退行性间隔基数
 	maxIntervalSeconds                   int // 退行性重连最大时间间隔

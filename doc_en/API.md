@@ -12,7 +12,7 @@ The rtm package provides the ability to connect and access RTM back-end services
 
 ## Constants
 
-	const SDKVersion = "0.9.1"
+	const SDKVersion = "0.9.2"
 
 ## Variables
 
@@ -131,4 +131,4 @@ Please refer to: [Block user related interfaces](Blacklist.md)
 
 Real-time voice related interface。
 
-Please refer to: [Real-time voice related interface](RealTimeVoice.md)
+Please refer to: [Real-time Communication related interface](RTC.md)
