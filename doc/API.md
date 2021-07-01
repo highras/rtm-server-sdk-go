@@ -127,7 +127,7 @@ RTM Server 客户端。
 
 具体请参见: [拉黑用户相关接口](Blacklist.md)
 
-## RealTime-Voice Functions
+## RTC Functions
 
 实时语音相关接口。
 

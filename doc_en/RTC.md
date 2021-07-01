@@ -1,4 +1,4 @@
-# RTM Server-End Go SDK RealTimeRTC API Docs
+# RTM Server-End Go SDK RTC API Docs
 
 # Index
 
@@ -136,6 +136,35 @@ The acceptable parameters are:
 If the **callback** parameter ** does not exist**, it is a **synchronization** request.
 If the **callback** parameter **exists**, it is an **asynchronous** request.
 
+### func (client *RTMServerClient) AdminCommand(roomId int64, uids []int64, command int32, rest ...interface{}) error
+
+	func (client *RTMServerClient) AdminCommand(roomId int64, uids []int64, command int32, rest ...interface{}) error
+
+Room manager operation
+
+The acceptable parameters are:
+
++ `uids []int64` 
+	
+	List of user ids operated
+
++ `command int32`
+
+	Operation type: 0 grant administrator rights, 1 deprive administrator rights, 2 prohibit sending audio data, 3 allow sending audio data, 4 prohibit sending video data, 5 allow sending video data, 6 turn off others’ microphones, 7 turn off others’ cameras
+
++ `timeout time.Duration`
+
+	Request timed out.
+	When the timeout parameter is missing or the timeout parameter is 0, the configuration of the RTM Server Client instance will be adopted.
+	If the RTM Server Client instance is not configured, the corresponding configuration of fpnn.Config will be adopted.
+
++ `callback func (errorCode int, errInfo string)`
+
+	Asynchronous callback function.
+
+If the **callback** parameter ** does not exist**, it is a **synchronization** request.
+If the **callback** parameter **exists**, it is an **asynchronous** request.
+
 ### -----------------------[Real-time Communication room information query interface]-----------------------------
 
 ### func (client *RTMServerClient) GetRTCRoomList(rest ...interface{}) ([]int64, error))
@@ -200,32 +229,3 @@ The acceptable parameters are:
 
 If the **callback** parameter ** does not exist**, it is a **synchronization** request, returning the current number of people in the room and error information.
 If the **callback** parameter **exists**, it is an **asynchronous** request, and the real number of people in the room will be returned through callback.
-
-### func (client *RTMServerClient) AdminCommand(roomId int64, uids []int64, command int32, rest ...interface{}) error
-
-	func (client *RTMServerClient) AdminCommand(roomId int64, uids []int64, command int32, rest ...interface{}) error
-
-Room manager operation
-
-The acceptable parameters are:
-
-+ `uids []int64` 
-	
-	List of user ids operated
-
-+ `command int32`
-
-	Operation type: 0 grant administrator rights, 1 deprive administrator rights, 2 prohibit sending audio data, 3 allow sending audio data, 4 prohibit sending video data, 5 allow sending video data, 6 turn off others’ microphones, 7 turn off others’ cameras
-
-+ `timeout time.Duration`
-
-	Request timed out.
-	When the timeout parameter is missing or the timeout parameter is 0, the configuration of the RTM Server Client instance will be adopted.
-	If the RTM Server Client instance is not configured, the corresponding configuration of fpnn.Config will be adopted.
-
-+ `callback func (errorCode int, errInfo string)`
-
-	Asynchronous callback function.
-
-If the **callback** parameter ** does not exist**, it is a **synchronization** request.
-If the **callback** parameter **exists**, it is an **asynchronous** request.

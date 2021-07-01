@@ -127,7 +127,7 @@ Block user related interfaces。
 
 Please refer to: [Block user related interfaces](Blacklist.md)
 
-## RealTime-Voice Functions
+## RTC Functions
 
 Real-time voice related interface。
 

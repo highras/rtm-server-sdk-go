@@ -1,4 +1,4 @@
-# RTM Server-End Go SDK RealTimeRTC API Docs
+# RTM Server-End Go SDK RTC API Docs
 
 # Index
 
@@ -136,7 +136,36 @@
 如果 **callback** 参数**不存在**，则为**同步**请求。  
 如果 **callback** 参数**存在**，则为**异步**请求。
 
-### -----------------------[ 实时RTC房间信息查询接口 ]-----------------------------
+### func (client *RTMServerClient) AdminCommand(roomId int64, uids []int64, command int32, rest ...interface{}) error
+
+	func (client *RTMServerClient) AdminCommand(roomId int64, uids []int64, command int32, rest ...interface{}) error
+
+房间管理员操作
+
+可接受的参数为：
+
++ `uids []int64` 
+	
+	操作的用户id列表
+
++ `command int32`
+
+	操作类型：0 赋予管理员权限，1 剥夺管理员权限，2 禁止发送音频数据，3 允许发送音频数据，4 禁止发送视频数据，5 允许发送视频数据，6 关闭他人麦克风，7 关闭他人摄像头
+
++ `timeout time.Duration`
+
+	请求超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+
++ `callback func (errorCode int, errInfo string)`
+
+	异步回调函数。  
+
+如果 **callback** 参数**不存在**，则为**同步**请求，返回error 信息。  
+如果 **callback** 参数**存在**，则为**异步**请求，通过 callback 返回。
+
+### -----------------------[ 实时音视频房间信息查询接口 ]-----------------------------
 
 ### func (client *RTMServerClient) GetRTCRoomList(rest ...interface{}) ([]int64, error))
 
@@ -200,32 +229,3 @@
 
 如果 **callback** 参数**不存在**，则为**同步**请求，返回当前房间人数、error 信息。  
 如果 **callback** 参数**存在**，则为**异步**请求，真实的房间人数将通过 callback 返回。
-
-### func (client *RTMServerClient) AdminCommand(roomId int64, uids []int64, command int32, rest ...interface{}) error
-
-	func (client *RTMServerClient) AdminCommand(roomId int64, uids []int64, command int32, rest ...interface{}) error
-
-房间管理员操作
-
-可接受的参数为：
-
-+ `uids []int64` 
-	
-	操作的用户id列表
-
-+ `command int32`
-
-	操作类型：0 赋予管理员权限，1 剥夺管理员权限，2 禁止发送音频数据，3 允许发送音频数据，4 禁止发送视频数据，5 允许发送视频数据，6 关闭他人麦克风，7 关闭他人摄像头
-
-+ `timeout time.Duration`
-
-	请求超时。  
-	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
-	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
-
-+ `callback func (errorCode int, errInfo string)`
-
-	异步回调函数。  
-
-如果 **callback** 参数**不存在**，则为**同步**请求，返回error 信息。  
-如果 **callback** 参数**存在**，则为**异步**请求，通过 callback 返回。
