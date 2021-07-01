@@ -129,6 +129,6 @@ Please refer to: [Block user related interfaces](Blacklist.md)
 
 ## RTC Functions
 
-Real-time voice related interface。
+Real-time Communication related interface。
 
 Please refer to: [Real-time Communication related interface](RTC.md)
