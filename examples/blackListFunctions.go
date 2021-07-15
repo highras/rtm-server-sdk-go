@@ -210,7 +210,8 @@ func main() {
 	}
 
 	client := rtm.NewRTMServerClient(int32(pid), os.Args[3], os.Args[1])
-
+	client.SetKeepAlive(true)
+	
 	buids = append(buids, buid)
 
 	addBlacks(client)

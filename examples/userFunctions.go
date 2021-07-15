@@ -146,6 +146,7 @@ func main() {
 		return
 	}
 	client := rtm.NewRTMServerClient(int32(pid), os.Args[3], os.Args[1])
+	client.SetKeepAlive(true)
 	
 	demoSetUserInfo(client)
 	demoGetUserInfo(client)

@@ -16,7 +16,7 @@ import (
 )
 
 const (
-	SDKVersion = "0.9.2"
+	SDKVersion = "0.9.3"
 )
 
 const (
@@ -138,6 +138,22 @@ func (client *RTMServerClient) SetQuestTimeOut(timeout time.Duration) {
 	client.client.SetQuestTimeOut(timeout)
 }
 
+func (client *RTMServerClient) SetKeepAlive(keepAlive bool) {
+	client.client.SetKeepAlive(keepAlive)
+}
+
+func (client *RTMServerClient) SetKeepAliveTimeoutSecond(second time.Duration) {
+	client.client.SetKeepAliveTimeoutSecond(second)
+}
+
+func (client *RTMServerClient) SetKeepAliveIntervalSecond(second time.Duration) {
+	client.client.SetKeepAliveIntervalSecond(second)
+}
+
+func (client *RTMServerClient) SetKeepAliveMaxPingRetryCount(count int) {
+	client.client.SetKeepAliveMaxPingRetryCount(count)
+}
+
 func (client *RTMServerClient) SetOnConnectedCallback(onConnect RTMClientConnectEventUserCallback) {
 	client.client.SetOnConnectedCallback(func(connId uint64, endpoint string, connected bool) {
 		if connected {
@@ -248,6 +264,33 @@ func (client *RTMServerClient) makeSignAndSalt() (string, int64) {
 
 	return sign, salt
 }*/
+
+func (client *RTMServerClient) resetQuestSign(quest *fpnn.Quest) {
+	now := time.Now()
+	salt := idGen.genMid()
+	ts := int32(now.Unix() + 5)
+
+	pidStr := strconv.FormatInt(int64(client.pid), 10)
+	saltStr := strconv.FormatInt(salt, 10)
+	tsStr := strconv.FormatInt(int64(ts), 10)
+
+	ctx := md5.New()
+	io.WriteString(ctx, pidStr)
+	io.WriteString(ctx, ":")
+	io.WriteString(ctx, client.secretKey)
+	io.WriteString(ctx, ":")
+	io.WriteString(ctx, saltStr)
+	io.WriteString(ctx, ":")
+	io.WriteString(ctx, quest.Method())
+	io.WriteString(ctx, ":")
+	io.WriteString(ctx, tsStr)
+
+	sign := fmt.Sprintf("%X", ctx.Sum(nil))
+
+	quest.Param("sign", sign)
+	quest.Param("salt", salt)
+	quest.Param("ts", ts)
+}
 
 func (client *RTMServerClient) genServerQuest(cmd string) *fpnn.Quest {
 
@@ -506,7 +549,10 @@ func (client *RTMServerClient) sendQuest(quest *fpnn.Quest, timeout time.Duratio
 			return answer, err
 		} else if answer.IsException() {
 			code, _ := answer.GetInt("code")
-			if code == fpnn.FPNN_EC_CORE_CONNECTION_CLOSED || code == fpnn.FPNN_EC_CORE_INVALID_CONNECTION {
+			if code == fpnn.FPNN_EC_CORE_CONNECTION_CLOSED || code == fpnn.FPNN_EC_CORE_INVALID_CONNECTION || code == (int)(RTM_EC_SAME_SIGN) {
+				if code == (int)(RTM_EC_SAME_SIGN) {
+					client.resetQuestSign(quest)
+				}
 				if timeout == 0 {
 					return client.client.SendQuest(quest)
 				} else {
@@ -519,7 +565,10 @@ func (client *RTMServerClient) sendQuest(quest *fpnn.Quest, timeout time.Duratio
 	} else {
 		if timeout == 0 {
 			return nil, client.client.SendQuestWithLambda(quest, func(answer *fpnn.Answer, errorCode int) {
-				if errorCode == fpnn.FPNN_EC_CORE_CONNECTION_CLOSED || errorCode == fpnn.FPNN_EC_CORE_INVALID_CONNECTION {
+				if errorCode == fpnn.FPNN_EC_CORE_CONNECTION_CLOSED || errorCode == fpnn.FPNN_EC_CORE_INVALID_CONNECTION || errorCode == (int)(RTM_EC_SAME_SIGN) {
+					if errorCode == (int)(RTM_EC_SAME_SIGN) {
+						client.resetQuestSign(quest)
+					}
 					err := client.client.SendQuestWithLambda(quest, callback)
 					if err != nil {
 						client.logger.Println("[ERROR] send async quest failed, err: ", err)
@@ -530,7 +579,10 @@ func (client *RTMServerClient) sendQuest(quest *fpnn.Quest, timeout time.Duratio
 			})
 		} else {
 			return nil, client.client.SendQuestWithLambda(quest, func(answer *fpnn.Answer, errorCode int) {
-				if errorCode == fpnn.FPNN_EC_CORE_CONNECTION_CLOSED || errorCode == fpnn.FPNN_EC_CORE_INVALID_CONNECTION {
+				if errorCode == fpnn.FPNN_EC_CORE_CONNECTION_CLOSED || errorCode == fpnn.FPNN_EC_CORE_INVALID_CONNECTION || errorCode == (int)(RTM_EC_SAME_SIGN) {
+					if errorCode == (int)(RTM_EC_SAME_SIGN) {
+						client.resetQuestSign(quest)
+					}
 					err := client.client.SendQuestWithLambda(quest, callback, timeout)
 					if err != nil {
 						client.logger.Println("[ERROR] send async quest failed, err: ", err)

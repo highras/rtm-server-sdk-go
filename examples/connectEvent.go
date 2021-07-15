@@ -39,6 +39,7 @@ func main() {
 	}
 
 	client := rtm.NewRTMServerClient(int32(pid), os.Args[3], os.Args[1])
+	client.SetKeepAlive(true)
 	client.SetOnConnectedCallback(func(connId uint64, endpoint string, connected bool, autoReconnect bool, connectState *rtm.RtmRegressiveState) {
 		locker.print(func() {
 			if connected {

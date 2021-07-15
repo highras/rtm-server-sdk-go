@@ -172,7 +172,8 @@ func main() {
 		return
 	}
 	client := rtm.NewRTMServerClient(int32(pid), os.Args[3], os.Args[1])
-
+	client.SetKeepAlive(true)
+	
 	//addRoomMember(client)
 	//time.Sleep(6 * time.Second)
 	//getRoomMembers(client)

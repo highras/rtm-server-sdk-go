@@ -140,7 +140,8 @@ func main() {
 	}
 	client := rtm.NewRTMServerClient(int32(pid), os.Args[3], os.Args[1])
 
-
+	client.SetKeepAlive(true)
+	
 	demoSetData(client)
 	demoGetData(client)
 	time.Sleep(time.Second)

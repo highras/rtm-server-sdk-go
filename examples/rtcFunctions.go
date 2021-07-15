@@ -296,7 +296,8 @@ func main() {
 		return
 	}
 	client := rtm.NewRTMServerClient(int32(pid), os.Args[3], os.Args[1])
-
+	client.SetKeepAlive(true)
+	
 	rtcFunctions(client)
 	time.Sleep(500 * time.Millisecond)
 

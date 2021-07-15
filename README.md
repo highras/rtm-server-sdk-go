@@ -48,6 +48,12 @@ Please get your project params from RTM Console.
 
 		client.SetServerPushMonitor(monitor IRTMServerMonitor)
 
+* Set client keepAlive
+
+		client.SetKeepAlive(keepAlive bool)
+
+	The default connection is not keepAlive
+
 * Set connection events' callbacks
 
 		client.SetOnConnectedCallback(onConnected func(connId uint64, endpoint string, connected bool, autoReconnect bool, connectState *rtm.RtmRegressiveState))
@@ -63,8 +69,8 @@ Please get your project params from RTM Console.
 
 ### Connect/Dial (Optional)
 
-	client.Connect()
-	client.Dial()
+		client.Connect()
+		client.Dial()
 
 Call one of these methods to do an explicit connecting action.  
 If client.SetAutoReconnect(false) is called, one of these explicit connecting methods MUST be called; otherwise, these methods are optional.
