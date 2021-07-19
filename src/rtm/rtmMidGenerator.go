@@ -58,7 +58,7 @@ func getIPCode() int32 {
 	interfaceAddr, err := net.InterfaceAddrs()
 	if err != nil {
 		rand.Seed(time.Now().UnixNano())
-		return rand.Int31n(15) + 1
+		return rand.Int31n(255) + 1
 	}
 
 	var ips []string
@@ -82,7 +82,7 @@ func getIPCode() int32 {
 	}
 	if ip_code == 0 {
 		rand.Seed(time.Now().UnixNano())
-		return rand.Int31n(15) + 1
+		return rand.Int31n(255) + 1
 	} else {
 		return ip_code
 	}
