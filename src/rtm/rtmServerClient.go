@@ -16,7 +16,7 @@ import (
 )
 
 const (
-	SDKVersion = "0.9.4"
+	SDKVersion = "0.9.6"
 )
 
 const (
@@ -198,6 +198,7 @@ func (client *RTMServerClient) SetLogger(logger *log.Logger) {
 	client.logger = logger
 	client.processor.logger = logger
 	client.client.SetLogger(logger)
+	idGen.setLogger(logger)
 }
 
 func (client *RTMServerClient) Endpoint() string {
