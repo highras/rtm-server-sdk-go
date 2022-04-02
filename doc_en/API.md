@@ -12,7 +12,7 @@ The rtm package provides the ability to connect and access RTM back-end services
 
 ## Constants
 
-	const SDKVersion = "0.9.6"
+	const SDKVersion = "0.9.7"
 
 ## Variables
 
