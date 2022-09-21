@@ -12,7 +12,7 @@ rtm 包提供go连接和访问 RTM 后端服务的能力。
 
 ## Constants
 
-	const SDKVersion = "0.9.7"
+	const SDKVersion = "0.9.9"
 
 ## Variables
 

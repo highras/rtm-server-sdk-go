@@ -21,21 +21,21 @@ func (locker *PrintLocker) P2PMessage(messageInfo *rtm.RTMMessage) {
 	defer locker.mutex.Unlock()
 
 	fmt.Printf("[Server Push] Receive P2P msg: from:%d -> to:%d mtype:%d, mid:%d mtime: %d\nmessage: %s\nattrs: %s\n",
-	messageInfo.FromUid, messageInfo.ToId, messageInfo.MessageType, messageInfo.MessageId, messageInfo.ModifiedTime, messageInfo.Message, messageInfo.Attrs)
+		messageInfo.FromUid, messageInfo.ToId, messageInfo.MessageType, messageInfo.MessageId, messageInfo.ModifiedTime, messageInfo.Message, messageInfo.Attrs)
 }
 func (locker *PrintLocker) GroupMessage(messageInfo *rtm.RTMMessage) {
 	locker.mutex.Lock()
 	defer locker.mutex.Unlock()
 
 	fmt.Printf("[Server Push] Receive group msg: from:%d -> group:%d mtype:%d, mid:%d mtime: %d\nmessage: %s\nattrs: %s\n",
-	messageInfo.FromUid, messageInfo.ToId, messageInfo.MessageType, messageInfo.MessageId, messageInfo.ModifiedTime, messageInfo.Message, messageInfo.Attrs)
+		messageInfo.FromUid, messageInfo.ToId, messageInfo.MessageType, messageInfo.MessageId, messageInfo.ModifiedTime, messageInfo.Message, messageInfo.Attrs)
 }
 func (locker *PrintLocker) RoomMessage(messageInfo *rtm.RTMMessage) {
 	locker.mutex.Lock()
 	defer locker.mutex.Unlock()
 
 	fmt.Printf("[Server Push] Receive room msg: from:%d -> room:%d mtype:%d, mid:%d mtime: %d\nmessage: %s\nattrs: %s\n",
-	messageInfo.FromUid, messageInfo.ToId, messageInfo.MessageType, messageInfo.MessageId, messageInfo.ModifiedTime, messageInfo.Message, messageInfo.Attrs)
+		messageInfo.FromUid, messageInfo.ToId, messageInfo.MessageType, messageInfo.MessageId, messageInfo.ModifiedTime, messageInfo.Message, messageInfo.Attrs)
 }
 func (locker *PrintLocker) Event(pid int32, event string, uid int64, eventTime int32, endpoint string, data string) {
 	locker.mutex.Lock()
@@ -48,7 +48,7 @@ func (locker *PrintLocker) P2PChat(messageInfo *rtm.RTMMessage) {
 	defer locker.mutex.Unlock()
 
 	fmt.Printf("[Server Push] Receive P2P msg: from:%d -> to:%d mid:%d mtime: %d\nmessage: %s\nattrs: %s\n",
-	messageInfo.FromUid, messageInfo.ToId, messageInfo.MessageId, messageInfo.ModifiedTime, messageInfo.Message, messageInfo.Attrs)
+		messageInfo.FromUid, messageInfo.ToId, messageInfo.MessageId, messageInfo.ModifiedTime, messageInfo.Message, messageInfo.Attrs)
 }
 func (locker *PrintLocker) GroupChat(messageInfo *rtm.RTMMessage) {
 	locker.mutex.Lock()
@@ -62,21 +62,21 @@ func (locker *PrintLocker) RoomChat(messageInfo *rtm.RTMMessage) {
 	defer locker.mutex.Unlock()
 
 	fmt.Printf("[Server Push] Receive room msg: from:%d -> room:%d mid:%d mtime: %d\nmessage: %s\nattrs: %s\n",
-	messageInfo.FromUid, messageInfo.ToId, messageInfo.MessageId, messageInfo.ModifiedTime, messageInfo.Message, messageInfo.Attrs)
+		messageInfo.FromUid, messageInfo.ToId, messageInfo.MessageId, messageInfo.ModifiedTime, messageInfo.Message, messageInfo.Attrs)
 }
 func (locker *PrintLocker) P2PCmd(messageInfo *rtm.RTMMessage) {
 	locker.mutex.Lock()
 	defer locker.mutex.Unlock()
 
 	fmt.Printf("[Server Push] Receive P2P cmd: from:%d -> to:%d mid:%d mtime: %d\nmessage: %s\nattrs: %s\n",
-	messageInfo.FromUid, messageInfo.ToId, messageInfo.MessageId, messageInfo.ModifiedTime, messageInfo.Message, messageInfo.Attrs)
+		messageInfo.FromUid, messageInfo.ToId, messageInfo.MessageId, messageInfo.ModifiedTime, messageInfo.Message, messageInfo.Attrs)
 }
 func (locker *PrintLocker) GroupCmd(messageInfo *rtm.RTMMessage) {
 	locker.mutex.Lock()
 	defer locker.mutex.Unlock()
 
 	fmt.Printf("[Server Push] Receive group cmd: from:%d -> group:%d mid:%d mtime: %d\nmessage: %s\nattrs: %s\n",
-	messageInfo.FromUid, messageInfo.ToId, messageInfo.MessageId, messageInfo.ModifiedTime, messageInfo.Message, messageInfo.Attrs)
+		messageInfo.FromUid, messageInfo.ToId, messageInfo.MessageId, messageInfo.ModifiedTime, messageInfo.Message, messageInfo.Attrs)
 }
 
 func (locker *PrintLocker) RoomCmd(messageInfo *rtm.RTMMessage) {
@@ -266,7 +266,7 @@ func main() {
 	}
 	client := rtm.NewRTMServerClient(int32(pid), os.Args[3], os.Args[1])
 	client.SetKeepAlive(true)
-	
+
 	locker := &PrintLocker{}
 	client.SetServerPushMonitor(locker)
 

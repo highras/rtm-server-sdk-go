@@ -506,6 +506,90 @@ The acceptable parameters are:
 If the **callback** parameter ** does not exist**, it is a **synchronization** request.
 If the **callback** parameter **exists**, it is an **asynchronous** request.
 
+### func (client *RTMServerClient) CleanP2PMessage(fromUid int64, to int64, begin int64, end int64, rest ...interface{}) error
+
+	func (client *RTMServerClient) CleanP2PMessage(fromUid int64, to int64, begin int64, end int64, rest ...interface{}) error
+
+clean P2P messages in the range.
+
+The acceptable parameters are:
+
++ `timeout time.Duration`
+
+	Request timed out.
+	When the timeout parameter is missing or the timeout parameter is 0, the configuration of the RTM Server Client instance will be adopted.
+	If the RTM Server Client instance is not configured, the corresponding configuration of fpnn.Config will be adopted.
+
++ `callback func(errorCode int, errInfo string)`
+
+	Asynchronous callback function.  
+
+If the **callback** parameter ** does not exist**, it is a **synchronization** request.
+If the **callback** parameter **exists**, it is an **asynchronous** request.
+
+### func (client *RTMServerClient) CleanGroupMessage(fromUid int64, gid int64, begin int64, end int64, rest ...interface{}) error
+
+	func (client *RTMServerClient) CleanGroupMessage(fromUid int64, gid int64, begin int64, end int64, rest ...interface{}) error
+
+clean group messages in the range.
+
+The acceptable parameters are:
+
++ `timeout time.Duration`
+
+	Request timed out.
+	When the timeout parameter is missing or the timeout parameter is 0, the configuration of the RTM Server Client instance will be adopted.
+	If the RTM Server Client instance is not configured, the corresponding configuration of fpnn.Config will be adopted.
+
++ `callback func(errorCode int, errInfo string)`
+
+	Asynchronous callback function.  
+
+If the **callback** parameter ** does not exist**, it is a **synchronization** request.
+If the **callback** parameter **exists**, it is an **asynchronous** request.
+
+### func (client *RTMServerClient) CleanRoomMessage(fromUid int64, rid int64, begin int64, end int64, rest ...interface{}) error
+
+	func (client *RTMServerClient) CleanRoomMessage(fromUid int64, rid int64, begin int64, end int64, rest ...interface{}) error
+
+clean room messages in the range.
+
+The acceptable parameters are:
+
++ `timeout time.Duration`
+
+	Request timed out.
+	When the timeout parameter is missing or the timeout parameter is 0, the configuration of the RTM Server Client instance will be adopted.
+	If the RTM Server Client instance is not configured, the corresponding configuration of fpnn.Config will be adopted.
+
++ `callback func(errorCode int, errInfo string)`
+
+	Asynchronous callback function.  
+
+If the **callback** parameter ** does not exist**, it is a **synchronization** request.
+If the **callback** parameter **exists**, it is an **asynchronous** request.
+
+### func (client *RTMServerClient) CleanBroadcastMessage(fromUid int64, begin int64, end int64, rest ...interface{}) error 
+
+	func (client *RTMServerClient) CleanBroadcastMessage(fromUid int64, begin int64, end int64, rest ...interface{}) error 
+
+clean broadcast messages in the range.
+
+The acceptable parameters are:
+
++ `timeout time.Duration`
+
+	Request timed out.
+	When the timeout parameter is missing or the timeout parameter is 0, the configuration of the RTM Server Client instance will be adopted.
+	If the RTM Server Client instance is not configured, the corresponding configuration of fpnn.Config will be adopted.
+
++ `callback func(errorCode int, errInfo string)`
+
+	Asynchronous callback function.  
+
+If the **callback** parameter ** does not exist**, it is a **synchronization** request.
+If the **callback** parameter **exists**, it is an **asynchronous** request.
+
 ### func (client *RTMServerClient) GetMsgCount(msgType MessageType, xid int64, begin int64, end int64, mtype []int8, rest ...interface{}) (sender int32, count int32, err error)
 
 	func (client *RTMServerClient) GetMsgCount(msgType MessageType, xid int64, begin int64, end int64, mtype []int8, rest ...interface{}) (sender int32, count int32, err error)

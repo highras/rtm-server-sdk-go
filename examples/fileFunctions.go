@@ -2,8 +2,6 @@ package main
 
 import (
 	"fmt"
-	"github.com/highras/fpnn-sdk-go/src/fpnn"
-	"github.com/highras/rtm-server-sdk-go/src/rtm"
 	"io/ioutil"
 	"os"
 	"runtime"
@@ -11,6 +9,9 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/highras/fpnn-sdk-go/src/fpnn"
+	"github.com/highras/rtm-server-sdk-go/src/rtm"
 )
 
 //---------------[ Help tools for serializing concurrent printing. ]---------------------//
@@ -216,7 +217,7 @@ func main() {
 	}
 	client := rtm.NewRTMServerClient(int32(pid), os.Args[3], os.Args[1])
 	client.SetKeepAlive(true)
-	
+
 	demoSendFiles(client, os.Args[4])
 
 	locker.print(func() {

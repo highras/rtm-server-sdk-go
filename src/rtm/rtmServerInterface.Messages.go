@@ -725,6 +725,42 @@ func (client *RTMServerClient) DelMessage(messageId int64, fromUid int64, xid in
 	Params:
 		rest: can be include following params:
 			timeout time.Duration
+			func (errorCode int, errInfo string)
+
+		If include func param, this function will enter into async mode, and return (error);
+		else this function work in sync mode, and return (err error)
+*/
+func (client *RTMServerClient) CleanMessage(fromUid int64, xid int64, messageType MessageType, begin int64, end int64, rest ...interface{}) error {
+
+	var timeout time.Duration
+	var callback func(int, string)
+
+	for _, value := range rest {
+		switch value := value.(type) {
+		case time.Duration:
+			timeout = value
+		case func(int, string):
+			callback = value
+		default:
+			return errors.New("Invaild params when call RTMServerClient.CleanMessage() function.")
+		}
+	}
+
+	quest := client.genServerQuest("cleanmsg")
+
+	quest.Param("from", fromUid)
+	quest.Param("xid", xid)
+	quest.Param("type", messageType)
+	quest.Param("begin", begin)
+	quest.Param("end", end)
+
+	return client.sendSilentQuest(quest, timeout, callback)
+}
+
+/*
+	Params:
+		rest: can be include following params:
+			timeout time.Duration
 			func (result *HistoryMessageUnit, errorCode int, errInfo string)
 
 		If include func param, this function will enter into async mode, and return (error);
@@ -742,7 +778,7 @@ func (client *RTMServerClient) GetMessage(messageId int64, fromUid int64, xid in
 		case func(*HistoryMessageUnit, int, string):
 			callback = value
 		default:
-			return nil, errors.New("Invaild params when call RTMServerClient.DelMessage() function.")
+			return nil, errors.New("Invaild params when call RTMServerClient.GetMessage() function.")
 		}
 	}
 
@@ -754,6 +790,58 @@ func (client *RTMServerClient) GetMessage(messageId int64, fromUid int64, xid in
 	quest.Param("type", messageType)
 
 	return client.sendGetMsgInfoQuest(quest, timeout, callback)
+}
+
+/*
+	Params:
+		rest: can be include following params:
+			timeout time.Duration
+			func (errorCode int, errInfo string)
+
+		If include func param, this function will enter into async mode, and return (error);
+		else this function work in sync mode, and return (err error)
+*/
+func (client *RTMServerClient) CleanP2PMessage(fromUid int64, to int64, begin int64, end int64, rest ...interface{}) error {
+	return client.CleanMessage(fromUid, to, MessageType_P2P, begin, end, rest)
+}
+
+/*
+	Params:
+		rest: can be include following params:
+			timeout time.Duration
+			func (errorCode int, errInfo string)
+
+		If include func param, this function will enter into async mode, and return (error);
+		else this function work in sync mode, and return (err error)
+*/
+func (client *RTMServerClient) CleanGroupMessage(fromUid int64, gid int64, begin int64, end int64, rest ...interface{}) error {
+	return client.CleanMessage(fromUid, gid, MessageType_Group, begin, end, rest)
+}
+
+/*
+	Params:
+		rest: can be include following params:
+			timeout time.Duration
+			func (errorCode int, errInfo string)
+
+		If include func param, this function will enter into async mode, and return (error);
+		else this function work in sync mode, and return (err error)
+*/
+func (client *RTMServerClient) CleanRoomMessage(fromUid int64, rid int64, begin int64, end int64, rest ...interface{}) error {
+	return client.CleanMessage(fromUid, rid, MessageType_Room, begin, end, rest)
+}
+
+/*
+	Params:
+		rest: can be include following params:
+			timeout time.Duration
+			func (errorCode int, errInfo string)
+
+		If include func param, this function will enter into async mode, and return (error);
+		else this function work in sync mode, and return (err error)
+*/
+func (client *RTMServerClient) CleanBroadcastMessage(fromUid int64, begin int64, end int64, rest ...interface{}) error {
+	return client.CleanMessage(fromUid, 0, MessageType_Broadcast, begin, end, rest)
 }
 
 /*
@@ -828,7 +916,7 @@ func (client *RTMServerClient) GetMsgCount(msgType MessageType, xid int64, begin
 		case func(int32, int32, int, string):
 			callback = value
 		default:
-			return 0, 0, errors.New("Invaild params when call RTMServerClient.GetMsgNum() function.")
+			return 0, 0, errors.New("Invaild params when call RTMServerClient.GetMsgCount() function.")
 		}
 	}
 

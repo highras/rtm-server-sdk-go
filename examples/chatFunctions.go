@@ -416,7 +416,7 @@ func demoSpeech2Text(client *rtm.RTMServerClient) {
 
 func demoTextCheck(client *rtm.RTMServerClient) {
 
-	message := "test shit"
+	message := "shit"
 
 	//-- sync TextCheck
 	result, text, tags, wlist, err := client.TextCheck(message, 0)

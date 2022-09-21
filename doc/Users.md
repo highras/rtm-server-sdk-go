@@ -167,6 +167,70 @@
 如果 **callback** 参数**不存在**，则为**同步**请求，返回 bool 及 error 信息。  
 如果 **callback** 参数**存在**，则为**异步**请求，返回 false 及 error 信息。真实的 黑名单状态，将通过 callback 传递。
 
+### func (client *RTMServerClient) AddProjectBan(uid int64, bannedSeconds int32, rest ... interface{}) error
+
+	func (client *RTMServerClient) AddProjectBan(uid int64, bannedSeconds int32, rest ... interface{}) error
+
+将用户项目内禁言。
+
+可接受的参数为：
+
++ `timeout time.Duration`
+
+	请求超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+
++ `callback func(errorCode int, errInfo string)`
+
+	异步回调函数。  
+
+如果 **callback** 参数**不存在**，则为**同步**请求。  
+如果 **callback** 参数**存在**，则为**异步**请求。
+
+
+### func (client *RTMServerClient) RemoveProjectBan(uid int64, rest ... interface{}) error
+
+	func (client *RTMServerClient) RemoveProjectBan(uid int64, rest ... interface{}) error
+
+将用户解除项目禁言。
+
+可接受的参数为：
+
++ `timeout time.Duration`
+
+	请求超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+
++ `callback func(errorCode int, errInfo string)`
+
+	异步回调函数。  
+
+如果 **callback** 参数**不存在**，则为**同步**请求。  
+如果 **callback** 参数**存在**，则为**异步**请求。
+
+### func (client *RTMServerClient) IsProjectBan(uid int64, rest ... interface{}) (bool, error)
+
+	func (client *RTMServerClient) IsProjectBan(uid int64, rest ... interface{}) (bool, error)
+
+判断用户是否被项目禁言。
+
+可接受的参数为：
+
++ `timeout time.Duration`
+
+	请求超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+
++ `callback func(ok bool, errorCode int, errInfo string)`
+
+	异步回调函数。  
+
+如果 **callback** 参数**不存在**，则为**同步**请求，返回 bool 及 error 信息。  
+如果 **callback** 参数**存在**，则为**异步**请求，返回 false 及 error 信息。真实的 禁言状态，将通过 callback 传递。
+
 ### func (client *RTMServerClient) Kickout(uid int64, rest ... interface{}) error
 
 	func (client *RTMServerClient) Kickout(uid int64, rest ... interface{}) error

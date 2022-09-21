@@ -167,6 +167,70 @@ The acceptable parameters are:
 If the **callback** parameter ** does not exist**, it is a **synchronization** request, and bool and error messages are returned.
 If the **callback** parameter **exists**, it is an **asynchronous** request, and false and error messages are returned. The real blacklist status will be passed through callback.
 
+### func (client *RTMServerClient) AddProjectBan(uid int64, bannedSeconds int32, rest ... interface{}) error
+
+	func (client *RTMServerClient) AddProjectBan(uid int64, bannedSeconds int32, rest ... interface{}) error
+
+Ban a user in the project.
+
+The acceptable parameters are:
+
++ `timeout time.Duration`
+
+	Request timed out.
+	When the timeout parameter is missing or the timeout parameter is 0, the configuration of the RTM Server Client instance will be adopted.
+	If the RTM Server Client instance is not configured, the corresponding configuration of fpnn.Config will be adopted.
+
++ `callback func(errorCode int, errInfo string)`
+
+	Asynchronous callback function.  
+
+If the **callback** parameter ** does not exist**, it is a **synchronization** request.
+If the **callback** parameter **exists**, it is an **asynchronous** request.
+
+
+### func (client *RTMServerClient) RemoveProjectBan(uid int64, rest ... interface{}) error
+
+	func (client *RTMServerClient) RemoveProjectBan(uid int64, rest ... interface{}) error
+
+Unban a user from the project.
+
+The acceptable parameters are:
+
++ `timeout time.Duration`
+
+	Request timed out.
+	When the timeout parameter is missing or the timeout parameter is 0, the configuration of the RTM Server Client instance will be adopted.
+	If the RTM Server Client instance is not configured, the corresponding configuration of fpnn.Config will be adopted.
+
++ `callback func(errorCode int, errInfo string)`
+
+	Asynchronous callback function. 
+
+If the **callback** parameter ** does not exist**, it is a **synchronization** request.
+If the **callback** parameter **exists**, it is an **asynchronous** request.
+
+### func (client *RTMServerClient) IsProjectBan(uid int64, rest ... interface{}) (bool, error)
+
+	func (client *RTMServerClient) IsProjectBan(uid int64, rest ... interface{}) (bool, error)
+
+Determine whether the user is banned by the project.
+
+The acceptable parameters are:
+
++ `timeout time.Duration`
+
+	Request timed out.
+	When the timeout parameter is missing or the timeout parameter is 0, the configuration of the RTM Server Client instance will be adopted.
+	If the RTM Server Client instance is not configured, the corresponding configuration of fpnn.Config will be adopted.
+
++ `callback func(ok bool, errorCode int, errInfo string)`
+
+	Asynchronous callback function.  
+
+If the **callback** parameter ** does not exist**, it is a **synchronization** request, and bool and error messages are returned.
+If the **callback** parameter **exists**, it is an **asynchronous** request, and false and error messages are returned. The real banned status will be passed through callback.
+
 ### func (client *RTMServerClient) Kickout(uid int64, rest ... interface{}) error
 
 	func (client *RTMServerClient) Kickout(uid int64, rest ... interface{}) error

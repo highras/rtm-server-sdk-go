@@ -16,11 +16,11 @@ import (
 )
 
 const (
-	SDKVersion = "0.9.7"
+	SDKVersion = "0.9.9"
 )
 
 const (
-	APIVersion = "2.7.0"
+	APIVersion = "2.7.3"
 )
 
 /*  for compatible before v0.3.1(include) maybe in after version this interface will be deprecated,
@@ -780,16 +780,16 @@ func (client *RTMServerClient) sendIntQuest(quest *fpnn.Quest, timeout time.Dura
 		}
 
 		_, err := client.sendQuest(quest, timeout, callbackFunc)
-		return 0, err
+		return -1, err
 	}
 
 	answer, err := client.sendQuest(quest, timeout, nil)
 	if err != nil {
-		return 0, err
+		return -1, err
 	} else if !answer.IsException() {
 		return answer.WantInt32(stringKey), nil
 	} else {
-		return 0, fmt.Errorf("[Exception] code: %d, ex: %s", answer.WantInt("code"), answer.WantString("ex"))
+		return -1, fmt.Errorf("[Exception] code: %d, ex: %s", answer.WantInt("code"), answer.WantString("ex"))
 	}
 }
 
@@ -801,23 +801,86 @@ func (client *RTMServerClient) sendDoubleIntQuest(quest *fpnn.Quest, timeout tim
 			if errorCode == fpnn.FPNN_EC_OK {
 				callback(answer.WantInt32(stringKey), answer.WantInt32(stringKey1), fpnn.FPNN_EC_OK, "")
 			} else if answer == nil {
-				callback(0, 0, errorCode, "")
+				callback(-1, -1, errorCode, "")
 			} else {
-				callback(0, 0, answer.WantInt("code"), answer.WantString("ex"))
+				callback(-1, -1, answer.WantInt("code"), answer.WantString("ex"))
 			}
 		}
 
 		_, err := client.sendQuest(quest, timeout, callbackFunc)
-		return 0, 0, err
+		return -1, -1, err
 	}
 
 	answer, err := client.sendQuest(quest, timeout, nil)
 	if err != nil {
-		return 0, 0, err
+		return -1, -1, err
 	} else if !answer.IsException() {
 		return answer.WantInt32(stringKey), answer.WantInt32(stringKey1), nil
 	} else {
-		return 0, 0, fmt.Errorf("[Exception] code: %d, ex: %s", answer.WantInt("code"), answer.WantString("ex"))
+		return -1, -1, fmt.Errorf("[Exception] code: %d, ex: %s", answer.WantInt("code"), answer.WantString("ex"))
+	}
+}
+
+func (client *RTMServerClient) sendMapNestedQuest(quest *fpnn.Quest, timeout time.Duration, key string,
+	callback func(infos map[string]map[string]string, errorCode int, errInfo string)) (map[string]map[string]string, error) {
+
+	if callback != nil {
+		callbackFunc := func(answer *fpnn.Answer, errorCode int) {
+			if errorCode == fpnn.FPNN_EC_OK {
+				data := answer.WantMap(key)
+				result_info := make(map[string]map[string]string)
+				for key_uid, value_info := range data {
+					if uid, ok := key_uid.(string); ok {
+						info := value_info.(map[interface{}]interface{})
+						info_f := make(map[string]string, len(info))
+						for info_k, info_v := range info {
+							if info_k_f, ok := info_k.(string); ok {
+								if info_v_f, ok := info_v.(string); ok {
+									info_f[info_k_f] = info_v_f
+								}
+							}
+						}
+						result_info[uid] = info_f
+					}
+
+				}
+				callback(result_info, fpnn.FPNN_EC_OK, "")
+
+			} else if answer == nil {
+				callback(nil, errorCode, "")
+			} else {
+				callback(nil, answer.WantInt("code"), answer.WantString("ex"))
+			}
+		}
+
+		_, err := client.sendQuest(quest, timeout, callbackFunc)
+		return nil, err
+	}
+
+	answer, err := client.sendQuest(quest, timeout, nil)
+	if err != nil {
+		return nil, err
+	} else if !answer.IsException() {
+		data := answer.WantMap(key)
+		result_info := make(map[string]map[string]string)
+		for key_uid, value_info := range data {
+			if uid, ok := key_uid.(string); ok {
+				info := value_info.(map[interface{}]interface{})
+				info_f := make(map[string]string, len(info))
+				for info_k, info_v := range info {
+					if info_k_f, ok := info_k.(string); ok {
+						if info_v_f, ok := info_v.(string); ok {
+							info_f[info_k_f] = info_v_f
+						}
+					}
+				}
+				result_info[uid] = info_f
+			}
+
+		}
+		return result_info, nil
+	} else {
+		return nil, fmt.Errorf("[Exception] code: %d, ex: %s", answer.WantInt("code"), answer.WantString("ex"))
 	}
 }
 

@@ -3,9 +3,11 @@ package rtm
 import (
 	"errors"
 	"fmt"
-	"github.com/highras/fpnn-sdk-go/src/fpnn"
+	"reflect"
 	"strconv"
 	"time"
+
+	"github.com/highras/fpnn-sdk-go/src/fpnn"
 )
 
 /*
@@ -174,7 +176,7 @@ func (client *RTMServerClient) convertValueToInt8(value interface{}) int8 {
 	case float64:
 		return int8(tmp)
 	default:
-		client.logger.Println("[ERROR] convertValueToInt8 Type convert failed.")
+		client.logger.Printf("[ERROR] convertValueToInt8 %v Type convert failed.", reflect.TypeOf(tmp))
 		return 0
 	}
 }

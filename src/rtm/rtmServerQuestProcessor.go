@@ -330,7 +330,7 @@ func (processor *rtmServerQuestProcessor) processPushEvent(quest *fpnn.Quest) (*
 	} else if processor.newMonitor != nil {
 		go processor.newMonitor.Event(pid, event, uid, time, endpoint, data)
 	}
-
+	log.Println("send event answer")
 	return fpnn.NewAnswer(quest), nil
 }
 

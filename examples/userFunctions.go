@@ -1,19 +1,20 @@
 package main
 
 import (
-	"os"
 	"fmt"
-	"sync"
-	"time"
+	"os"
 	"runtime"
 	"strconv"
+	"sync"
+	"time"
+
 	"github.com/highras/fpnn-sdk-go/src/fpnn"
 	"github.com/highras/rtm-server-sdk-go/src/rtm"
 )
 
 //---------------[ Help tools for serializing concurrent printing. ]---------------------//
 type PrintLocker struct {
-	mutex	sync.Mutex
+	mutex sync.Mutex
 }
 
 func (locker *PrintLocker) print(proc func()) {
@@ -26,7 +27,7 @@ func (locker *PrintLocker) print(proc func()) {
 var locker PrintLocker = PrintLocker{}
 
 var (
-	uid int64 = 102456
+	uid  int64 = 102456
 	uid2 int64 = 102457
 )
 
@@ -39,29 +40,29 @@ func demoSetUserInfo(client *rtm.RTMServerClient) {
 
 	//-- sync mode
 	err := client.SetUserInfo(uid, &publicInfo, &privateInfo)
-	locker.print(func(){
-			if err == nil {
-				fmt.Printf("SetUserInfo in sync mode is fine.\n")
-			} else {
-				fmt.Printf("SetUserInfo in sync mode error, err: %v\n", err)
-			}
-		})
+	locker.print(func() {
+		if err == nil {
+			fmt.Printf("SetUserInfo in sync mode is fine.\n")
+		} else {
+			fmt.Printf("SetUserInfo in sync mode error, err: %v\n", err)
+		}
+	})
 
 	//-- async mode
-	err = client.SetUserInfo(uid2, &publicInfo, &privateInfo, func(errorCode int, errInfo string){
-		locker.print(func(){
-				if errorCode == fpnn.FPNN_EC_OK {
-						fmt.Printf("SetUserInfo in async mode is fine.\n")
-					} else {
-						fmt.Printf("SetUserInfo in async mode error, error code: %d, error info:%s\n", errorCode, errInfo)
-					}
-			})
+	err = client.SetUserInfo(uid2, &publicInfo, &privateInfo, func(errorCode int, errInfo string) {
+		locker.print(func() {
+			if errorCode == fpnn.FPNN_EC_OK {
+				fmt.Printf("SetUserInfo in async mode is fine.\n")
+			} else {
+				fmt.Printf("SetUserInfo in async mode error, error code: %d, error info:%s\n", errorCode, errInfo)
+			}
 		})
-	
+	})
+
 	if err != nil {
-		locker.print(func(){
-				fmt.Printf("SetUserInfo in async mode error, err: %v\n", err)
-			})
+		locker.print(func() {
+			fmt.Printf("SetUserInfo in async mode error, err: %v\n", err)
+		})
 	}
 }
 
@@ -69,29 +70,29 @@ func demoGetUserInfo(client *rtm.RTMServerClient) {
 
 	//-- sync mode
 	publicInfo, privateInfo, err := client.GetUserInfo(uid)
-	locker.print(func(){
-			if err == nil {
-				fmt.Printf("GetUserInfo in sync mode is fine, public info: %s, private info: %s\n", publicInfo, privateInfo)
-			} else {
-				fmt.Printf("GetUserInfo in sync mode error, err: %v\n", err)
-			}
-		})
+	locker.print(func() {
+		if err == nil {
+			fmt.Printf("GetUserInfo in sync mode is fine, public info: %s, private info: %s\n", publicInfo, privateInfo)
+		} else {
+			fmt.Printf("GetUserInfo in sync mode error, err: %v\n", err)
+		}
+	})
 
 	//-- async mode
-	_, _, err = client.GetUserInfo(uid2, func(publicInfos string, privateInfos string, errorCode int, errInfo string){
-		locker.print(func(){
-				if errorCode == fpnn.FPNN_EC_OK {
-						fmt.Printf("GetUserInfo in async mode is fine, public info: %s, private info: %s\n", publicInfos, privateInfos)
-					} else {
-						fmt.Printf("GetUserInfo in async mode error, error code: %d, error info:%s\n", errorCode, errInfo)
-					}
-			})
+	_, _, err = client.GetUserInfo(uid2, func(publicInfos string, privateInfos string, errorCode int, errInfo string) {
+		locker.print(func() {
+			if errorCode == fpnn.FPNN_EC_OK {
+				fmt.Printf("GetUserInfo in async mode is fine, public info: %s, private info: %s\n", publicInfos, privateInfos)
+			} else {
+				fmt.Printf("GetUserInfo in async mode error, error code: %d, error info:%s\n", errorCode, errInfo)
+			}
 		})
-	
+	})
+
 	if err != nil {
-		locker.print(func(){
-				fmt.Printf("GetUserInfo in async mode error, err: %v\n", err)
-			})
+		locker.print(func() {
+			fmt.Printf("GetUserInfo in async mode error, err: %v\n", err)
+		})
 	}
 }
 
@@ -99,35 +100,35 @@ func demoGetUserPublicInfo(client *rtm.RTMServerClient) {
 
 	//-- sync mode
 	infos, err := client.GetUserPublicInfo([]int64{uid, uid2})
-	locker.print(func(){
-			if err == nil {
-				fmt.Printf("GetUserPublicInfo in sync mode is fine\n")
+	locker.print(func() {
+		if err == nil {
+			fmt.Printf("GetUserPublicInfo in sync mode is fine\n")
+			for k, v := range infos {
+				fmt.Printf("  user %s info %s\n", k, v)
+			}
+		} else {
+			fmt.Printf("GetUserPublicInfo in sync mode error, err: %v\n", err)
+		}
+	})
+
+	//-- async mode
+	_, err = client.GetUserPublicInfo([]int64{uid, uid2}, func(infos map[string]string, errorCode int, errInfo string) {
+		locker.print(func() {
+			if errorCode == fpnn.FPNN_EC_OK {
+				fmt.Printf("GetUserPublicInfo in async mode is fine\n")
 				for k, v := range infos {
 					fmt.Printf("  user %s info %s\n", k, v)
 				}
 			} else {
-				fmt.Printf("GetUserPublicInfo in sync mode error, err: %v\n", err)
+				fmt.Printf("GetUserPublicInfo in async mode error, error code: %d, error info:%s\n", errorCode, errInfo)
 			}
 		})
+	})
 
-	//-- async mode
-	_, err = client.GetUserPublicInfo([]int64{uid, uid2}, func(infos map[string]string, errorCode int, errInfo string){
-		locker.print(func(){
-				if errorCode == fpnn.FPNN_EC_OK {
-						fmt.Printf("GetUserPublicInfo in async mode is fine\n")
-						for k, v := range infos {
-							fmt.Printf("  user %s info %s\n", k, v)
-						}
-					} else {
-						fmt.Printf("GetUserPublicInfo in async mode error, error code: %d, error info:%s\n", errorCode, errInfo)
-					}
-			})
-		})
-	
 	if err != nil {
-		locker.print(func(){
-				fmt.Printf("GetUserPublicInfo in async mode error, err: %v\n", err)
-			})
+		locker.print(func() {
+			fmt.Printf("GetUserPublicInfo in async mode error, err: %v\n", err)
+		})
 	}
 }
 
@@ -147,14 +148,14 @@ func main() {
 	}
 	client := rtm.NewRTMServerClient(int32(pid), os.Args[3], os.Args[1])
 	client.SetKeepAlive(true)
-	
+
 	demoSetUserInfo(client)
 	demoGetUserInfo(client)
 	demoGetUserPublicInfo(client)
 
-	locker.print(func(){
-			fmt.Println("Wait 1 second for async callbacks are printed.")
-		})
+	locker.print(func() {
+		fmt.Println("Wait 1 second for async callbacks are printed.")
+	})
 
-	time.Sleep(time.Second)		//-- Waiting for the async callback printed.
+	time.Sleep(time.Second) //-- Waiting for the async callback printed.
 }

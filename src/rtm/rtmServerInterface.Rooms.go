@@ -3,9 +3,10 @@ package rtm
 import (
 	"errors"
 	"fmt"
-	"github.com/highras/fpnn-sdk-go/src/fpnn"
 	"strconv"
 	"time"
+
+	"github.com/highras/fpnn-sdk-go/src/fpnn"
 )
 
 //-----------[ Room functions ]-------------------//
@@ -348,4 +349,68 @@ func (client *RTMServerClient) GetRoomCount(roomIds []int64, rest ...interface{}
 	} else {
 		return nil, fmt.Errorf("[Exception] code: %d, ex: %s", answer.WantInt("code"), answer.WantString("ex"))
 	}
+}
+
+/*
+	Params:
+		rest: can be include following params:
+			timeout time.Duration
+			func (errorCode int, errInfo string)
+
+		If include func param, this function will enter into async mode, and return (error);
+		else this function work in sync mode, and return (err error)
+*/
+func (client *RTMServerClient) AddUserRooms(roomIds []int64, uid int64, rest ...interface{}) error {
+
+	var timeout time.Duration
+	var callback func(int, string)
+
+	for _, value := range rest {
+		switch value := value.(type) {
+		case time.Duration:
+			timeout = value
+		case func(int, string):
+			callback = value
+		default:
+			return errors.New("Invaild params when call RTMServerClient.AddUserRooms() function.")
+		}
+	}
+
+	quest := client.genServerQuest("adduserrooms")
+	quest.Param("rids", roomIds)
+	quest.Param("uid", uid)
+
+	return client.sendSilentQuest(quest, timeout, callback)
+}
+
+/*
+	Params:
+		rest: can be include following params:
+			timeout time.Duration
+			func (errorCode int, errInfo string)
+
+		If include func param, this function will enter into async mode, and return (error);
+		else this function work in sync mode, and return (err error)
+*/
+func (client *RTMServerClient) DeleteUserRooms(roomIds []int64, uid int64, rest ...interface{}) error {
+
+	var timeout time.Duration
+	var callback func(int, string)
+
+	for _, value := range rest {
+		switch value := value.(type) {
+		case time.Duration:
+			timeout = value
+		case func(int, string):
+			callback = value
+		default:
+			return errors.New("Invaild params when call RTMServerClient.DeleteUserRooms() function.")
+		}
+	}
+
+	quest := client.genServerQuest("deleteuserrooms")
+	quest.Param("rids", roomIds)
+	quest.Param("uid", uid)
+
+	return client.sendSilentQuest(quest, timeout, callback)
 }

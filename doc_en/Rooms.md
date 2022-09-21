@@ -48,6 +48,48 @@ The acceptable parameters are:
 If the **callback** parameter ** does not exist**, it is a **synchronization** request.
 If the **callback** parameter **exists**, it is an **asynchronous** request.
 
+### func (client *RTMServerClient) AddUserRooms(roomIds []int64, uid int64, rest ...interface{}) error
+
+	func (client *RTMServerClient) AddUserRooms(roomIds []int64, uid int64, rest ...interface{}) error
+
+Add a user in some rooms.
+
+The acceptable parameters are:
+
++ `timeout time.Duration`
+
+	Request timed out.
+	When the timeout parameter is missing or the timeout parameter is 0, the configuration of the RTM Server Client instance will be adopted.
+	If the RTM Server Client instance is not configured, the corresponding configuration of fpnn.Config will be adopted.
+
++ `callback func(errorCode int, errInfo string)`
+
+	Asynchronous callback function.
+
+If the **callback** parameter ** does not exist**, it is a **synchronization** request.
+If the **callback** parameter **exists**, it is an **asynchronous** request.
+
+### func (client *RTMServerClient) DeleteUserRooms(roomIds []int64, uid int64, rest ...interface{}) error
+
+	func (client *RTMServerClient) DeleteUserRooms(roomIds []int64, uid int64, rest ...interface{}) error
+
+Delete a user from some rooms.
+
+The acceptable parameters are:
+
++ `timeout time.Duration`
+
+	Request timed out.
+	When the timeout parameter is missing or the timeout parameter is 0, the configuration of the RTM Server Client instance will be adopted.
+	If the RTM Server Client instance is not configured, the corresponding configuration of fpnn.Config will be adopted.
+
++ `callback func(errorCode int, errInfo string)`
+
+	Asynchronous callback function.
+
+If the **callback** parameter ** does not exist**, it is a **synchronization** request.
+If the **callback** parameter **exists**, it is an **asynchronous** request.
+
 ### -----------------------[Management Interface]-------------------- ---------
 
 ### func (client *RTMServerClient) AddRoomBan(roomId int64, uid int64, bannedSeconds int32, rest ... interface{}) error

@@ -1,10 +1,9 @@
 package main
 
 import (
+	"flag"
 	"fmt"
-	"os"
 	"runtime"
-	"strconv"
 	"sync"
 	"time"
 
@@ -227,33 +226,6 @@ func rtcFunctions(client *rtm.RTMServerClient) {
 	}
 
 	//-- sync mode
-	err = client.CloseRTCRoom(roomId)
-	locker.print(func() {
-		if err == nil {
-			fmt.Printf("CloseRTCRoom in sync mode is fine.\n")
-		} else {
-			fmt.Printf("CloseRTCRoom in sync mode error, err: %v\n", err)
-		}
-	})
-
-	//-- async mode
-	err = client.CloseRTCRoom(roomId, func(errorCode int, errInfo string) {
-		locker.print(func() {
-			if errorCode == fpnn.FPNN_EC_OK {
-				fmt.Printf("CloseRTCRoom in async mode is fine.\n")
-			} else {
-				fmt.Printf("CloseRTCRoom in async mode error, error code: %d, error info:%s\n", errorCode, errInfo)
-			}
-		})
-	})
-
-	if err != nil {
-		locker.print(func() {
-			fmt.Printf("CloseRTCRoom in async mode error, err: %v\n", err)
-		})
-	}
-
-	//-- sync mode
 	err = client.AdminCommand(roomId, toUids, 0)
 	locker.print(func() {
 		if err == nil {
@@ -279,25 +251,50 @@ func rtcFunctions(client *rtm.RTMServerClient) {
 			fmt.Printf("AdminCommand in async mode error, err: %v\n", err)
 		})
 	}
+
+	//-- sync mode
+	err = client.CloseRTCRoom(roomId)
+	locker.print(func() {
+		if err == nil {
+			fmt.Printf("CloseRTCRoom in sync mode is fine.\n")
+		} else {
+			fmt.Printf("CloseRTCRoom in sync mode error, err: %v\n", err)
+		}
+	})
+
+	//-- async mode
+	err = client.CloseRTCRoom(roomId, func(errorCode int, errInfo string) {
+		locker.print(func() {
+			if errorCode == fpnn.FPNN_EC_OK {
+				fmt.Printf("CloseRTCRoom in async mode is fine.\n")
+			} else {
+				fmt.Printf("CloseRTCRoom in async mode error, error code: %d, error info:%s\n", errorCode, errInfo)
+			}
+		})
+	})
+
+	if err != nil {
+		locker.print(func() {
+			fmt.Printf("CloseRTCRoom in async mode error, err: %v\n", err)
+		})
+	}
 }
+
+var (
+	endpoint  = flag.String("a", "161.189.171.91:13315", "server address")
+	pid       = flag.Int("p", 11000002, "project id")
+	secretKey = flag.String("s", "f5a45c68-2279-4de7-b00e-aa10287531a8", "project secretKey")
+)
 
 func main() {
 
-	if len(os.Args) != 4 {
-		fmt.Println("Usage:", os.Args[0], "<endpoint>", "<pid>", "<secretKey>")
-		return
-	}
+	flag.Parse()
 
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
-	pid, err := strconv.Atoi(os.Args[2])
-	if err != nil {
-		fmt.Println("Pid is invalid. Error:", err)
-		return
-	}
-	client := rtm.NewRTMServerClient(int32(pid), os.Args[3], os.Args[1])
+	client := rtm.NewRTMServerClient(int32(*pid), *secretKey, *endpoint)
 	client.SetKeepAlive(true)
-	
+
 	rtcFunctions(client)
 	time.Sleep(500 * time.Millisecond)
 

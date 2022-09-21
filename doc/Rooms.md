@@ -48,6 +48,48 @@
 如果 **callback** 参数**不存在**，则为**同步**请求。  
 如果 **callback** 参数**存在**，则为**异步**请求。
 
+### func (client *RTMServerClient) AddUserRooms(roomIds []int64, uid int64, rest ...interface{}) error
+
+	func (client *RTMServerClient) AddUserRooms(roomIds []int64, uid int64, rest ...interface{}) error
+
+用户加入多个房间。
+
+可接受的参数为：
+
++ `timeout time.Duration`
+
+	请求超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+
++ `callback func(errorCode int, errInfo string)`
+
+	异步回调函数。  
+
+如果 **callback** 参数**不存在**，则为**同步**请求。  
+如果 **callback** 参数**存在**，则为**异步**请求。
+
+### func (client *RTMServerClient) DeleteUserRooms(roomIds []int64, uid int64, rest ...interface{}) error
+
+	func (client *RTMServerClient) DeleteUserRooms(roomIds []int64, uid int64, rest ...interface{}) error
+
+用户离开多个房间。
+
+可接受的参数为：
+
++ `timeout time.Duration`
+
+	请求超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+
++ `callback func(errorCode int, errInfo string)`
+
+	异步回调函数。  
+
+如果 **callback** 参数**不存在**，则为**同步**请求。  
+如果 **callback** 参数**存在**，则为**异步**请求。
+
 ### -----------------------[ 管理接口 ]-----------------------------
 
 ### func (client *RTMServerClient) AddRoomBan(roomId int64, uid int64, bannedSeconds int32, rest ... interface{}) error

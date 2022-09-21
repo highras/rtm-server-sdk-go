@@ -135,6 +135,100 @@ func (client *RTMServerClient) IsProjectBlack(uid int64, rest ...interface{}) (b
 
 /*
 	Params:
+		rest: can be include following params:
+			timeout time.Duration
+			func (errorCode int, errInfo string)
+
+		If include func param, this function will enter into async mode, and return (error);
+		else this function work in sync mode, and return (err error)
+*/
+func (client *RTMServerClient) AddProjectBan(uid int64, bannedSeconds int32, rest ...interface{}) error {
+
+	var timeout time.Duration
+	var callback func(int, string)
+
+	for _, value := range rest {
+		switch value := value.(type) {
+		case time.Duration:
+			timeout = value
+		case func(int, string):
+			callback = value
+		default:
+			return errors.New("Invaild params when call RTMServerClient.AddProjectBan() function.")
+		}
+	}
+
+	quest := client.genServerQuest("addprojectban")
+	quest.Param("uid", uid)
+	quest.Param("btime", bannedSeconds)
+
+	return client.sendSilentQuest(quest, timeout, callback)
+}
+
+/*
+	Params:
+		rest: can be include following params:
+			timeout time.Duration
+			func (errorCode int, errInfo string)
+
+		If include func param, this function will enter into async mode, and return (error);
+		else this function work in sync mode, and return (err error)
+*/
+func (client *RTMServerClient) RemoveProjectBan(uid int64, rest ...interface{}) error {
+
+	var timeout time.Duration
+	var callback func(int, string)
+
+	for _, value := range rest {
+		switch value := value.(type) {
+		case time.Duration:
+			timeout = value
+		case func(int, string):
+			callback = value
+		default:
+			return errors.New("Invaild params when call RTMServerClient.RemoveProjectBan() function.")
+		}
+	}
+
+	quest := client.genServerQuest("removeprojectban")
+	quest.Param("uid", uid)
+
+	return client.sendSilentQuest(quest, timeout, callback)
+}
+
+/*
+	Params:
+		rest: can be include following params:
+			timeout time.Duration
+			func (ok bool, errorCode int, errInfo string)
+
+		If include func param, this function will enter into async mode, and return (true, error);
+		else this function work in sync mode, and return (ok bool, err error)
+*/
+func (client *RTMServerClient) IsProjectBan(uid int64, rest ...interface{}) (bool, error) {
+
+	var timeout time.Duration
+	var callback func(bool, int, string)
+
+	for _, value := range rest {
+		switch value := value.(type) {
+		case time.Duration:
+			timeout = value
+		case func(bool, int, string):
+			callback = value
+		default:
+			return false, errors.New("Invaild params when call RTMServerClient.IsProjectBan() function.")
+		}
+	}
+
+	quest := client.genServerQuest("isprojectban")
+	quest.Param("uid", uid)
+
+	return client.sendOkQuest(quest, timeout, callback)
+}
+
+/*
+	Params:
 		publicInfo:
 			Public info.
 			Nil pointer means ignore the params when invoking.
