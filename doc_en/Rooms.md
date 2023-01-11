@@ -27,6 +27,27 @@ The acceptable parameters are:
 If the **callback** parameter ** does not exist**, it is a **synchronization** request.
 If the **callback** parameter **exists**, it is an **asynchronous** request.
 
+### func (client *RTMServerClient) AddRoomMembers(roomId int64, uids []int64, rest ... interface{}) error
+
+	func (client *RTMServerClient) AddRoomMembers(roomId int64, uids []int64, rest ... interface{}) error
+
+Add room members.
+
+The acceptable parameters are:
+
++ `timeout time.Duration`
+
+	Request timed out.
+	When the timeout parameter is missing or the timeout parameter is 0, the configuration of the RTM Server Client instance will be adopted.
+	If the RTM Server Client instance is not configured, the corresponding configuration of fpnn.Config will be adopted.
+
++ `callback func(errorCode int, errInfo string)`
+
+	Asynchronous callback function.
+
+If the **callback** parameter ** does not exist**, it is a **synchronization** request.
+If the **callback** parameter **exists**, it is an **asynchronous** request.
+
 ### func (client *RTMServerClient) DelRoomMember(roomId int64, uid int64, rest ... interface{}) error
 
 	func (client *RTMServerClient) DelRoomMember(roomId int64, uid int64, rest ... interface{}) error
@@ -41,7 +62,28 @@ The acceptable parameters are:
 	When the timeout parameter is missing or the timeout parameter is 0, the configuration of the RTM Server Client instance will be adopted.
 	If the RTM Server Client instance is not configured, the corresponding configuration of fpnn.Config will be adopted.
 
-+ `callback func(errorCode int, errInfo string)`
++ `callback func(successedUids []int64, errorCode int, errInfo string)`
+
+	Asynchronous callback function.
+
+If the **callback** parameter ** does not exist**, it is a **synchronization** request.
+If the **callback** parameter **exists**, it is an **asynchronous** request.
+
+### func (client *RTMServerClient) DelRoomMembers(roomId int64, uids []int64, rest ... interface{}) error
+
+	func (client *RTMServerClient) DelRoomMembers(roomId int64, uids []int64, rest ... interface{}) error
+
+Delete room members.
+
+The acceptable parameters are:
+
++ `timeout time.Duration`
+
+	Request timed out.
+	When the timeout parameter is missing or the timeout parameter is 0, the configuration of the RTM Server Client instance will be adopted.
+	If the RTM Server Client instance is not configured, the corresponding configuration of fpnn.Config will be adopted.
+
++ `callback func(successedUids []int64, errorCode int, errInfo string)`
 
 	Asynchronous callback function.
 

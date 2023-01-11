@@ -47,6 +47,38 @@ func (client *RTMServerClient) AddRoomMember(roomId int64, uid int64, rest ...in
 	Params:
 		rest: can be include following params:
 			timeout time.Duration
+			func (errorCode int, errInfo string, []int64)
+
+		If include func param, this function will enter into async mode, and return (error);
+		else this function work in sync mode, and return (err error)
+*/
+func (client *RTMServerClient) AddRoomMembers(roomId int64, uids []int64, rest ...interface{}) ([]int64, error) {
+
+	var timeout time.Duration
+	var callback func([]int64, int, string)
+
+	for _, value := range rest {
+		switch value := value.(type) {
+		case time.Duration:
+			timeout = value
+		case func([]int64, int, string):
+			callback = value
+		default:
+			return nil, errors.New("Invaild params when call RTMServerClient.AddRoomMembers() function.")
+		}
+	}
+
+	quest := client.genServerQuest("addroommember")
+	quest.Param("rid", roomId)
+	quest.Param("uids", uids)
+
+	return client.sendSliceQuest(quest, timeout, "successedUids", callback)
+}
+
+/*
+	Params:
+		rest: can be include following params:
+			timeout time.Duration
 			func (errorCode int, errInfo string)
 
 		If include func param, this function will enter into async mode, and return (error);
@@ -73,6 +105,38 @@ func (client *RTMServerClient) DelRoomMember(roomId int64, uid int64, rest ...in
 	quest.Param("uid", uid)
 
 	return client.sendSilentQuest(quest, timeout, callback)
+}
+
+/*
+	Params:
+		rest: can be include following params:
+			timeout time.Duration
+			func (errorCode int, errInfo string)
+
+		If include func param, this function will enter into async mode, and return (error);
+		else this function work in sync mode, and return (err error)
+*/
+func (client *RTMServerClient) DelRoomMembers(roomId int64, uids []int64, rest ...interface{}) ([]int64, error) {
+
+	var timeout time.Duration
+	var callback func([]int64, int, string)
+
+	for _, value := range rest {
+		switch value := value.(type) {
+		case time.Duration:
+			timeout = value
+		case func([]int64, int, string):
+			callback = value
+		default:
+			return nil, errors.New("Invaild params when call RTMServerClient.DelRoomMembers() function.")
+		}
+	}
+
+	quest := client.genServerQuest("delroommember")
+	quest.Param("rid", roomId)
+	quest.Param("uids", uids)
+
+	return client.sendSliceQuest(quest, timeout, "successedUids", callback)
 }
 
 /*
