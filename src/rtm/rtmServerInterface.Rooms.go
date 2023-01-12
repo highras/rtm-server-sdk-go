@@ -68,7 +68,7 @@ func (client *RTMServerClient) AddRoomMembers(roomId int64, uids []int64, rest .
 		}
 	}
 
-	quest := client.genServerQuest("addroommember")
+	quest := client.genServerQuest("addroommembers")
 	quest.Param("rid", roomId)
 	quest.Param("uids", uids)
 
@@ -132,7 +132,7 @@ func (client *RTMServerClient) DelRoomMembers(roomId int64, uids []int64, rest .
 		}
 	}
 
-	quest := client.genServerQuest("delroommember")
+	quest := client.genServerQuest("delroommembers")
 	quest.Param("rid", roomId)
 	quest.Param("uids", uids)
 
