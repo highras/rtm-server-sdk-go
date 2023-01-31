@@ -10,6 +10,16 @@ import (
 	"github.com/highras/fpnn-sdk-go/src/fpnn"
 )
 
+type ClearType int8
+
+const (
+	P2P ClearType = iota
+	Room
+	Group
+	Broadcast
+	All
+)
+
 func (client *RTMServerClient) sendMessageQuest(quest *fpnn.Quest, timeout time.Duration,
 	callback func(mtime int64, errorCode int, errInfo string)) (int64, error) {
 
@@ -753,6 +763,38 @@ func (client *RTMServerClient) CleanMessage(fromUid int64, xid int64, messageTyp
 	quest.Param("type", messageType)
 	quest.Param("begin", begin)
 	quest.Param("end", end)
+
+	return client.sendSilentQuest(quest, timeout, callback)
+}
+
+/*
+	Params:
+		rest: can be include following params:
+			timeout time.Duration
+			func (errorCode int, errInfo string)
+
+		If include func param, this function will enter into async mode, and return (error);
+		else this function work in sync mode, and return (err error)
+*/
+func (client *RTMServerClient) ClearProjectMessage(clearType ClearType, rest ...interface{}) error {
+
+	var timeout time.Duration
+	var callback func(int, string)
+
+	for _, value := range rest {
+		switch value := value.(type) {
+		case time.Duration:
+			timeout = value
+		case func(int, string):
+			callback = value
+		default:
+			return errors.New("Invaild params when call RTMServerClient.CleanMessage() function.")
+		}
+	}
+
+	quest := client.genServerQuest("clearprojectmsg")
+
+	quest.Param("type", clearType)
 
 	return client.sendSilentQuest(quest, timeout, callback)
 }
