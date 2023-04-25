@@ -16,11 +16,11 @@ import (
 )
 
 const (
-	SDKVersion = "0.9.11"
+	SDKVersion = "0.9.12"
 )
 
 const (
-	APIVersion = "2.7.3"
+	APIVersion = "2.7.4"
 )
 
 /*  for compatible before v0.3.1(include) maybe in after version this interface will be deprecated,

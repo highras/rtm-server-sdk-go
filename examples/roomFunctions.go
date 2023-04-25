@@ -6,7 +6,6 @@ import (
 	"runtime"
 	"strconv"
 	"sync"
-	"time"
 
 	"github.com/highras/fpnn-sdk-go/src/fpnn"
 	"github.com/highras/rtm-server-sdk-go/src/rtm"
@@ -178,13 +177,31 @@ func main() {
 	//addRoomMember(client)
 	//time.Sleep(6 * time.Second)
 	//getRoomMembers(client)
-	getRoomMemberCount(client)
-	time.Sleep(500 * time.Millisecond)
+	// getRoomMemberCount(client)
+	// time.Sleep(500 * time.Millisecond)
 	//deleteRoomMember(client)
+	uids := []int64{1001, 1002}
+	successedUids, err := client.AddRoomMembers(1234, uids)
+	if err != nil {
+		fmt.Errorf(err.Error())
+		return
+	}
+	for _, uid := range successedUids {
+		fmt.Printf("add user %d successed.\n", uid)
+	}
 
-	locker.print(func() {
-		fmt.Println("Wait 1 second for async callbacks are printed.")
-	})
+	successedUids, err = client.DelRoomMembers(1234, uids)
+	if err != nil {
+		fmt.Errorf(err.Error())
+		return
+	}
+	for _, uid := range successedUids {
+		fmt.Printf("del user %d successed.\n", uid)
+	}
 
-	time.Sleep(time.Second) //-- Waiting for the async callback printed.
+	// locker.print(func() {
+	// 	fmt.Println("Wait 1 second for async callbacks are printed.")
+	// })
+
+	// time.Sleep(time.Second) //-- Waiting for the async callback printed.
 }
