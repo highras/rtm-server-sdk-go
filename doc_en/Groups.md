@@ -263,3 +263,24 @@ The acceptable parameters are:
 
 If the **callback** parameter ** does not exist**, it is a **synchronization** request, returning group public information, group private information, and error information.
 If the **callback** parameter **exists**, it is an **asynchronous** request and returns "", "", error information. The true public and private information of the group will be passed through callbacks.
+
+### func (client *RTMServerClient) ClearProjectGroup(rest ... interface{}) error
+
+	func (client *RTMServerClient) ClearProjectGroup(rest ... interface{}) error
+
+Clear all the group info in project, note: group message is not included, use ClearProjectMessage if necessary.
+
+The acceptable parameters are:
+
++ `timeout time.Duration`
+
+	Request timed out.
+	When the timeout parameter is missing or the timeout parameter is 0, the configuration of the RTM Server Client instance will be adopted.
+	If the RTM Server Client instance is not configured, the corresponding configuration of fpnn.Config will be adopted.
+
++ `callback func(errorCode int, errInfo string)`
+
+	Asynchronous callback function.
+
+If the **callback** parameter ** does not exist**, it is a **synchronization** request.
+If the **callback** parameter **exists**, it is an **asynchronous** request.

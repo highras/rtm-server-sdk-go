@@ -218,6 +218,36 @@ func getUserGroups(client *rtm.RTMServerClient) {
 	}
 }
 
+func clearProjectGroup(client *rtm.RTMServerClient) {
+
+	//-- sync mode
+	err := client.ClearProjectGroup()
+	locker.print(func() {
+		if err == nil {
+			fmt.Printf("ClearProjectGroup in sync mode is fine\n")
+		} else {
+			fmt.Printf("ClearProjectGroup in sync mode error, err: %v\n", err)
+		}
+	})
+
+	//-- async mode
+	err = client.ClearProjectGroup(func(errorCode int, errInfo string) {
+		locker.print(func() {
+			if errorCode == fpnn.FPNN_EC_OK {
+				fmt.Printf("ClearProjectGroup in async mode is fine\n")
+			} else {
+				fmt.Printf("ClearProjectGroup in async mode error, error code: %d, error info:%s\n", errorCode, errInfo)
+			}
+		})
+	})
+
+	if err != nil {
+		locker.print(func() {
+			fmt.Printf("ClearProjectGroup in async mode error, err: %v\n", err)
+		})
+	}
+}
+
 func main() {
 
 	if len(os.Args) != 4 {
@@ -248,6 +278,12 @@ func main() {
 	time.Sleep(500 * time.Millisecond)
 	deleteGroup(client)
 	time.Sleep(500 * time.Millisecond)
+	getGroupMembers(client)
+
+	addGroupMembers(client)
+	time.Sleep(500 * time.Millisecond)
+	clearProjectGroup(client)
+	time.Sleep(5000 * time.Millisecond)
 	getGroupMembers(client)
 
 	locker.print(func() {
