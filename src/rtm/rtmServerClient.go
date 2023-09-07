@@ -16,7 +16,7 @@ import (
 )
 
 const (
-	SDKVersion = "0.9.12"
+	SDKVersion = "0.9.13"
 )
 
 const (
@@ -1131,11 +1131,8 @@ func (client *RTMServerClient) sendGetMsgInfoQuest(quest *fpnn.Quest, timeout ti
 	if callback != nil {
 		callbackFunc := func(answer *fpnn.Answer, errorCode int) {
 			if errorCode == fpnn.FPNN_EC_OK {
-				if result, err := client.getMsgInfo(answer); err == nil {
-					callback(result, fpnn.FPNN_EC_OK, "")
-				} else {
-					callback(result, fpnn.FPNN_EC_CORE_UNKNOWN_ERROR, fmt.Sprintf("%v", err))
-				}
+				result, _ := client.getMsgInfo(answer)
+				callback(result, fpnn.FPNN_EC_OK, "")
 			} else if answer == nil {
 				callback(nil, errorCode, "")
 			} else {

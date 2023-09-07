@@ -137,6 +137,37 @@ func (client *RTMServerClient) GetGroupMembers(groupId int64, rest ...interface{
 	Params:
 		rest: can be include following params:
 			timeout time.Duration
+			func (count int32, errorCode int, errInfo string)
+
+		If include func param, this function will enter into async mode, and return (-1, error);
+		else this function work in sync mode, and return (count int32, err error)
+*/
+func (client *RTMServerClient) GetGroupCount(groupId int64, rest ...interface{}) (int32, error) {
+
+	var timeout time.Duration
+	var callback func(int32, int, string)
+
+	for _, value := range rest {
+		switch value := value.(type) {
+		case time.Duration:
+			timeout = value
+		case func(int32, int, string):
+			callback = value
+		default:
+			return -1, errors.New("Invaild params when call RTMServerClient.GetGroupCount() function.")
+		}
+	}
+
+	quest := client.genServerQuest("getgroupcount")
+	quest.Param("gid", groupId)
+
+	return client.sendIntQuest(quest, timeout, "cn", callback)
+}
+
+/*
+	Params:
+		rest: can be include following params:
+			timeout time.Duration
 			func (ok bool, errorCode int, errInfo string)
 
 		If include func param, this function will enter into async mode, and return (true, error);

@@ -90,6 +90,27 @@ The acceptable parameters are:
 If the **callback** parameter ** does not exist**, it is a **synchronization** request, and the group member list and error information are returned.
 If the **callback** parameter **exists**, it is an **asynchronous** request and returns nil and error information. The real list of group members will be passed through callback.
 
+### func (client *RTMServerClient) GetGroupCount(groupId int64, rest ... interface{}) (int32, error)
+
+	func (client *RTMServerClient) GetGroupCount(groupId int64, rest ... interface{}) (int32, error)
+
+Get group members count.
+
+The acceptable parameters are:
+
++ `timeout time.Duration`
+
+	Request timed out.
+	When the timeout parameter is missing or the timeout parameter is 0, the configuration of the RTM Server Client instance will be adopted.
+	If the RTM Server Client instance is not configured, the corresponding configuration of fpnn.Config will be adopted.
+
++ `callback func(count int32, errorCode int, errInfo string)`
+
+	Asynchronous callback function.
+
+If the **callback** parameter ** does not exist**, it is a **synchronization** request, and the group member count and error information are returned.
+If the **callback** parameter **exists**, it is an **asynchronous** request and returns -1 and error information. The real count of group members will be passed through callback.
+
 ### func (client *RTMServerClient) IsGroupMember(groupId int64, uid int64, rest ... interface{}) (bool, error)
 
 	func (client *RTMServerClient) IsGroupMember(groupId int64, uid int64, rest ... interface{}) (bool, error)

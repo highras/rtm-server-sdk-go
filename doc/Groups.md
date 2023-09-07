@@ -90,6 +90,26 @@
 如果 **callback** 参数**不存在**，则为**同步**请求，返回 群组成员列表 及 error 信息。  
 如果 **callback** 参数**存在**，则为**异步**请求，返回 nil 及 error 信息。真实的 群组成员列表，将通过 callback 传递。
 
+### func (client *RTMServerClient) GetGroupCount(groupId int64, rest ... interface{}) (int32, error)
+
+	func (client *RTMServerClient) GetGroupCount(groupId int64, rest ... interface{}) (int32, error)
+
+获取群组成员数量。
+
+可接受的参数为：
+
++ `timeout time.Duration`
+
+	请求超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+
++ `callback func(count int32, errorCode int, errInfo string)`
+
+	异步回调函数。  
+
+如果 **callback** 参数**不存在**，则为**同步**请求，返回 群组成员数量 及 error 信息。  
+如果 **callback** 参数**存在**，则为**异步**请求，返回 -1 及 error 信息。真实的 群组成员数量，将通过 callback 传递。
 ### func (client *RTMServerClient) IsGroupMember(groupId int64, uid int64, rest ... interface{}) (bool, error)
 
 	func (client *RTMServerClient) IsGroupMember(groupId int64, uid int64, rest ... interface{}) (bool, error)

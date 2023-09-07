@@ -268,23 +268,42 @@ func main() {
 	addGroupMembers(client)
 	isGroupMember(client)
 	getGroupMembers(client)
+	cnt, err := client.GetGroupCount(groupId)
+	fmt.Println("count: ", cnt)
 	getUserGroups(client)
 
-	deleteGroupMembers(client)
-	time.Sleep(500 * time.Millisecond)
-	getGroupMembers(client)
+	// deleteGroupMembers(client)
+	// time.Sleep(500 * time.Millisecond)
+	// getGroupMembers(client)
 
-	addGroupMembers(client)
-	time.Sleep(500 * time.Millisecond)
-	deleteGroup(client)
-	time.Sleep(500 * time.Millisecond)
-	getGroupMembers(client)
+	// addGroupMembers(client)
+	// time.Sleep(500 * time.Millisecond)
+	// deleteGroup(client)
+	// time.Sleep(500 * time.Millisecond)
+	// getGroupMembers(client)
 
-	addGroupMembers(client)
-	time.Sleep(500 * time.Millisecond)
-	clearProjectGroup(client)
-	time.Sleep(5000 * time.Millisecond)
-	getGroupMembers(client)
+	// addGroupMembers(client)
+	// time.Sleep(500 * time.Millisecond)
+	// clearProjectGroup(client)
+	// time.Sleep(5000 * time.Millisecond)
+	// getGroupMembers(client)
+
+	// err = client.EnterUniqueGroup(1000, 1000)
+	// if err != nil {
+	// 	fmt.Errorf("error enteruniquegroup.")
+	// }
+	// gids, err := client.GetUserGroups(1000)
+	// if err == nil {
+	// 	fmt.Println(gids)
+	// }
+	// err = client.EnterUniqueGroup(1001, 1000)
+	// if err != nil {
+	// 	fmt.Errorf("error enteruniquegroup.")
+	// }
+	// gids, err = client.GetUserGroups(1000)
+	// if err == nil {
+	// 	fmt.Println(gids)
+	// }
 
 	locker.print(func() {
 		fmt.Println("Wait 1 second for async callbacks are printed.")
