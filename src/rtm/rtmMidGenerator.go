@@ -24,10 +24,10 @@ type midGenerator struct {
 	sequenceBits int32
 	sequenceMask int32
 	lastTime     int64
-	logger       *log.Logger
+	logger       RTMLogger
 }
 
-func (gen *midGenerator) setLogger(logger *log.Logger) {
+func (gen *midGenerator) setLogger(logger RTMLogger) {
 	gen.logger = logger
 }
 

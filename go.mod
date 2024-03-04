@@ -1,5 +1,5 @@
 module github.com/highras/rtm-server-sdk-go
 
-go 1.13
+go 1.18
 
-require github.com/highras/fpnn-sdk-go v1.1.0
+require github.com/highras/fpnn-sdk-go v1.1.1

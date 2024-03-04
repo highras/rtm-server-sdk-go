@@ -16,14 +16,16 @@ import (
 )
 
 const (
-	SDKVersion = "0.9.13"
+	SDKVersion = "0.9.14"
 )
 
 const (
-	APIVersion = "2.7.4"
+	APIVersion = "2.7.5"
 )
 
-/*  for compatible before v0.3.1(include) maybe in after version this interface will be deprecated,
+/*
+	for compatible before v0.3.1(include) maybe in after version this interface will be deprecated,
+
 please use new serverPush interface IRTMServerMonitor
 */
 type RTMServerMonitor interface {
@@ -75,7 +77,7 @@ type RTMClientCloseEventUserCallback func(connId uint64, endpoint string, autoRe
 type RTMServerClient struct {
 	client                    *fpnn.TCPClient
 	processor                 *rtmServerQuestProcessor
-	logger                    *log.Logger
+	logger                    RTMLogger
 	pid                       int32
 	secretKey                 string
 	regressiveState           *RtmRegressiveState
@@ -194,7 +196,7 @@ func (client *RTMServerClient) SetOnClosedCallback(onClosed RTMClientCloseEventU
 	})
 }
 
-func (client *RTMServerClient) SetLogger(logger *log.Logger) {
+func (client *RTMServerClient) SetLogger(logger RTMLogger) {
 	client.logger = logger
 	client.processor.logger = logger
 	client.client.SetLogger(logger)
@@ -234,11 +236,12 @@ func (client *RTMServerClient) Close() {
 }
 
 /*
-	Params:
-		rest: can be include following params:
-			pemPath		string
-			rawPemData	[]byte
-			reinforce	bool
+Params:
+
+	rest: can be include following params:
+		pemPath		string
+		rawPemData	[]byte
+		reinforce	bool
 */
 func (client *RTMServerClient) EnableEncryptor(rest ...interface{}) (err error) {
 	return client.client.EnableEncryptor(rest...)
@@ -325,7 +328,7 @@ func (client *RTMServerClient) genServerQuest(cmd string) *fpnn.Quest {
 	return quest
 }
 
-//------------------------------[ Utilities Functions ]---------------------------------------//
+// ------------------------------[ Utilities Functions ]---------------------------------------//
 func (client *RTMServerClient) convertToInt64(value interface{}) int64 {
 	switch value.(type) {
 	case int64:
@@ -535,7 +538,7 @@ func (client *RTMServerClient) sendListenCache() {
 	}
 }
 
-//------------------------------[ RTM Server Client Interfaces ]---------------------------------------//
+// ------------------------------[ RTM Server Client Interfaces ]---------------------------------------//
 func (client *RTMServerClient) sendQuest(quest *fpnn.Quest, timeout time.Duration, callback func(answer *fpnn.Answer, errorCode int)) (*fpnn.Answer, error) {
 
 	if callback == nil {
@@ -1161,14 +1164,15 @@ func (client *RTMServerClient) sendGetMsgInfoQuest(quest *fpnn.Quest, timeout ti
 //-----------[ Manage functions ]-------------------//
 
 /*
-	Params:
-		rest: can be include following params:
-			clientEndpoint string
-			timeout time.Duration
-			func (errorCode int, errInfo string)
+Params:
 
-		If include func param, this function will enter into async mode, and return (error);
-		else this function work in sync mode, and return (err error)
+	rest: can be include following params:
+		clientEndpoint string
+		timeout time.Duration
+		func (errorCode int, errInfo string)
+
+	If include func param, this function will enter into async mode, and return (error);
+	else this function work in sync mode, and return (err error)
 */
 func (client *RTMServerClient) Kickout(uid int64, rest ...interface{}) error {
 
@@ -1223,13 +1227,14 @@ func (client *RTMServerClient) sendTokenQuest(quest *fpnn.Quest, timeout time.Du
 }
 
 /*
-	Params:
-		rest: can be include following params:
-			timeout time.Duration
-			func (token string, errorCode int, errInfo string)
+Params:
 
-		If include func param, this function will enter into async mode, and return ("", error);
-		else this function work in sync mode, and return (token string, err error)
+	rest: can be include following params:
+		timeout time.Duration
+		func (token string, errorCode int, errInfo string)
+
+	If include func param, this function will enter into async mode, and return ("", error);
+	else this function work in sync mode, and return (token string, err error)
 */
 func (client *RTMServerClient) GetToken(uid int64, rest ...interface{}) (string, error) {
 
@@ -1254,13 +1259,14 @@ func (client *RTMServerClient) GetToken(uid int64, rest ...interface{}) (string,
 }
 
 /*
-	Params:
-		rest: can be include following params:
-			timeout time.Duration
-			func (errorCode int, errInfo string)
+Params:
 
-		If include func param, this function will enter into async mode, and return (error);
-		else this function work in sync mode, and return (err error)
+	rest: can be include following params:
+		timeout time.Duration
+		func (errorCode int, errInfo string)
+
+	If include func param, this function will enter into async mode, and return (error);
+	else this function work in sync mode, and return (err error)
 */
 func (client *RTMServerClient) RemoveToken(uid int64, rest ...interface{}) error {
 

@@ -39,7 +39,7 @@ Please get your project params from RTM Console.
 		client.SetAutoReconnect(autoReconnect bool) 
 		client.SetConnectTimeOut(timeout time.Duration)
 		client.SetQuestTimeOut(timeout time.Duration)
-		client.SetLogger(logger *log.Logger)
+		client.SetLogger(logger RTMLogger)
 
 	**Note**  
 	**autoReconnect** means establishing the connection in implicit or explicit. NOT keep the connection.

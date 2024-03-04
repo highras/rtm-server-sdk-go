@@ -37,11 +37,11 @@ Configure the callback function of the connection establishment event.
 
 Configure the callback function for disconnection events.
 
-### func (client *RTMServerClient) SetLogger(logger *log.Logger)
+### func (client *RTMServerClient) SetLogger(logger RTMLogger)
 
-	func (client *RTMServerClient) SetLogger(logger *log.Logger)
+	func (client *RTMServerClient) SetLogger(logger RTMLogger)
 
-Configure log routing for RTM Server Client.
+Configure log routing for RTM Server Client. RTMLogger is the same as fpnn.Logger.
 
 ### func (client *RTMServerClient) Endpoint() string
 

@@ -37,11 +37,11 @@ FPNN 的 Config 对象，将会影响 rtm 客户端的行为。
 
 配置连接断开事件的回调函数。
 
-### func (client *RTMServerClient) SetLogger(logger *log.Logger)
+### func (client *RTMServerClient) SetLogger(logger RTMLogger)
 
-	func (client *RTMServerClient) SetLogger(logger *log.Logger)
+	func (client *RTMServerClient) SetLogger(logger RTMLogger)
 
-配置 RTM Server Client 的日志路由。
+配置 RTM Server Client 的日志路由。RTMLogger与fpnn.Logger相同，具体使用参考fpnn sdk中的fpnn.Logger。
 
 ### func (client *RTMServerClient) Endpoint() string
 
