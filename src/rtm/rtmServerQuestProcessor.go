@@ -1,7 +1,6 @@
 package rtm
 
 import (
-	"log"
 	"time"
 
 	"github.com/highras/fpnn-sdk-go/src/fpnn"
@@ -133,7 +132,7 @@ type rtmServerQuestProcessor struct {
 	monitor    RTMServerMonitor
 	newMonitor IRTMServerMonitor
 	dupFilter  *dupMessageFilter
-	logger     *log.Logger
+	logger     RTMLogger
 }
 
 func newRTMServerQuestProcessor() *rtmServerQuestProcessor {
@@ -330,6 +329,7 @@ func (processor *rtmServerQuestProcessor) processPushEvent(quest *fpnn.Quest) (*
 	} else if processor.newMonitor != nil {
 		go processor.newMonitor.Event(pid, event, uid, time, endpoint, data)
 	}
+
 	return fpnn.NewAnswer(quest), nil
 }
 
