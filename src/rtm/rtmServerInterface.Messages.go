@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/highras/fpnn-sdk-go/src/fpnn"
@@ -95,14 +94,15 @@ func (client *RTMServerClient) SendMessageByBinary(fromUid int64, toUid int64, m
 }
 
 /*
-	Params:
-		rest: can be include following params:
-			attrs string
-			timeout time.Duration
-			func (mtime int64, errorCode int, errInfo string)
+Params:
 
-		If include func param, this function will enter into async mode, and return (0, error);
-		else this function work in sync mode, and return (mtime int64, err error)
+	rest: can be include following params:
+		attrs string
+		timeout time.Duration
+		func (mtime int64, errorCode int, errInfo string)
+
+	If include func param, this function will enter into async mode, and return (0, error);
+	else this function work in sync mode, and return (mtime int64, err error)
 */
 func (client *RTMServerClient) SendMessages(fromUid int64, toUids []int64, messageType int8, message string, rest ...interface{}) (int64, error) {
 
@@ -140,14 +140,15 @@ func (client *RTMServerClient) SendMessagesByBinary(fromUid int64, toUids []int6
 }
 
 /*
-	Params:
-		rest: can be include following params:
-			attrs string
-			timeout time.Duration
-			func (mtime int64, errorCode int, errInfo string)
+Params:
 
-		If include func param, this function will enter into async mode, and return (0, error);
-		else this function work in sync mode, and return (mtime int64, err error)
+	rest: can be include following params:
+		attrs string
+		timeout time.Duration
+		func (mtime int64, errorCode int, errInfo string)
+
+	If include func param, this function will enter into async mode, and return (0, error);
+	else this function work in sync mode, and return (mtime int64, err error)
 */
 func (client *RTMServerClient) SendGroupMessage(fromUid int64, groupId int64, messageType int8, message string, rest ...interface{}) (int64, error) {
 
@@ -185,14 +186,15 @@ func (client *RTMServerClient) SendGroupMessageByBinary(fromUid int64, groupId i
 }
 
 /*
-	Params:
-		rest: can be include following params:
-			attrs string
-			timeout time.Duration
-			func (mtime int64, errorCode int, errInfo string)
+Params:
 
-		If include func param, this function will enter into async mode, and return (0, error);
-		else this function work in sync mode, and return (mtime int64, err error)
+	rest: can be include following params:
+		attrs string
+		timeout time.Duration
+		func (mtime int64, errorCode int, errInfo string)
+
+	If include func param, this function will enter into async mode, and return (0, error);
+	else this function work in sync mode, and return (mtime int64, err error)
 */
 func (client *RTMServerClient) SendRoomMessage(fromUid int64, roomId int64, messageType int8, message string, rest ...interface{}) (int64, error) {
 
@@ -230,14 +232,15 @@ func (client *RTMServerClient) SendRoomMessageByBinary(fromUid int64, roomId int
 }
 
 /*
-	Params:
-		rest: can be include following params:
-			attrs string
-			timeout time.Duration
-			func (mtime int64, errorCode int, errInfo string)
+Params:
 
-		If include func param, this function will enter into async mode, and return (0, error);
-		else this function work in sync mode, and return (mtime int64, err error)
+	rest: can be include following params:
+		attrs string
+		timeout time.Duration
+		func (mtime int64, errorCode int, errInfo string)
+
+	If include func param, this function will enter into async mode, and return (0, error);
+	else this function work in sync mode, and return (mtime int64, err error)
 */
 func (client *RTMServerClient) SendBroadcastMessage(fromUid int64, messageType int8, message string, rest ...interface{}) (int64, error) {
 
@@ -336,7 +339,7 @@ type HistoryMessageResult struct {
 	Messages     []*HistoryMessageUnit
 }
 
-func processFileInfo(msg string, attrs string, mtype int8, logger *log.Logger) *FileMsgInfo {
+func processFileInfo(msg string, attrs string, mtype int8, logger RTMLogger) *FileMsgInfo {
 	fileInfo := &FileMsgInfo{}
 	err1 := json.Unmarshal(([]byte)(msg), fileInfo)
 	if err1 != nil {
@@ -393,7 +396,7 @@ func processFileInfo(msg string, attrs string, mtype int8, logger *log.Logger) *
 	return fileInfo
 }
 
-func fetchFileCustomAttrs(attrs string, logger *log.Logger) string {
+func fetchFileCustomAttrs(attrs string, logger RTMLogger) string {
 	realAttrs := make(map[string]interface{})
 	if err := json.Unmarshal(([]byte)(attrs), &realAttrs); err != nil {
 		logger.Printf("parse file custom attrs error, attrs := %s, err := %v.\n", attrs, err)
@@ -498,14 +501,15 @@ func (client *RTMServerClient) sendHistoryMessageQuest(quest *fpnn.Quest, timeou
 }
 
 /*
-	Params:
-		rest: can be include following params:
-			mtypes []int8
-			timeout time.Duration
-			func (result *HistoryMessageResult, errorCode int, errInfo string)
+Params:
 
-		If include func param, this function will enter into async mode, and return (nil, error);
-		else this function work in sync mode, and return (result *HistoryMessageResult, err error)
+	rest: can be include following params:
+		mtypes []int8
+		timeout time.Duration
+		func (result *HistoryMessageResult, errorCode int, errInfo string)
+
+	If include func param, this function will enter into async mode, and return (nil, error);
+	else this function work in sync mode, and return (result *HistoryMessageResult, err error)
 */
 func (client *RTMServerClient) GetGroupMessage(groupId int64, desc bool, num int16,
 	begin int64, end int64, lastCursorId int64, uid int64, rest ...interface{}) (*HistoryMessageResult, error) {
@@ -545,14 +549,15 @@ func (client *RTMServerClient) GetGroupMessage(groupId int64, desc bool, num int
 }
 
 /*
-	Params:
-		rest: can be include following params:
-			mtypes []int8
-			timeout time.Duration
-			func (result *HistoryMessageResult, errorCode int, errInfo string)
+Params:
 
-		If include func param, this function will enter into async mode, and return (nil, error);
-		else this function work in sync mode, and return (result *HistoryMessageResult, err error)
+	rest: can be include following params:
+		mtypes []int8
+		timeout time.Duration
+		func (result *HistoryMessageResult, errorCode int, errInfo string)
+
+	If include func param, this function will enter into async mode, and return (nil, error);
+	else this function work in sync mode, and return (result *HistoryMessageResult, err error)
 */
 func (client *RTMServerClient) GetRoomMessage(roomId int64, desc bool, num int16,
 	begin int64, end int64, lastCursorId int64, uid int64, rest ...interface{}) (*HistoryMessageResult, error) {
@@ -592,14 +597,15 @@ func (client *RTMServerClient) GetRoomMessage(roomId int64, desc bool, num int16
 }
 
 /*
-	Params:
-		rest: can be include following params:
-			mtypes []int8
-			timeout time.Duration
-			func (result *HistoryMessageResult, errorCode int, errInfo string)
+Params:
 
-		If include func param, this function will enter into async mode, and return (nil, error);
-		else this function work in sync mode, and return (result *HistoryMessageResult, err error)
+	rest: can be include following params:
+		mtypes []int8
+		timeout time.Duration
+		func (result *HistoryMessageResult, errorCode int, errInfo string)
+
+	If include func param, this function will enter into async mode, and return (nil, error);
+	else this function work in sync mode, and return (result *HistoryMessageResult, err error)
 */
 func (client *RTMServerClient) GetBroadcastMessage(desc bool, num int16,
 	begin int64, end int64, lastCursorId int64, uid int64, rest ...interface{}) (*HistoryMessageResult, error) {
@@ -638,14 +644,15 @@ func (client *RTMServerClient) GetBroadcastMessage(desc bool, num int16,
 }
 
 /*
-	Params:
-		rest: can be include following params:
-			mtypes []int8
-			timeout time.Duration
-			func (result *HistoryMessageResult, errorCode int, errInfo string)
+Params:
 
-		If include func param, this function will enter into async mode, and return (nil, error);
-		else this function work in sync mode, and return (result *HistoryMessageResult, err error)
+	rest: can be include following params:
+		mtypes []int8
+		timeout time.Duration
+		func (result *HistoryMessageResult, errorCode int, errInfo string)
+
+	If include func param, this function will enter into async mode, and return (nil, error);
+	else this function work in sync mode, and return (result *HistoryMessageResult, err error)
 */
 func (client *RTMServerClient) GetP2PMessage(uid int64, peerUid int64, desc bool, num int16,
 	begin int64, end int64, lastCursorId int64, rest ...interface{}) (*HistoryMessageResult, error) {
@@ -697,13 +704,14 @@ const (
 )
 
 /*
-	Params:
-		rest: can be include following params:
-			timeout time.Duration
-			func (errorCode int, errInfo string)
+Params:
 
-		If include func param, this function will enter into async mode, and return (error);
-		else this function work in sync mode, and return (err error)
+	rest: can be include following params:
+		timeout time.Duration
+		func (errorCode int, errInfo string)
+
+	If include func param, this function will enter into async mode, and return (error);
+	else this function work in sync mode, and return (err error)
 */
 func (client *RTMServerClient) DelMessage(messageId int64, fromUid int64, xid int64, messageType MessageType, rest ...interface{}) error {
 
@@ -732,13 +740,14 @@ func (client *RTMServerClient) DelMessage(messageId int64, fromUid int64, xid in
 }
 
 /*
-	Params:
-		rest: can be include following params:
-			timeout time.Duration
-			func (errorCode int, errInfo string)
+Params:
 
-		If include func param, this function will enter into async mode, and return (error);
-		else this function work in sync mode, and return (err error)
+	rest: can be include following params:
+		timeout time.Duration
+		func (errorCode int, errInfo string)
+
+	If include func param, this function will enter into async mode, and return (error);
+	else this function work in sync mode, and return (err error)
 */
 func (client *RTMServerClient) CleanMessage(fromUid int64, xid int64, messageType MessageType, begin int64, end int64, rest ...interface{}) error {
 
@@ -768,13 +777,14 @@ func (client *RTMServerClient) CleanMessage(fromUid int64, xid int64, messageTyp
 }
 
 /*
-	Params:
-		rest: can be include following params:
-			timeout time.Duration
-			func (errorCode int, errInfo string)
+Params:
 
-		If include func param, this function will enter into async mode, and return (error);
-		else this function work in sync mode, and return (err error)
+	rest: can be include following params:
+		timeout time.Duration
+		func (errorCode int, errInfo string)
+
+	If include func param, this function will enter into async mode, and return (error);
+	else this function work in sync mode, and return (err error)
 */
 func (client *RTMServerClient) ClearProjectMessage(clearType ClearType, rest ...interface{}) error {
 
@@ -800,13 +810,14 @@ func (client *RTMServerClient) ClearProjectMessage(clearType ClearType, rest ...
 }
 
 /*
-	Params:
-		rest: can be include following params:
-			timeout time.Duration
-			func (result *HistoryMessageUnit, errorCode int, errInfo string)
+Params:
 
-		If include func param, this function will enter into async mode, and return (error);
-		else this function work in sync mode, and return (err error)
+	rest: can be include following params:
+		timeout time.Duration
+		func (result *HistoryMessageUnit, errorCode int, errInfo string)
+
+	If include func param, this function will enter into async mode, and return (error);
+	else this function work in sync mode, and return (err error)
 */
 func (client *RTMServerClient) GetMessage(messageId int64, fromUid int64, xid int64, messageType MessageType, rest ...interface{}) (*HistoryMessageUnit, error) {
 
@@ -835,117 +846,126 @@ func (client *RTMServerClient) GetMessage(messageId int64, fromUid int64, xid in
 }
 
 /*
-	Params:
-		rest: can be include following params:
-			timeout time.Duration
-			func (errorCode int, errInfo string)
+Params:
 
-		If include func param, this function will enter into async mode, and return (error);
-		else this function work in sync mode, and return (err error)
+	rest: can be include following params:
+		timeout time.Duration
+		func (errorCode int, errInfo string)
+
+	If include func param, this function will enter into async mode, and return (error);
+	else this function work in sync mode, and return (err error)
 */
 func (client *RTMServerClient) CleanP2PMessage(fromUid int64, to int64, begin int64, end int64, rest ...interface{}) error {
-	return client.CleanMessage(fromUid, to, MessageType_P2P, begin, end, rest)
+	return client.CleanMessage(fromUid, to, MessageType_P2P, begin, end, rest...)
 }
 
 /*
-	Params:
-		rest: can be include following params:
-			timeout time.Duration
-			func (errorCode int, errInfo string)
+Params:
 
-		If include func param, this function will enter into async mode, and return (error);
-		else this function work in sync mode, and return (err error)
+	rest: can be include following params:
+		timeout time.Duration
+		func (errorCode int, errInfo string)
+
+	If include func param, this function will enter into async mode, and return (error);
+	else this function work in sync mode, and return (err error)
 */
-func (client *RTMServerClient) CleanGroupMessage(fromUid int64, gid int64, begin int64, end int64, rest ...interface{}) error {
-	return client.CleanMessage(fromUid, gid, MessageType_Group, begin, end, rest)
+func (client *RTMServerClient) CleanGroupMessage(gid int64, begin int64, end int64, rest ...interface{}) error {
+	return client.CleanMessage(0, gid, MessageType_Group, begin, end, rest...)
 }
 
 /*
-	Params:
-		rest: can be include following params:
-			timeout time.Duration
-			func (errorCode int, errInfo string)
+Params:
 
-		If include func param, this function will enter into async mode, and return (error);
-		else this function work in sync mode, and return (err error)
+	rest: can be include following params:
+		timeout time.Duration
+		func (errorCode int, errInfo string)
+
+	If include func param, this function will enter into async mode, and return (error);
+	else this function work in sync mode, and return (err error)
 */
-func (client *RTMServerClient) CleanRoomMessage(fromUid int64, rid int64, begin int64, end int64, rest ...interface{}) error {
-	return client.CleanMessage(fromUid, rid, MessageType_Room, begin, end, rest)
+func (client *RTMServerClient) CleanRoomMessage(rid int64, begin int64, end int64, rest ...interface{}) error {
+	return client.CleanMessage(0, rid, MessageType_Room, begin, end, rest...)
 }
 
 /*
-	Params:
-		rest: can be include following params:
-			timeout time.Duration
-			func (errorCode int, errInfo string)
+Params:
 
-		If include func param, this function will enter into async mode, and return (error);
-		else this function work in sync mode, and return (err error)
+	rest: can be include following params:
+		timeout time.Duration
+		func (errorCode int, errInfo string)
+
+	If include func param, this function will enter into async mode, and return (error);
+	else this function work in sync mode, and return (err error)
 */
 func (client *RTMServerClient) CleanBroadcastMessage(fromUid int64, begin int64, end int64, rest ...interface{}) error {
-	return client.CleanMessage(fromUid, 0, MessageType_Broadcast, begin, end, rest)
+	return client.CleanMessage(fromUid, 0, MessageType_Broadcast, begin, end, rest...)
 }
 
 /*
-	Params:
-		rest: can be include following params:
-			timeout time.Duration
-			func (errorCode int, errInfo string)
+Params:
 
-		If include func param, this function will enter into async mode, and return (error);
-		else this function work in sync mode, and return (err error)
+	rest: can be include following params:
+		timeout time.Duration
+		func (errorCode int, errInfo string)
+
+	If include func param, this function will enter into async mode, and return (error);
+	else this function work in sync mode, and return (err error)
 */
 func (client *RTMServerClient) DelP2PMessage(messageId int64, fromUid int64, to int64, rest ...interface{}) error {
-	return client.DelMessage(messageId, fromUid, to, MessageType_P2P, rest)
+	return client.DelMessage(messageId, fromUid, to, MessageType_P2P, rest...)
 }
 
 /*
-	Params:
-		rest: can be include following params:
-			timeout time.Duration
-			func (errorCode int, errInfo string)
+Params:
 
-		If include func param, this function will enter into async mode, and return (error);
-		else this function work in sync mode, and return (err error)
+	rest: can be include following params:
+		timeout time.Duration
+		func (errorCode int, errInfo string)
+
+	If include func param, this function will enter into async mode, and return (error);
+	else this function work in sync mode, and return (err error)
 */
 func (client *RTMServerClient) DelGroupMessage(messageId int64, fromUid int64, gid int64, rest ...interface{}) error {
-	return client.DelMessage(messageId, fromUid, gid, MessageType_Group, rest)
+	return client.DelMessage(messageId, fromUid, gid, MessageType_Group, rest...)
 }
 
 /*
-	Params:
-		rest: can be include following params:
-			timeout time.Duration
-			func (errorCode int, errInfo string)
+Params:
 
-		If include func param, this function will enter into async mode, and return (error);
-		else this function work in sync mode, and return (err error)
+	rest: can be include following params:
+		timeout time.Duration
+		func (errorCode int, errInfo string)
+
+	If include func param, this function will enter into async mode, and return (error);
+	else this function work in sync mode, and return (err error)
 */
 func (client *RTMServerClient) DelRoomMessage(messageId int64, fromUid int64, rid int64, rest ...interface{}) error {
-	return client.DelMessage(messageId, fromUid, rid, MessageType_Room, rest)
+	return client.DelMessage(messageId, fromUid, rid, MessageType_Room, rest...)
 }
 
 /*
-	Params:
-		rest: can be include following params:
-			timeout time.Duration
-			func (errorCode int, errInfo string)
+Params:
 
-		If include func param, this function will enter into async mode, and return (error);
-		else this function work in sync mode, and return (err error)
+	rest: can be include following params:
+		timeout time.Duration
+		func (errorCode int, errInfo string)
+
+	If include func param, this function will enter into async mode, and return (error);
+	else this function work in sync mode, and return (err error)
 */
 func (client *RTMServerClient) DelBroadcastMessage(messageId int64, fromUid int64, rest ...interface{}) error {
-	return client.DelMessage(messageId, fromUid, 0, MessageType_Broadcast, rest)
+	return client.DelMessage(messageId, fromUid, 0, MessageType_Broadcast, rest...)
 }
 
 /*
-	Params:
-		rest: can be include following params:
-			timeout time.Duration
-			func (sender int32, count int32, errorCode int, errInfo string)
+Params:
 
-		If include func param, this function will enter into async mode, and return (error);
-		else this function work in sync mode, and return (sender int32, count int32, err error)
+	rest: can be include following params:
+		timeout time.Duration
+		func (sender int32, count int32, errorCode int, errInfo string)
+
+	If include func param, this function will enter into async mode, and return (error);
+	else this function work in sync mode, and return (sender int32, count int32, err error)
 */
 func (client *RTMServerClient) GetMsgCount(msgType MessageType, xid int64, begin int64, end int64, mtype []int8, rest ...interface{}) (sender int32, count int32, err error) {
 	var timeout time.Duration

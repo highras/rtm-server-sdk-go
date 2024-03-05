@@ -341,3 +341,35 @@ func (client *RTMServerClient) IMServer_GetGroupInfos(groupIds []int64, rest ...
 
 	return client.sendMapNestedQuest(quest, timeout, "infos", callback)
 }
+
+/*
+	Params:
+		rest: can be include following params:
+			timeout time.Duration
+			func (infos map[string]map[string]string, errorCode int, errInfo string)
+
+		If include func param, this function will enter into async mode, and return (error);
+		else this function work in sync mode, and return (err error)
+*/
+func (client *RTMServerClient) IMServer_AddGroupMembers(gid int64, members []int64, rest ...interface{}) error {
+
+	var timeout time.Duration
+	var callback func(int, string)
+
+	for _, value := range rest {
+		switch value := value.(type) {
+		case time.Duration:
+			timeout = value
+		case func(int, string):
+			callback = value
+		default:
+			return errors.New("invaild params when call RTMServerClient.IMServer_AddGroupMembers() function")
+		}
+	}
+
+	quest := client.genServerQuest("imserver_addgroupmembers")
+	quest.Param("gid", gid)
+	quest.Param("uids", members)
+
+	return client.sendSilentQuest(quest, timeout, callback)
+}
