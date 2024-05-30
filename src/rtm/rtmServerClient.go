@@ -16,7 +16,7 @@ import (
 )
 
 const (
-	SDKVersion = "0.9.14"
+	SDKVersion = "0.9.16"
 )
 
 const (
