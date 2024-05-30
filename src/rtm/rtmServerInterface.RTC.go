@@ -270,7 +270,7 @@ func (client *RTMServerClient) SetRTCRoomMicStatus(roomId int64, status bool, re
 		If include func param, this function will enter into async mode, and return (error);
 		else this function work in sync mode, and return (err error)
 */
-func (client *RTMServerClient) PullUserIntoRTCRoom(roomId int64, uids []int64, roomType int32, rest ...interface{}) error {
+func (client *RTMServerClient) PullUserIntoRTCRoom(roomId int64, uids []int64, roomType int32, voiceRange int32, maxReceiveStreams int32, rest ...interface{}) error {
 
 	var timeout time.Duration
 	var callback func(int, string)
@@ -290,6 +290,8 @@ func (client *RTMServerClient) PullUserIntoRTCRoom(roomId int64, uids []int64, r
 	quest.Param("rid", roomId)
 	quest.Param("toUids", uids)
 	quest.Param("type", roomType)
+	quest.Param("voiceRange", voiceRange)
+	quest.Param("maxReceiveStreams", maxReceiveStreams)
 
 	return client.sendSilentQuest(quest, timeout, callback)
 }
