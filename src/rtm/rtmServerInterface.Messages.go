@@ -997,3 +997,79 @@ func (client *RTMServerClient) GetMsgCount(msgType MessageType, xid int64, begin
 
 	return client.sendDoubleIntQuest(quest, timeout, "sender", "num", callback)
 }
+
+/*
+Params:
+
+	rest: can be include following params:
+		timeout time.Duration
+		func (errorCode int, errInfo string)
+
+	If include func param, this function will enter into async mode, and return (error);
+	else this function work in sync mode, and return (err error)
+*/
+func (client *RTMServerClient) DeleteConversationMessages(fromUid int64, xid int64, messageType MessageType, rest ...interface{}) error {
+
+	var timeout time.Duration
+	var callback func(int, string)
+
+	for _, value := range rest {
+		switch value := value.(type) {
+		case time.Duration:
+			timeout = value
+		case func(int, string):
+			callback = value
+		default:
+			return errors.New("Invaild params when call RTMServerClient.CleanMessage() function.")
+		}
+	}
+
+	quest := client.genServerQuest("delconversationmsgs")
+
+	quest.Param("from", fromUid)
+	quest.Param("xid", xid)
+	quest.Param("type", messageType)
+
+	return client.sendSilentQuest(quest, timeout, callback)
+}
+
+//-----------[ Edit Messages functions ]-------------------//
+
+/*
+Params:
+
+	rest: can be include following params:
+		timeout time.Duration
+		func (errorCode int, errInfo string)
+
+	If include func param, this function will enter into async mode, and return (error);
+	else this function work in sync mode, and return (err error)
+*/
+func (client *RTMServerClient) EditMessage(messageId int64, fromUid int64, xid int64, messageType MessageType, msg string, attrs string, timeLimit int64, rest ...interface{}) error {
+
+	var timeout time.Duration
+	var callback func(int, string)
+
+	for _, value := range rest {
+		switch value := value.(type) {
+		case time.Duration:
+			timeout = value
+		case func(int, string):
+			callback = value
+		default:
+			return errors.New("Invaild params when call RTMServerClient.EditMessage() function.")
+		}
+	}
+
+	quest := client.genServerQuest("editmsg")
+
+	quest.Param("mid", messageId)
+	quest.Param("from", fromUid)
+	quest.Param("xid", xid)
+	quest.Param("type", messageType)
+	quest.Param("msg", msg)
+	quest.Param("attrs", attrs)
+	quest.Param("timeLimit", timeLimit)
+
+	return client.sendSilentQuest(quest, timeout, callback)
+}
