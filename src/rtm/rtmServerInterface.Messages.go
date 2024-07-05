@@ -47,6 +47,34 @@ func (client *RTMServerClient) sendMessageQuest(quest *fpnn.Quest, timeout time.
 	}
 }
 
+func (client *RTMServerClient) sendMessageQuestCallbackMid(quest *fpnn.Quest, mid int64, timeout time.Duration,
+	callback func(mtime int64, mid int64, errorCode int, errInfo string)) (int64, error) {
+
+	if callback != nil {
+		callbackFunc := func(answer *fpnn.Answer, errorCode int) {
+			if errorCode == fpnn.FPNN_EC_OK {
+				callback(answer.WantInt64("mtime"), mid, fpnn.FPNN_EC_OK, "")
+			} else if answer == nil {
+				callback(0, 0, errorCode, "")
+			} else {
+				callback(0, 0, answer.WantInt("code"), answer.WantString("ex"))
+			}
+		}
+
+		_, err := client.sendQuest(quest, timeout, callbackFunc)
+		return 0, err
+	}
+
+	answer, err := client.sendQuest(quest, timeout, nil)
+	if err != nil {
+		return 0, err
+	} else if !answer.IsException() {
+		return answer.WantInt64("mtime"), nil
+	} else {
+		return 0, fmt.Errorf("[Exception] code: %d, ex: %s", answer.WantInt("code"), answer.WantString("ex"))
+	}
+}
+
 //-----------[ Message functions ]-------------------//
 /*
 	Params:
@@ -63,6 +91,7 @@ func (client *RTMServerClient) SendMessage(fromUid int64, toUid int64, messageTy
 	var attrs string
 	var timeout time.Duration
 	var callback func(int64, int, string)
+	var callbackWithMid func(int64, int64, int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
@@ -72,21 +101,28 @@ func (client *RTMServerClient) SendMessage(fromUid int64, toUid int64, messageTy
 			timeout = value
 		case func(int64, int, string):
 			callback = value
+		case func(int64, int64, int, string):
+			callbackWithMid = value
 		default:
 			return 0, errors.New("Invaild params when call RTMServerClient.SendMessage() function.")
 		}
 	}
 
+	mid := idGen.genMid()
 	quest := client.genServerQuest("sendmsg")
 	quest.Param("mtype", messageType)
 
 	quest.Param("from", fromUid)
 	quest.Param("to", toUid)
-	quest.Param("mid", idGen.genMid())
+	quest.Param("mid", mid)
 	quest.Param("msg", message)
 	quest.Param("attrs", attrs)
 
-	return client.sendMessageQuest(quest, timeout, callback)
+	if callbackWithMid != nil {
+		return client.sendMessageQuestCallbackMid(quest, mid, timeout, callbackWithMid)
+	} else {
+		return client.sendMessageQuest(quest, timeout, callback)
+	}
 }
 
 func (client *RTMServerClient) SendMessageByBinary(fromUid int64, toUid int64, messageType int8, message []byte, rest ...interface{}) (int64, error) {
@@ -109,6 +145,7 @@ func (client *RTMServerClient) SendMessages(fromUid int64, toUids []int64, messa
 	var attrs string
 	var timeout time.Duration
 	var callback func(int64, int, string)
+	var callbackWithMid func(int64, int64, int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
@@ -118,21 +155,28 @@ func (client *RTMServerClient) SendMessages(fromUid int64, toUids []int64, messa
 			timeout = value
 		case func(int64, int, string):
 			callback = value
+		case func(int64, int64, int, string):
+			callbackWithMid = value
 		default:
 			return 0, errors.New("Invaild params when call RTMServerClient.SendMessages() function.")
 		}
 	}
 
+	mid := idGen.genMid()
 	quest := client.genServerQuest("sendmsgs")
 	quest.Param("mtype", messageType)
 
 	quest.Param("from", fromUid)
 	quest.Param("tos", toUids)
-	quest.Param("mid", idGen.genMid())
+	quest.Param("mid", mid)
 	quest.Param("msg", message)
 	quest.Param("attrs", attrs)
 
-	return client.sendMessageQuest(quest, timeout, callback)
+	if callbackWithMid != nil {
+		return client.sendMessageQuestCallbackMid(quest, mid, timeout, callbackWithMid)
+	} else {
+		return client.sendMessageQuest(quest, timeout, callback)
+	}
 }
 
 func (client *RTMServerClient) SendMessagesByBinary(fromUid int64, toUids []int64, messageType int8, message []byte, rest ...interface{}) (int64, error) {
@@ -155,6 +199,7 @@ func (client *RTMServerClient) SendGroupMessage(fromUid int64, groupId int64, me
 	var attrs string
 	var timeout time.Duration
 	var callback func(int64, int, string)
+	var callbackWithMid func(int64, int64, int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
@@ -164,21 +209,28 @@ func (client *RTMServerClient) SendGroupMessage(fromUid int64, groupId int64, me
 			timeout = value
 		case func(int64, int, string):
 			callback = value
+		case func(int64, int64, int, string):
+			callbackWithMid = value
 		default:
 			return 0, errors.New("Invaild params when call RTMServerClient.SendGroupMessage() function.")
 		}
 	}
 
+	mid := idGen.genMid()
 	quest := client.genServerQuest("sendgroupmsg")
 	quest.Param("mtype", messageType)
 
 	quest.Param("from", fromUid)
 	quest.Param("gid", groupId)
-	quest.Param("mid", idGen.genMid())
+	quest.Param("mid", mid)
 	quest.Param("msg", message)
 	quest.Param("attrs", attrs)
 
-	return client.sendMessageQuest(quest, timeout, callback)
+	if callbackWithMid != nil {
+		return client.sendMessageQuestCallbackMid(quest, mid, timeout, callbackWithMid)
+	} else {
+		return client.sendMessageQuest(quest, timeout, callback)
+	}
 }
 
 func (client *RTMServerClient) SendGroupMessageByBinary(fromUid int64, groupId int64, messageType int8, message []byte, rest ...interface{}) (int64, error) {
@@ -201,6 +253,7 @@ func (client *RTMServerClient) SendRoomMessage(fromUid int64, roomId int64, mess
 	var attrs string
 	var timeout time.Duration
 	var callback func(int64, int, string)
+	var callbackWithMid func(int64, int64, int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
@@ -210,21 +263,28 @@ func (client *RTMServerClient) SendRoomMessage(fromUid int64, roomId int64, mess
 			timeout = value
 		case func(int64, int, string):
 			callback = value
+		case func(int64, int64, int, string):
+			callbackWithMid = value
 		default:
 			return 0, errors.New("Invaild params when call RTMServerClient.SendRoomMessage() function.")
 		}
 	}
 
+	mid := idGen.genMid()
 	quest := client.genServerQuest("sendroommsg")
 	quest.Param("mtype", messageType)
 
 	quest.Param("from", fromUid)
 	quest.Param("rid", roomId)
-	quest.Param("mid", idGen.genMid())
+	quest.Param("mid", mid)
 	quest.Param("msg", message)
 	quest.Param("attrs", attrs)
 
-	return client.sendMessageQuest(quest, timeout, callback)
+	if callbackWithMid != nil {
+		return client.sendMessageQuestCallbackMid(quest, mid, timeout, callbackWithMid)
+	} else {
+		return client.sendMessageQuest(quest, timeout, callback)
+	}
 }
 
 func (client *RTMServerClient) SendRoomMessageByBinary(fromUid int64, roomId int64, messageType int8, message []byte, rest ...interface{}) (int64, error) {
@@ -247,6 +307,7 @@ func (client *RTMServerClient) SendBroadcastMessage(fromUid int64, messageType i
 	var attrs string
 	var timeout time.Duration
 	var callback func(int64, int, string)
+	var callbackWithMid func(int64, int64, int, string)
 
 	for _, value := range rest {
 		switch value := value.(type) {
@@ -256,20 +317,27 @@ func (client *RTMServerClient) SendBroadcastMessage(fromUid int64, messageType i
 			timeout = value
 		case func(int64, int, string):
 			callback = value
+		case func(int64, int64, int, string):
+			callbackWithMid = value
 		default:
 			return 0, errors.New("Invaild params when call RTMServerClient.SendBroadcastMessage() function.")
 		}
 	}
 
+	mid := idGen.genMid()
 	quest := client.genServerQuest("broadcastmsg")
 	quest.Param("mtype", messageType)
 
 	quest.Param("from", fromUid)
-	quest.Param("mid", idGen.genMid())
+	quest.Param("mid", mid)
 	quest.Param("msg", message)
 	quest.Param("attrs", attrs)
 
-	return client.sendMessageQuest(quest, timeout, callback)
+	if callbackWithMid != nil {
+		return client.sendMessageQuestCallbackMid(quest, mid, timeout, callbackWithMid)
+	} else {
+		return client.sendMessageQuest(quest, timeout, callback)
+	}
 }
 
 func (client *RTMServerClient) SendBroadcastMessageByBinary(fromUid int64, messageType int8, message []byte, rest ...interface{}) (int64, error) {

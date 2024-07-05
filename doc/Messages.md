@@ -635,3 +635,90 @@ Note：
 
 如果 **callback** 参数**不存在**，则为**同步**请求，返回房间或者群组内发送消息的人数(去重后的)，和消息数量
 如果 **callback** 参数**存在**，则为**异步**请求。返回的结果将通过callback返回
+
+### func (client *RTMServerClient) EditMessage(messageId int64, fromUid int64, xid int64, messageType MessageType, msg string, attrs string, timeLimit int64, rest ...interface{}) error
+
+	func (client *RTMServerClient) EditMessage(messageId int64, fromUid int64, xid int64, messageType MessageType, msg string, attrs string, timeLimit int64, rest ...interface{}) error 
+
+编辑消息
+
+必选参数：
+
++ `messageId int64`
+
+	消息id
+
++ `fromUid int64`
+
+	发送者uid
+
++ `xid int64`: 
+	
+	当msgType为**rtm.MessageType_Group**时，为**groupId**；当msgType为**rtm.MessageType_Room**时，为**roomId**
+
++ `msgType MessageType`: 
+	
+	获取消息的类别，**可接受rtm.MessageType_Group、rtm.MessageType_Room**
+
++ `msg string`: 
+	
+	消息内容
+
++ `attrs string`: 
+	
+	消息属性信息
+
++ `timeLimit int64`: 
+
+	删除时间限制，消息距离当前时间超过该时间限制则删除失败，时间单位毫秒
+
+可接受的参数为：
+
++ `timeout time.Duration`
+
+	请求超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+
++ `callback func(errorCode int, errInfo string)`
+
+	异步回调函数。  
+
+如果 **callback** 参数**不存在**，则为**同步**请求。  
+如果 **callback** 参数**存在**，则为**异步**请求。
+
+
+### func (client *RTMServerClient) DeleteConversationMessages(fromUid int64, xid int64, messageType MessageType, rest ...interface{}) error
+
+	func (client *RTMServerClient) DeleteConversationMessages(fromUid int64, xid int64, messageType MessageType, rest ...interface{}) error
+
+删除某会话内某人发送的所有消息
+
+必选参数：
+
++ `fromUid int64`
+
+	发送者uid
+
++ `xid int64`: 
+	
+	当msgType为**rtm.MessageType_Group**时，为**groupId**；当msgType为**rtm.MessageType_Room**时，为**roomId**
+
++ `msgType MessageType`: 
+	
+	获取消息的类别，**可接受rtm.MessageType_Group、rtm.MessageType_Room**
+
+可接受的参数为：
+
++ `timeout time.Duration`
+
+	请求超时。  
+	缺少 timeout 参数，或 timeout 参数为 0 时，将采用 RTM Server Client 实例的配置。  
+	若 RTM Server Client 实例未配置，将采用 fpnn.Config 的相应配置。
+
++ `callback func(errorCode int, errInfo string)`
+
+	异步回调函数。  
+
+如果 **callback** 参数**不存在**，则为**同步**请求。  
+如果 **callback** 参数**存在**，则为**异步**请求。
