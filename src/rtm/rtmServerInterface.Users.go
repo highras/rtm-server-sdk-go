@@ -9,13 +9,15 @@ import (
 )
 
 /*
-	Params:
-		rest: can be include following params:
-			timeout time.Duration
-			func (uids []int64, errorCode int, errInfo string)
+Params:
 
-		If include func param, this function will enter into async mode, and return (nil, error);
-		else this function work in sync mode, and return (uids []int64, err error)
+rest: can be include following params:
+
+	timeout time.Duration
+	func (uids []int64, errorCode int, errInfo string)
+
+If include func param, this function will enter into async mode, and return (nil, error);
+else this function work in sync mode, and return (uids []int64, err error)
 */
 func (client *RTMServerClient) GetOnlineUsers(uids []int64, rest ...interface{}) ([]int64, error) {
 
@@ -40,13 +42,15 @@ func (client *RTMServerClient) GetOnlineUsers(uids []int64, rest ...interface{})
 }
 
 /*
-	Params:
-		rest: can be include following params:
-			timeout time.Duration
-			func (errorCode int, errInfo string)
+Params:
 
-		If include func param, this function will enter into async mode, and return (error);
-		else this function work in sync mode, and return (err error)
+rest: can be include following params:
+
+	timeout time.Duration
+	func (errorCode int, errInfo string)
+
+If include func param, this function will enter into async mode, and return (error);
+else this function work in sync mode, and return (err error)
 */
 func (client *RTMServerClient) AddProjectBlack(uid int64, bannedSeconds int32, rest ...interface{}) error {
 
@@ -72,13 +76,15 @@ func (client *RTMServerClient) AddProjectBlack(uid int64, bannedSeconds int32, r
 }
 
 /*
-	Params:
-		rest: can be include following params:
-			timeout time.Duration
-			func (errorCode int, errInfo string)
+Params:
 
-		If include func param, this function will enter into async mode, and return (error);
-		else this function work in sync mode, and return (err error)
+rest: can be include following params:
+
+	timeout time.Duration
+	func (errorCode int, errInfo string)
+
+If include func param, this function will enter into async mode, and return (error);
+else this function work in sync mode, and return (err error)
 */
 func (client *RTMServerClient) RemoveProjectBlack(uid int64, rest ...interface{}) error {
 
@@ -103,13 +109,15 @@ func (client *RTMServerClient) RemoveProjectBlack(uid int64, rest ...interface{}
 }
 
 /*
-	Params:
-		rest: can be include following params:
-			timeout time.Duration
-			func (ok bool, errorCode int, errInfo string)
+Params:
 
-		If include func param, this function will enter into async mode, and return (true, error);
-		else this function work in sync mode, and return (ok bool, err error)
+rest: can be include following params:
+
+	timeout time.Duration
+	func (ok bool, errorCode int, errInfo string)
+
+If include func param, this function will enter into async mode, and return (true, error);
+else this function work in sync mode, and return (ok bool, err error)
 */
 func (client *RTMServerClient) IsProjectBlack(uid int64, rest ...interface{}) (bool, error) {
 
@@ -134,13 +142,15 @@ func (client *RTMServerClient) IsProjectBlack(uid int64, rest ...interface{}) (b
 }
 
 /*
-	Params:
-		rest: can be include following params:
-			timeout time.Duration
-			func (errorCode int, errInfo string)
+Params:
 
-		If include func param, this function will enter into async mode, and return (error);
-		else this function work in sync mode, and return (err error)
+rest: can be include following params:
+
+	timeout time.Duration
+	func (errorCode int, errInfo string)
+
+If include func param, this function will enter into async mode, and return (error);
+else this function work in sync mode, and return (err error)
 */
 func (client *RTMServerClient) AddProjectBan(uid int64, bannedSeconds int32, rest ...interface{}) error {
 
@@ -166,13 +176,15 @@ func (client *RTMServerClient) AddProjectBan(uid int64, bannedSeconds int32, res
 }
 
 /*
-	Params:
-		rest: can be include following params:
-			timeout time.Duration
-			func (errorCode int, errInfo string)
+Params:
 
-		If include func param, this function will enter into async mode, and return (error);
-		else this function work in sync mode, and return (err error)
+rest: can be include following params:
+
+	timeout time.Duration
+	func (errorCode int, errInfo string)
+
+If include func param, this function will enter into async mode, and return (error);
+else this function work in sync mode, and return (err error)
 */
 func (client *RTMServerClient) RemoveProjectBan(uid int64, rest ...interface{}) error {
 
@@ -197,13 +209,15 @@ func (client *RTMServerClient) RemoveProjectBan(uid int64, rest ...interface{}) 
 }
 
 /*
-	Params:
-		rest: can be include following params:
-			timeout time.Duration
-			func (ok bool, errorCode int, errInfo string)
+Params:
 
-		If include func param, this function will enter into async mode, and return (true, error);
-		else this function work in sync mode, and return (ok bool, err error)
+rest: can be include following params:
+
+	timeout time.Duration
+	func (ok bool, errorCode int, errInfo string)
+
+If include func param, this function will enter into async mode, and return (true, error);
+else this function work in sync mode, and return (ok bool, err error)
 */
 func (client *RTMServerClient) IsProjectBan(uid int64, rest ...interface{}) (bool, error) {
 
@@ -228,21 +242,25 @@ func (client *RTMServerClient) IsProjectBan(uid int64, rest ...interface{}) (boo
 }
 
 /*
-	Params:
-		publicInfo:
-			Public info.
-			Nil pointer means ignore the params when invoking.
+Params:
 
-		privateInfo:
-			Private info.
-			Nil pointer means ignore the params when invoking.
+publicInfo:
 
-		rest: can be include following params:
-			timeout time.Duration
-			func (errorCode int, errInfo string)
+	Public info.
+	Nil pointer means ignore the params when invoking.
 
-		If include func param, this function will enter into async mode, and return (error);
-		else this function work in sync mode, and return (err error)
+privateInfo:
+
+	Private info.
+	Nil pointer means ignore the params when invoking.
+
+rest: can be include following params:
+
+	timeout time.Duration
+	func (errorCode int, errInfo string)
+
+If include func param, this function will enter into async mode, and return (error);
+else this function work in sync mode, and return (err error)
 */
 func (client *RTMServerClient) SetUserInfo(uid int64, publicInfo *string, privateInfo *string, rest ...interface{}) error {
 
@@ -275,13 +293,15 @@ func (client *RTMServerClient) SetUserInfo(uid int64, publicInfo *string, privat
 }
 
 /*
-	Params:
-		rest: can be include following params:
-			timeout time.Duration
-			func (publicInfo string, privateInfo string, errorCode int, errInfo string)
+Params:
 
-		If include func param, this function will enter into async mode, and return ("", "", error);
-		else this function work in sync mode, and return (publicInfo string, privateInfo string, err error)
+rest: can be include following params:
+
+	timeout time.Duration
+	func (publicInfo string, privateInfo string, errorCode int, errInfo string)
+
+If include func param, this function will enter into async mode, and return ("", "", error);
+else this function work in sync mode, and return (publicInfo string, privateInfo string, err error)
 */
 func (client *RTMServerClient) GetUserInfo(uid int64, rest ...interface{}) (string, string, error) {
 
@@ -346,13 +366,15 @@ func (client *RTMServerClient) sendGetUserPublicInfoQuest(quest *fpnn.Quest, tim
 }
 
 /*
-	Params:
-		rest: can be include following params:
-			timeout time.Duration
-			func (map[string]string, errorCode int, errInfo string)
+Params:
 
-		If include func param, this function will enter into async mode, and return (nil, error);
-		else this function work in sync mode, and return (map[string]string, err error)
+rest: can be include following params:
+
+	timeout time.Duration
+	func (map[string]string, errorCode int, errInfo string)
+
+If include func param, this function will enter into async mode, and return (nil, error);
+else this function work in sync mode, and return (map[string]string, err error)
 */
 func (client *RTMServerClient) GetUserPublicInfo(uids []int64, rest ...interface{}) (map[string]string, error) {
 
@@ -374,4 +396,37 @@ func (client *RTMServerClient) GetUserPublicInfo(uids []int64, rest ...interface
 	quest.Param("uids", uids)
 
 	return client.sendGetUserPublicInfoQuest(quest, timeout, callback)
+}
+
+/*
+Params:
+
+rest: can be include following params:
+
+	timeout time.Duration
+	func (errorCode int, errInfo string)
+
+If include func param, this function will enter into async mode, and return (error);
+else this function work in sync mode, and return (err error)
+*/
+func (client *RTMServerClient) ClearUserMessage(uid int64, rest ...interface{}) error {
+
+	var timeout time.Duration
+	var callback func(int, string)
+
+	for _, value := range rest {
+		switch value := value.(type) {
+		case time.Duration:
+			timeout = value
+		case func(int, string):
+			callback = value
+		default:
+			return errors.New("Invaild params when call RTMServerClient.ClearUserMessage() function.")
+		}
+	}
+
+	quest := client.genServerQuest("clearusermsg")
+	quest.Param("uid", uid)
+
+	return client.sendSilentQuest(quest, timeout, callback)
 }
