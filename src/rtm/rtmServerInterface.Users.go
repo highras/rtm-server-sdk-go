@@ -430,3 +430,69 @@ func (client *RTMServerClient) ClearUserMessage(uid int64, rest ...interface{}) 
 
 	return client.sendSilentQuest(quest, timeout, callback)
 }
+
+/*
+Params:
+
+	rest: can be include following params:
+		timeout time.Duration
+		func (errorCode int, errInfo string)
+
+	If include func param, this function will enter into async mode, and return (error);
+	else this function work in sync mode, and return (err error)
+*/
+func (client *RTMServerClient) AddSessions(uid int64, otherUids []int64, rest ...interface{}) error {
+
+	var timeout time.Duration
+	var callback func(int, string)
+
+	for _, value := range rest {
+		switch value := value.(type) {
+		case time.Duration:
+			timeout = value
+		case func(int, string):
+			callback = value
+		default:
+			return errors.New("Invaild params when call RTMServerClient.AddSessions() function.")
+		}
+	}
+
+	quest := client.genServerQuest("addsessions")
+	quest.Param("uid", uid)
+	quest.Param("uids", otherUids)
+
+	return client.sendSilentQuest(quest, timeout, callback)
+}
+
+/*
+Params:
+
+	rest: can be include following params:
+		timeout time.Duration
+		func (errorCode int, errInfo string)
+
+	If include func param, this function will enter into async mode, and return (error);
+	else this function work in sync mode, and return (err error)
+*/
+func (client *RTMServerClient) RemoveSessions(uid int64, otherUids []int64, rest ...interface{}) error {
+
+	var timeout time.Duration
+	var callback func(int, string)
+
+	for _, value := range rest {
+		switch value := value.(type) {
+		case time.Duration:
+			timeout = value
+		case func(int, string):
+			callback = value
+		default:
+			return errors.New("Invaild params when call RTMServerClient.AddSessions() function.")
+		}
+	}
+
+	quest := client.genServerQuest("removesessions")
+	quest.Param("uid", uid)
+	quest.Param("uids", otherUids)
+
+	return client.sendSilentQuest(quest, timeout, callback)
+}

@@ -16,11 +16,11 @@ import (
 )
 
 const (
-	SDKVersion = "0.9.19"
+	SDKVersion = "0.9.20"
 )
 
 const (
-	APIVersion = "2.7.6"
+	APIVersion = "2.7.7"
 )
 
 /*
